@@ -1,9 +1,9 @@
-import { Menu } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { NavLink } from './nav-link';
-import { Separator } from './ui/separator';
-import { UserNav } from './user-nav';
+import { Menu } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { NavLink } from './nav-link'
+import { Separator } from './ui/separator'
+import { UserNav } from './user-nav'
 
 export function Header() {
   return (
@@ -12,12 +12,10 @@ export function Header() {
         <Link href="/dashboard">
           <Image src="/logo.svg" alt="" width={30} height={24} />
         </Link>
-        
+
         <Separator orientation="vertical" className="h-6" />
 
-        <h3 className="font-medium text-muted lg:hidden">
-          Welcome, Jhon!
-        </h3>
+        <h3 className="font-medium text-muted lg:hidden">Welcome, Jhon!</h3>
 
         <nav className="items-center space-x-6 hidden lg:flex">
           <NavLink href="/dashboard">Dashboard</NavLink>
@@ -31,9 +29,7 @@ export function Header() {
       </div>
 
       <div className="items-center gap-4 hidden lg:flex">
-        <h3 className="font-medium text-muted">
-          Welcome, Jhon!
-        </h3>
+        <h3 className="font-medium text-muted">Welcome, Jhon!</h3>
 
         <UserNav />
       </div>

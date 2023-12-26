@@ -1,8 +1,17 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Badge } from './ui/badge';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from './ui/dropdown-menu';
+import Image from 'next/image'
+import Link from 'next/link'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { Badge } from './ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu'
 
 export function UserNav() {
   return (
@@ -10,7 +19,12 @@ export function UserNav() {
       <DropdownMenuTrigger>
         <Avatar className="h-9 w-9">
           <AvatarFallback>
-            <Image src="/avatars/man.png" alt="jhon doe" width={60} height={60} />
+            <Image
+              src="/avatars/man.png"
+              alt="jhon doe"
+              width={60}
+              height={60}
+            />
           </AvatarFallback>
 
           <AvatarImage />
@@ -32,23 +46,20 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/profile">Profile</Link>
+            <Link href="/settings/profile">Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/password">Password</Link>
+            <Link href="/settings/password">Password</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/appearence">Appearence</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/settings">Settings</Link>
+            <Link href="/settings/appearence">Appearence</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-          </DropdownMenuItem>
+        <DropdownMenuItem>
+          Log out
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
