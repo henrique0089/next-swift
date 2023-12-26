@@ -40,6 +40,9 @@ export function UserNav() {
           <DropdownMenuItem asChild>
             <Link href="/appearence">Appearence</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/settings">Settings</Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
           <DropdownMenuItem>
