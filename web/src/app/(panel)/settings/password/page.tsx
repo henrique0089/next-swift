@@ -1,7 +1,19 @@
+import { Separator } from '@/components/ui/separator'
+import { UpdatePasswordForm } from '../components/update-password-form'
+
 export default function Password() {
   return (
-    <section>
-      <h1>Password</h1>
+    <section className="space-y-6">
+      <div>
+        <h1 className="text-lg font-medium">Password</h1>
+        <span className="text-sm text-muted-foreground">
+          Update your password.
+        </span>
+      </div>
+
+      <Separator />
+
+      <UpdatePasswordForm />
     </section>
   )
 }

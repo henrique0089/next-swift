@@ -3,7 +3,7 @@ import { UpdateProfileForm } from '../components/update-profile-form'
 
 export default function Profile() {
   return (
-    <section>
+    <section className="space-y-6">
       <div>
         <h1 className="text-lg font-medium">Profile</h1>
         <span className="text-sm text-muted-foreground">

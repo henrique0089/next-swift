@@ -96,7 +96,7 @@ export function UpdateProfileForm() {
 
       <Button disabled={isSubmitting}>
         {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Update
+        Update password
       </Button>
     </form>
   )
