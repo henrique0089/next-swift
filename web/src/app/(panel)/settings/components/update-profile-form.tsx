@@ -2,6 +2,14 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
@@ -27,11 +35,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 export function UpdateProfileForm() {
   const [avatar, setAvatar] = useState<FileList | null>(null)
-  const {
-    handleSubmit,
-    register,
-    formState: { isSubmitting },
-  } = useForm<ProfileFormValues>({
+  const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     mode: 'onChange',
     defaultValues: {
@@ -44,60 +48,94 @@ export function UpdateProfileForm() {
     console.log({ ...data, avatar })
   }
 
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = form
+
   return (
-    <form
-      onSubmit={handleSubmit(handleUpdateProfileInfo)}
-      className="space-y-8"
-    >
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center gap-6">
-            <input
-              type="file"
-              className="sr-only"
-              onChange={(e) => setAvatar(e.target.files)}
-              id="avatar"
-            />
+    <Form {...form}>
+      <form
+        onSubmit={handleSubmit(handleUpdateProfileInfo)}
+        className="space-y-8"
+      >
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-6">
+              <input
+                type="file"
+                className="sr-only"
+                onChange={(e) => setAvatar(e.target.files)}
+                id="avatar"
+              />
 
-            <label htmlFor="avatar" className="cursor-pointer hover:opacity-70">
-              {avatar ? (
-                <Image
-                  src={avatar[0]}
-                  alt=""
-                  width={64}
-                  height={64}
-                  className="h-16 w-16 rounded-full bg-primary/10"
-                />
-              ) : (
-                <Image
-                  src="/avatars/man.png"
-                  alt=""
-                  width={64}
-                  height={64}
-                  className="h-16 w-16 rounded-full bg-primary/10"
-                />
-              )}
-            </label>
-            <div>
-              <span className="text-lg font-medium">Your avatar</span>
-              <p className="text-sm text-muted-foreground">
-                Click on the avatar to upload a custom one from your files.
-              </p>
+              <label
+                htmlFor="avatar"
+                className="cursor-pointer hover:opacity-70"
+              >
+                {avatar ? (
+                  <Image
+                    src={avatar[0]}
+                    alt=""
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 rounded-full bg-primary/10"
+                  />
+                ) : (
+                  <Image
+                    src="/avatars/man.png"
+                    alt=""
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 rounded-full bg-primary/10"
+                  />
+                )}
+              </label>
+              <div>
+                <span className="text-lg font-medium">Your avatar</span>
+                <p className="text-sm text-muted-foreground">
+                  Click on the avatar to upload a custom one from your files.
+                </p>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <div className="grid grid-cols-2 gap-4">
-        <Input placeholder="John" {...register('firstName')} />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Input placeholder="Doe" {...register('lastName')} />
-      </div>
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-      <Button disabled={isSubmitting}>
-        {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Update password
-      </Button>
-    </form>
+        <Button disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Update password
+        </Button>
+      </form>
+    </Form>
   )
 }
