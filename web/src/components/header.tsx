@@ -7,7 +7,7 @@ import { UserNav } from './user-nav';
 
 export function Header() {
   return (
-    <header className="flex h-16 items-center justify-between bg-zinc-900 border-b border-zinc-100 px-6">
+    <header className="flex h-16 items-center justify-between bg-zinc-900 border-b border-zinc-100 px-4 lg:px-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard">
           <Image src="/logo.svg" alt="" width={30} height={24} />
