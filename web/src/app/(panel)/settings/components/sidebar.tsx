@@ -18,7 +18,7 @@ export function Sidebar({ ...props }: SidebarNavProps) {
   const pathname = usePathname()
 
   return (
-    <nav className="flex flex-col space-y-1" {...props}>
+    <nav className="hidden lg:flex flex-col space-y-1" {...props}>
       {sidebarLinks.map((link) => {
         return (
           <Link

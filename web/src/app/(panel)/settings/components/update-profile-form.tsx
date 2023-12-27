@@ -79,7 +79,7 @@ export function UpdateProfileForm() {
                     alt=""
                     width={64}
                     height={64}
-                    className="h-16 w-16 rounded-full bg-primary/10"
+                    className="w-20 lg:h-16  lg:w-16 rounded-full bg-primary/10"
                   />
                 ) : (
                   <Image
@@ -87,7 +87,7 @@ export function UpdateProfileForm() {
                     alt=""
                     width={64}
                     height={64}
-                    className="h-16 w-16 rounded-full bg-primary/10"
+                    className="w-20 lg:h-16  lg:w-16 rounded-full bg-primary/10"
                   />
                 )}
               </label>
@@ -133,7 +133,7 @@ export function UpdateProfileForm() {
 
         <Button disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Update password
+          Update profile
         </Button>
       </form>
     </Form>
