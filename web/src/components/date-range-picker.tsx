@@ -24,10 +24,10 @@ export function DateRangePicker({ date, setDate }: DateRangePickerProps) {
       <PopoverTrigger asChild>
         <Button
           id="date"
-          variant={'outline'}
+          variant="outline"
           type="button"
           className={cn(
-            'w-[260px] justify-start text-left font-normal',
+            'w-[15rem] justify-start text-left font-normal',
             !date && 'text-muted-foreground',
           )}
         >

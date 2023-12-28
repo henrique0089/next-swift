@@ -47,8 +47,6 @@ export default function Products() {
               <CategoryCheckbox id="blue_shirts" label="Blue-shirts" />
             </div>
           </div>
-
-          <Separator />
         </nav>
 
         <div className="flex flex-col items-center mx-auto max-w-6xl gap-4 lg:grid lg:grid-cols-3">
