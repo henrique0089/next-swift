@@ -7,8 +7,8 @@ export default function Appearence() {
       <div>
         <h1 className="text-lg font-medium">Appearance</h1>
         <span className="text-sm text-muted-foreground">
-          Customize the appearance of the app. Automatically switch between day
-          and night themes.
+          Customize the appearance of the app. Automatically switch between
+          light and dark themes.
         </span>
       </div>
 

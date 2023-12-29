@@ -3,6 +3,13 @@
 import { DateRangePicker } from '@/components/date-range-picker'
 import { Badge } from '@/components/ui/badge'
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -19,19 +26,16 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { formatPrice } from '@/utils/format-price'
-import { subMonths } from 'date-fns'
+import { Download } from 'lucide-react'
 import { useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { SearchProductsForm } from '../../products/components/search-products-form'
 
 export function SalesContent() {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: subMonths(new Date(), 1),
-    to: new Date(),
-  })
+  const [date, setDate] = useState<DateRange | undefined>()
 
   return (
-    <div className="grid grid-cols-[15rem_1fr] items-start gap-4">
+    <div className="grid grid-cols-[16rem_1fr] items-start gap-4">
       <nav className="space-y-6">
         <div className="space-y-2">
           <span className="block text-sm font-semibold">
@@ -113,6 +117,20 @@ export function SalesContent() {
             <TableHead>Payment Method</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Customer</TableHead>
+            <TableHead>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Download className="h-5 w-5" />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="w-fit" align="end" forceMount>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem>Generate excel report</DropdownMenuItem>
+                    <DropdownMenuItem>Generate pdf report</DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

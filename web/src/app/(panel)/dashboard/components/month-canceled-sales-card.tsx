@@ -9,12 +9,13 @@ export function MonthCanceledSalesAmountCard() {
         <CardTitle className="text-base font-semibold">
           Sales Cancellations (month)
         </CardTitle>
-        <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+        <ShoppingBag className="h-4 w-4 stroke-muted-foreground" />
       </CardHeader>
       <CardContent className="space-y-1">
         <span className="text-2xl font-bold tracking-tight">32</span>
         <p className="text-xs text-muted-foreground">
-          <span className="text-emerald-500 dark:text-emerald-400">+3%</span> from last month
+          <span className="text-emerald-500 dark:text-emerald-400">+3%</span>{' '}
+          from last month
         </p>
       </CardContent>
     </Card>

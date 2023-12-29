@@ -25,9 +25,9 @@ import {
 } from '@/components/ui/table'
 import { MoreVertical, Pen, Trash } from 'lucide-react'
 import Link from 'next/link'
-import { CustomersForm } from './customers-form'
+import { EmployeesForm } from './employees-form'
 
-export function CustomersContent() {
+export function EmployeesContent() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
       <nav className="space-y-6">
@@ -35,7 +35,7 @@ export function CustomersContent() {
           <span className="block text-sm font-semibold">
             Search by any customer
           </span>
-          <CustomersForm placeholder="Jhon doe" />
+          <EmployeesForm placeholder="Jhon doe" />
         </div>
 
         <Separator />
@@ -44,14 +44,14 @@ export function CustomersContent() {
           <span className="block text-sm font-semibold">
             Search by any e-mail
           </span>
-          <CustomersForm placeholder="jhondoe@gmail.com" />
+          <EmployeesForm placeholder="jhondoe@gmail.com" />
         </div>
 
         <Separator />
 
         <div className="space-y-2">
           <span className="block text-sm font-semibold">Search by any cpf</span>
-          <CustomersForm placeholder="000.000.000-00" />
+          <EmployeesForm placeholder="000.000.000-00" />
         </div>
 
         <Separator />
@@ -106,7 +106,7 @@ export function CustomersContent() {
                     <DropdownMenuGroup>
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/customers/123/edit`}
+                          href={`/employees/123/edit`}
                           className="flex items-center gap-2 hover:underline cursor-pointer group"
                         >
                           <Pen className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />

@@ -41,11 +41,11 @@ export function ProductCard() {
 
         <div className="flex items-center gap-2">
           <Link href={`/posts/25/edit`}>
-            <Pen className="h-5" />
+            <Pen className="h-5 w-5" />
           </Link>
 
           <button>
-            <Trash2 className="h-5" />
+            <Trash2 className="h-5 w-5" />
           </button>
         </div>
       </CardFooter>

@@ -27,7 +27,7 @@ export function DateRangePicker({ date, setDate }: DateRangePickerProps) {
           variant="outline"
           type="button"
           className={cn(
-            'w-[15rem] justify-start text-left font-normal',
+            'w-[16rem] justify-start text-left font-normal',
             !date && 'text-muted-foreground',
           )}
         >
@@ -42,7 +42,9 @@ export function DateRangePicker({ date, setDate }: DateRangePickerProps) {
               format(date.from, 'LLL dd, y')
             )
           ) : (
-            <span>Pick a date</span>
+            <>
+              <span>Pick a date range</span>
+            </>
           )}
         </Button>
       </PopoverTrigger>

@@ -36,7 +36,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
 
       <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[15rem_1fr] items-start gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] items-start gap-8">
         <Sidebar />
         {children}
       </div>

@@ -75,7 +75,7 @@ export function UpdateProfileForm() {
               >
                 {avatar ? (
                   <Image
-                    src={avatar[0]}
+                    src="/avatars/woman.png"
                     alt=""
                     width={64}
                     height={64}
