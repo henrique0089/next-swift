@@ -23,8 +23,8 @@ export function Header() {
           <NavLink href="/sales">Sales</NavLink>
           <NavLink href="/customers">Customers</NavLink>
           <NavLink href="/employees">Employees</NavLink>
-          <NavLink href="/categories">Categories</NavLink>
           <NavLink href="/suppliers">Suppliers</NavLink>
+          <NavLink href="/categories">Categories</NavLink>
         </nav>
       </div>
 

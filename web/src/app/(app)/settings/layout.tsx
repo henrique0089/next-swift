@@ -1,5 +1,4 @@
 import { NavLink } from '@/components/nav-link'
-import { Separator } from '@/components/ui/separator'
 import { ReactNode } from 'react'
 import { Sidebar } from './components/sidebar'
 
@@ -33,8 +32,6 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
           Appearence
         </NavLink>
       </nav>
-
-      <Separator />
 
       <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] items-start gap-8">
         <Sidebar />
