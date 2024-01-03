@@ -10,6 +10,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
@@ -26,9 +33,33 @@ const addProductFormSchema = z.object({
   price: z.coerce.number(),
   quantity: z.coerce.number(),
   images: z.instanceof(File).array(),
+  category: z.string({ required_error: 'Select one category' }),
 })
 
 type AddProductFormValues = z.infer<typeof addProductFormSchema>
+
+const categories = [
+  {
+    value: 'j45hj4h5h',
+    label: 'shirts',
+  },
+  {
+    value: 'j344jj',
+    label: 'shoes',
+  },
+  {
+    value: 'dfdjfjdf89df8',
+    label: 'black-shoes',
+  },
+  {
+    value: 'bdnfnbdf8',
+    label: 'blue-pants',
+  },
+  {
+    value: 'bbdnfbdfnb33',
+    label: 'rayban oculus',
+  },
+]
 
 export function AddProductForm() {
   const form = useForm<AddProductFormValues>({
@@ -36,14 +67,17 @@ export function AddProductForm() {
     mode: 'onChange',
   })
 
-  function handleAddProduct(data: AddProductFormValues) {
-    console.log({ imgs: data.images })
-  }
-
   const {
     handleSubmit,
+    setValue,
     formState: { isSubmitting },
   } = form
+
+  function handleAddProduct(data: AddProductFormValues) {
+    console.log({ data })
+
+    setValue('name', '')
+  }
 
   return (
     <Form {...form}>
@@ -114,6 +148,34 @@ export function AddProductForm() {
                   <FormLabel>Quantity</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="63" type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem
+                            key={category.value}
+                            value={category.value}
+                          >
+                            {category.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

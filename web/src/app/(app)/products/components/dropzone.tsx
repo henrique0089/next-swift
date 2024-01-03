@@ -8,6 +8,9 @@ interface DropzoneProps {
 export function Dropzone({ onChange }: DropzoneProps) {
   const { getRootProps, getInputProps, isDragAccept, isDragReject } =
     useDropzone({
+      accept: {
+        acceptedFileTypes: ['image/png', 'images/jpg', 'image/jpeg'],
+      },
       onDrop(acceptedFiles) {
         onChange(acceptedFiles)
       },
