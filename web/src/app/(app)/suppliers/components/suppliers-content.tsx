@@ -1,13 +1,6 @@
 'use client'
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -23,8 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { MoreVertical, Pen, Trash } from 'lucide-react'
+import { Pen, Trash } from 'lucide-react'
 import Link from 'next/link'
+import { DeleteSupplierButton } from './delete-suppliers-button'
 import { SuppliersForm } from './suppliers-form'
 
 export function SuppliersContent() {
@@ -84,6 +78,7 @@ export function SuppliersContent() {
             <TableHead>Registered in</TableHead>
             <TableHead>Updated at</TableHead>
             <TableHead></TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -97,35 +92,19 @@ export function SuppliersContent() {
               <TableCell>28/12/2023</TableCell>
               <TableCell>29/12/2023</TableCell>
               <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <MoreVertical className="h-5 w-5 stroke-zinc-900" />
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent className="w-44" align="end" forceMount>
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/employees/123/edit`}
-                          className="flex items-center gap-2 hover:underline cursor-pointer group"
-                        >
-                          <Pen className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />
-                          <span className="text-sm leading-none text-muted-foreground group-hover:text-zinc-900">
-                            Edit
-                          </span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="group">
-                        <button className="flex items-center gap-2">
-                          <Trash className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />
-                          <span className="text-sm leading-none text-muted-foreground group-hover:text-zinc-900">
-                            Delete
-                          </span>
-                        </button>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Link
+                  href={`/suppliers/123/edit`}
+                  className="flex items-center gap-2 cursor-pointer group"
+                >
+                  <Pen className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />
+                </Link>
+              </TableCell>
+              <TableCell>
+                <DeleteSupplierButton supplierName={'Jhon doe'}>
+                  <button className="flex items-center gap-2">
+                    <Trash className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />
+                  </button>
+                </DeleteSupplierButton>
               </TableCell>
             </TableRow>
           ))}
