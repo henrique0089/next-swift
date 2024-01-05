@@ -6,9 +6,10 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Pen, Trash2 } from 'lucide-react'
+import { Pen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { DeleteProductButton } from './delete-product-button'
 
 export function ProductCard() {
   return (
@@ -44,9 +45,7 @@ export function ProductCard() {
             <Pen className="h-5 w-5" />
           </Link>
 
-          <button>
-            <Trash2 className="h-5 w-5" />
-          </button>
+          <DeleteProductButton />
         </div>
       </CardFooter>
     </Card>
