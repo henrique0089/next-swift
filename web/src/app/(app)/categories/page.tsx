@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Trash } from 'lucide-react'
+import { DeleteCategoryButton } from './components/delete-category-button'
 
 export default function Categories() {
   return (
@@ -63,9 +63,7 @@ export default function Categories() {
                 <TableCell>134</TableCell>
                 <TableCell>29/12/2023</TableCell>
                 <TableCell>
-                  <button>
-                    <Trash className="h-5 w-5 stroke-muted-foreground" />
-                  </button>
+                  <DeleteCategoryButton categoryName="shoes" />
                 </TableCell>
               </TableRow>
             ))}
