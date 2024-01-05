@@ -40,7 +40,7 @@ export function ProductCard() {
         </strong>
 
         <div className="flex items-center gap-2">
-          <Link href={`/posts/25/edit`}>
+          <Link href={`/products/25/edit`}>
             <Pen className="h-5 w-5" />
           </Link>
 

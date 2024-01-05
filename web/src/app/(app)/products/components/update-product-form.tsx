@@ -24,7 +24,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Dropzone } from './dropzone'
 
-const addProductFormSchema = z.object({
+const updateProductFormSchema = z.object({
   name: z.string().min(5, { message: 'Name must have at least 5 words' }),
   description: z.string().optional(),
   width: z.coerce.number(),
@@ -36,7 +36,7 @@ const addProductFormSchema = z.object({
   category: z.string({ required_error: 'Select one category' }),
 })
 
-type AddProductFormValues = z.infer<typeof addProductFormSchema>
+type UpdateProductFormValues = z.infer<typeof updateProductFormSchema>
 
 const categories = [
   {
@@ -61,10 +61,20 @@ const categories = [
   },
 ]
 
-export function AddProductForm() {
-  const form = useForm<AddProductFormValues>({
-    resolver: zodResolver(addProductFormSchema),
+export function UpdateProductForm() {
+  const form = useForm<UpdateProductFormValues>({
+    resolver: zodResolver(updateProductFormSchema),
     mode: 'onChange',
+    defaultValues: {
+      name: 'Black T-shirt',
+      description: 'black t-shirt description',
+      width: 176,
+      height: 245,
+      weight: 55,
+      price: 79.9,
+      quantity: 26,
+      category: 'j45hj4h5h',
+    },
   })
 
   const {
@@ -73,7 +83,7 @@ export function AddProductForm() {
     formState: { isSubmitting },
   } = form
 
-  function handleAddProduct(data: AddProductFormValues) {
+  function handleUpdateProduct(data: UpdateProductFormValues) {
     console.log({ data })
 
     setValue('name', '')
@@ -81,7 +91,7 @@ export function AddProductForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(handleAddProduct)} className="space-y-4">
+      <form onSubmit={handleSubmit(handleUpdateProduct)} className="space-y-4">
         <div className="grid grid-cols-1 space-y-6 lg:grid-cols-[16rem_1fr] lg:space-x-4">
           <div className="space-y-4">
             <FormField
@@ -236,7 +246,7 @@ export function AddProductForm() {
               {isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Add Product
+              Update Product
             </Button>
           </div>
         </div>

@@ -14,5 +14,3 @@ export default function AddProduct() {
     </section>
   )
 }
-
-// max-w-[56rem]
