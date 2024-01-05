@@ -13,15 +13,15 @@ import {
 } from '@/components/ui/alert-dialog'
 import { ReactNode } from 'react'
 
-interface DeleteCustomerButtonProps {
-  customerName: string
+interface DismissEmployeeButtonProps {
+  employeeName: string
   children: ReactNode
 }
 
-export function DeleteCustomerButton({
-  customerName,
+export function DismissEmployeeButton({
+  employeeName,
   children,
-}: DeleteCustomerButtonProps) {
+}: DismissEmployeeButtonProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -30,7 +30,7 @@ export function DeleteCustomerButton({
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently remove the
-            customer: <strong>{customerName}</strong>.
+            employee: <strong>{employeeName}</strong>.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
