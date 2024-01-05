@@ -25,6 +25,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { formatPrice } from '@/utils/format-price'
 import { Download } from 'lucide-react'
 import { useState } from 'react'
@@ -120,7 +126,16 @@ export function SalesContent() {
             <TableHead>
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <Download className="h-5 w-5" />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Download className="h-5 w-5" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Download report</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="w-fit" align="end" forceMount>
