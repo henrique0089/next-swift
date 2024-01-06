@@ -19,14 +19,8 @@ const addCustomerFormSchema = z.object({
   name: z.string().min(3, { message: 'Name must have at least 3 words' }),
   email: z.string().email('Provide an valid e-mail'),
   cpf: z.string(),
-  ddd: z.coerce
-    .number()
-    // .min(3, { message: 'DDD must have 3 numbers' })
-    .min(2, { message: 'DDD must have 2 numbers' }),
-  phone: z.coerce
-    .number()
-    // .min(9, { message: 'Phone must have 9 numbers' })
-    .min(9, { message: 'Phone must have 9 numbers' }),
+  ddd: z.coerce.number().min(2, { message: 'DDD must have 2 numbers' }),
+  phone: z.coerce.number().min(9, { message: 'Phone must have 9 numbers' }),
 })
 
 type AddCustomerFormValues = z.infer<typeof addCustomerFormSchema>

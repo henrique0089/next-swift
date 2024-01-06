@@ -46,7 +46,7 @@ export function EmployeeAuthForm() {
           disabled={isLoading}
         />
         <Link
-          href="/forgot-password"
+          href="/recovery-password"
           className="text-right mt-2 w-full block text-sm text-muted-foreground hover:underline underline-offset-4 hover:text-primary"
         >
           Forgot password?
