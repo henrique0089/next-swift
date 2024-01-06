@@ -8,16 +8,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { format, subMonths } from 'date-fns'
+import { format } from 'date-fns'
 import { CalendarIcon, DownloadIcon } from 'lucide-react'
 import { useState } from 'react'
 import { DateRange } from 'react-day-picker'
 
 export function CalendarDateRangePicker() {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: subMonths(new Date(), 1),
-    to: new Date(),
-  })
+  const [date, setDate] = useState<DateRange | undefined>()
 
   return (
     <div className="flex items-center gap-2">
@@ -42,7 +39,7 @@ export function CalendarDateRangePicker() {
                 format(date.from, 'LLL dd, y')
               )
             ) : (
-              <span>Pick a date</span>
+              <span>Pick a date range</span>
             )}
           </Button>
         </PopoverTrigger>

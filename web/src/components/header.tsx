@@ -1,6 +1,6 @@
-import { Menu } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { MobileSidebar } from './mobile-sidebar'
 import { NavLink } from './nav-link'
 import { Separator } from './ui/separator'
 import { UserNav } from './user-nav'
@@ -13,7 +13,7 @@ export function Header() {
           <Image src="/logo.svg" alt="" width={30} height={24} />
         </Link>
 
-        <Separator orientation="vertical" className="h-6" />
+        <Separator orientation="vertical" className="h-6 bg-zinc-600" />
 
         <h3 className="font-medium text-muted lg:hidden">Welcome, Jhon!</h3>
 
@@ -34,9 +34,7 @@ export function Header() {
         <UserNav />
       </div>
 
-      <button className="lg:hidden">
-        <Menu className="stroke-muted" />
-      </button>
+      <MobileSidebar />
     </header>
   )
 }
