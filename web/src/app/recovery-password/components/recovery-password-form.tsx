@@ -44,14 +44,14 @@ export function RecoveryPasswordForm() {
     <Form {...form}>
       <form
         onSubmit={handleSubmit(handleSendResetPassEmail)}
-        className="space-y-2 w-full"
+        className="space-y-3 w-full"
       >
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input {...field} placeholder="name@example.com" type="email" />
               </FormControl>
