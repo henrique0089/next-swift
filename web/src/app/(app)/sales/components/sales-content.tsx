@@ -1,6 +1,5 @@
 'use client'
 
-import { DateRangePicker } from '@/components/date-range-picker'
 import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
@@ -33,13 +32,9 @@ import {
 } from '@/components/ui/tooltip'
 import { formatPrice } from '@/utils/format-price'
 import { Download } from 'lucide-react'
-import { useState } from 'react'
-import { DateRange } from 'react-day-picker'
 import { SearchProductsForm } from '../../products/components/search-products-form'
 
 export function SalesContent() {
-  const [date, setDate] = useState<DateRange | undefined>()
-
   return (
     <div className="grid grid-cols-[16rem_1fr] items-start gap-4">
       <nav className="space-y-6">
@@ -48,31 +43,6 @@ export function SalesContent() {
             Search by any product
           </span>
           <SearchProductsForm />
-        </div>
-
-        <Separator />
-
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">Date range</span>
-          <DateRangePicker date={date} setDate={setDate} />
-        </div>
-
-        <Separator />
-
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">Select a quantity</span>
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Nothing selected" />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="15">15</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         <Separator />
@@ -109,6 +79,24 @@ export function SalesContent() {
               <SelectItem value="PAID">Paid</SelectItem>
               <SelectItem value="PENDING">Pending</SelectItem>
               <SelectItem value="CANCELLED">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <span className="block text-sm font-semibold">Select a quantity</span>
+          <Select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Nothing selected" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="15">15</SelectItem>
+              <SelectItem value="20">20</SelectItem>
             </SelectContent>
           </Select>
         </div>

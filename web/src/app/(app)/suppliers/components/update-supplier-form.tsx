@@ -15,24 +15,24 @@ import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const updateCustomerFormSchema = z.object({
+const updateSupplierFormSchema = z.object({
   name: z.string().min(3, { message: 'Name must have at least 3 words' }),
   email: z.string().email('Provide an valid e-mail'),
-  cpf: z.string(),
+  cnpj: z.string(),
   ddd: z.coerce.number().min(2, { message: 'DDD must have 2 numbers' }),
   phone: z.coerce.number().min(9, { message: 'Phone must have 9 numbers' }),
 })
 
-type UpdateCustomerFormValues = z.infer<typeof updateCustomerFormSchema>
+type UpdateSupplierFormValues = z.infer<typeof updateSupplierFormSchema>
 
-export function UpdateCustomerForm() {
-  const form = useForm<UpdateCustomerFormValues>({
-    resolver: zodResolver(updateCustomerFormSchema),
+export function UpdateSupplierForm() {
+  const form = useForm<UpdateSupplierFormValues>({
+    resolver: zodResolver(updateSupplierFormSchema),
     mode: 'onChange',
     defaultValues: {
       name: 'Jhon Doe',
       email: 'jhondoe@gmail.com',
-      cpf: '134.607.374-09',
+      cnpj: '134.607.374-09',
       ddd: 82,
       phone: 999999999,
     },
@@ -44,7 +44,7 @@ export function UpdateCustomerForm() {
     formState: { isSubmitting },
   } = form
 
-  function handleupdateCustomer(data: UpdateCustomerFormValues) {
+  function handleupdateSupplier(data: UpdateSupplierFormValues) {
     console.log({ data })
 
     setValue('name', '')
@@ -52,15 +52,15 @@ export function UpdateCustomerForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(handleupdateCustomer)}>
+      <form onSubmit={handleSubmit(handleupdateSupplier)}>
         <div className="flex flex-col gap-4 lg:items-start lg:flex-row">
           <div className="space-y-4 lg:w-[16rem] order-1 lg:order-none">
             <FormField
               control={form.control}
-              name="cpf"
+              name="cnpj"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>CPF</FormLabel>
+                  <FormLabel>Cnpj</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="000.000.000-00" />
                   </FormControl>
@@ -101,7 +101,7 @@ export function UpdateCustomerForm() {
               {isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Update customer
+              Update supplier
             </Button>
           </div>
 
@@ -138,7 +138,7 @@ export function UpdateCustomerForm() {
               {isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Update customer
+              Update supplier
             </Button>
           </div>
         </div>

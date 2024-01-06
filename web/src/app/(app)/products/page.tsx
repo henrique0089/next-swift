@@ -1,4 +1,11 @@
 import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Plus, PlusCircle } from 'lucide-react'
 import Link from 'next/link'
@@ -41,7 +48,7 @@ export default function Products() {
 
           <Separator />
 
-          <div className="space-y-6">
+          <div className="space-y-2">
             <span className="block text-sm font-semibold">Categories (5)</span>
 
             <div className="grid grid-cols-4 justify-between gap-4 lg:grid-cols-1 lg:justify-normal lg:space-y-4 lg:gap-0">
@@ -51,6 +58,25 @@ export default function Products() {
               <CategoryCheckbox id="oculus" label="Oculus" />
               <CategoryCheckbox id="blue_shirts" label="Blue-shirts" />
             </div>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-2">
+            <span className="block text-sm font-semibold">Quantity</span>
+
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Nothing selected" />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="15">15</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </nav>
 
