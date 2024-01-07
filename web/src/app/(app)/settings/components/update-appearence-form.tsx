@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTheme } from 'next-themes'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -23,19 +24,20 @@ const updateAppearanceFormSchema = z.object({
 
 type UpdateAppearanceFormValues = z.infer<typeof updateAppearanceFormSchema>
 
-const defaultValues: Partial<UpdateAppearanceFormValues> = {
-  theme: 'light',
-}
-
 export function UpdateAppearanceForm() {
+  const { setTheme, theme } = useTheme()
+
   const form = useForm<UpdateAppearanceFormValues>({
     resolver: zodResolver(updateAppearanceFormSchema),
-    defaultValues,
+    defaultValues: {
+      theme: theme === 'light' ? 'light' : 'dark',
+    },
   })
 
-  function onSubmit(data: UpdateAppearanceFormValues) {
-    console.log(data)
+  function onSubmit({ theme }: UpdateAppearanceFormValues) {
+    setTheme(theme)
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

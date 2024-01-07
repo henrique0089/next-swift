@@ -26,7 +26,7 @@ export function MobileLink({
       }}
       data-active={isActive}
       {...props}
-      className="text-muted-foreground data-[active=true]:text-zinc-900 data-[active=true]:font-medium"
+      className="text-muted-foreground data-[active=true]:text-zinc-900 font-medium dark:data-[active=true]:text-zinc-100"
     >
       {children}
     </Link>

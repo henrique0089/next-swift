@@ -13,24 +13,9 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
       </div>
 
       <nav className="items-center mt-3 space-x-6 flex lg:hidden">
-        <NavLink
-          href="/settings/profile"
-          className="text-zinc-400 data-[active=true]:text-zinc-900"
-        >
-          Profile
-        </NavLink>
-        <NavLink
-          href="/settings/password"
-          className="text-zinc-400 data-[active=true]:text-zinc-900"
-        >
-          Password
-        </NavLink>
-        <NavLink
-          href="/settings/appearence"
-          className="text-zinc-400 data-[active=true]:text-zinc-900"
-        >
-          Appearence
-        </NavLink>
+        <NavLink href="/settings/profile">Profile</NavLink>
+        <NavLink href="/settings/password">Password</NavLink>
+        <NavLink href="/settings/appearence">Appearence</NavLink>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] items-start gap-8">

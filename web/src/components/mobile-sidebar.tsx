@@ -15,13 +15,26 @@ export function MobileSidebar() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <button className="lg:hidden">
-          <Menu className="stroke-muted" />
+          <Menu className="stroke-muted dark:stroke-muted-foreground" />
         </button>
       </SheetTrigger>
 
       <SheetContent side="left">
         <MobileLink href="/dashboard" onOpenChange={setOpen}>
-          <Image src="/dark-logo.svg" alt="" width={30} height={24} />
+          <Image
+            src="/dark-logo.svg"
+            alt=""
+            width={30}
+            height={24}
+            className="dark:hidden"
+          />
+          <Image
+            src="/logo.svg"
+            alt=""
+            width={30}
+            height={24}
+            className="hidden dark:block"
+          />
         </MobileLink>
 
         <div className="mt-6 flex flex-col gap-3">
