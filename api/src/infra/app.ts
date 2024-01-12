@@ -1,13 +1,13 @@
 import fastifyCors from '@fastify/cors'
 import fastify from 'fastify'
-import { categoriesRoutes } from '../http/routes/categories'
+import { appRoutes } from './http/routes'
 
-const app = fastify()
+const app = fastify({ logger: true })
 
 app.register(fastifyCors, {
   origin: '*',
 })
 
-app.register(categoriesRoutes)
+appRoutes(app)
 
 export { app }
