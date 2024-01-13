@@ -91,7 +91,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
   async create(employee: Employee, roleId: string): Promise<void> {
     const { id, name, email, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
 
-    const query = "INSERT INTO employees (id, name, email, phone, avatar, dismissedAt, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
+    const query = "INSERT INTO employees (id, name, email, phone, avatar, dismissed_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
     const values = [
       id,
       name,

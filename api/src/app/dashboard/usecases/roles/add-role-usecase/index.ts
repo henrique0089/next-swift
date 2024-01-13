@@ -4,7 +4,7 @@ import { RolesRepository } from '@app/dashboard/repositories/roles-repository'
 
 type Response = void
 
-export class CreateRoleUseCase {
+export class AddRoleUseCase {
   constructor(private rolesRepo: RolesRepository) {}
 
   async execute(name: string): Promise<Response> {

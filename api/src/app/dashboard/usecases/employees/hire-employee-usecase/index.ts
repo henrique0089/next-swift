@@ -1,8 +1,6 @@
 import { Employee } from '@app/dashboard/entities/employee'
 import { AppError } from '@app/dashboard/errors/app-error'
 import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
-import { hash } from 'bcryptjs'
-import { randomBytes } from 'node:crypto'
 
 interface Request {
   name: string
@@ -26,14 +24,11 @@ export class HireEmployeeUseCase {
       throw new AppError('Employee already exists!')
     }
 
-    const password = randomBytes(10).toString('hex')
-
-    const hashedPassword = await hash(password, 8)
+    // const password = randomBytes(10).toString('hex')
 
     const employee = new Employee({
       name,
       email,
-      password: hashedPassword,
       phone,
       avatar,
       roles: null,

@@ -8,12 +8,12 @@ const bodySchema = z.object({
   name: z.string(),
   email: z.string().email(),
   phone: z.coerce.number(),
-  // role: z.string(),
+  roleId: z.string(),
 })
 
 export class HireEmployeeController {
   async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
-    const { name, email, phone } = bodySchema.parse(req.body)
+    const { name, email, phone, roleId } = bodySchema.parse(req.body)
     const avatar = 'avatar.png'
 
     const employeesRepository = new PGEmployeesRepository()
@@ -25,7 +25,7 @@ export class HireEmployeeController {
       email,
       phone: Number(phone),
       avatar: avatar ?? null,
-      roleId: 'admin',
+      roleId,
     })
 
     return rep.status(201).send({ message: 'Employee hired!' })
