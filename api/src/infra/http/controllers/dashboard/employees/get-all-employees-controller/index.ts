@@ -1,5 +1,5 @@
-import { GetAllEmployeesUseCase } from '@app/usecases/employees/get-all-employees-usecase'
-import { PGEmployeesRepository } from '@infra/database/pg/repositories/pg-employees-repository'
+import { GetAllEmployeesUseCase } from '@app/dashboard/usecases/employees/get-all-employees-usecase'
+import { PGEmployeesRepository } from '@infra/database/pg/dashboard/repositories/pg-employees-repository'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 export class GetAllEmployeesController {

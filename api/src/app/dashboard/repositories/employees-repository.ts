@@ -1,4 +1,4 @@
-import { Employee } from '@app/entities/employee'
+import { Employee } from '@app/dashboard/entities/employee'
 
 export interface EmployeesRepository {
   findAll(): Promise<Employee[]>

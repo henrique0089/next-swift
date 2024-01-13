@@ -1,6 +1,6 @@
-import { Employee } from '@app/entities/employee'
-import { AppError } from '@app/errors/app-error'
-import { EmployeesRepository } from '@app/repositories/employees-repository'
+import { Employee } from '@app/dashboard/entities/employee'
+import { AppError } from '@app/dashboard/errors/app-error'
+import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
 import { hash } from 'bcryptjs'
 import { randomBytes } from 'node:crypto'
 

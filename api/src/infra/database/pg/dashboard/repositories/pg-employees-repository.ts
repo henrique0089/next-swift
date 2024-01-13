@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Employee } from '@app/entities/employee'
-import { EmployeesRepository } from '@app/repositories/employees-repository'
-import { client } from '../connection'
+import { Employee } from '@app/dashboard/entities/employee'
+import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
+import { randomUUID } from 'node:crypto'
+import { client } from '../../connection'
 
 interface EmployeeRecord {
   id: string
   name: string
   email: string
-  password: string
   phone: number
   avatar: string | null
   dismissedAt: Date | null
@@ -17,11 +17,8 @@ interface EmployeeRecord {
 
 export class PGEmployeesRepository implements EmployeesRepository {
   async findAll(): Promise<Employee[]> {
-    // await client.connect()
-
     const query = "SELECT * FROM employees"
     const result = await client.query<EmployeeRecord>(query)
-    // await client.end()
 
     const employees: Employee[] = []
 
@@ -29,7 +26,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
       const employee = new Employee({
         name: data.name,
         email: data.email,
-        password: data.password,
         phone: data.phone,
         avatar: data.avatar,
         roles: [],
@@ -45,11 +41,8 @@ export class PGEmployeesRepository implements EmployeesRepository {
   }
 
   async findById(id: string): Promise<Employee | null> {
-    // await client.connect()
-
     const query = "SELECT * FROM employees WHERE id = $1 LIMIT 1"
     const result = await client.query<EmployeeRecord>(query, [id])
-    // await client.end()
 
     if (result.rows.length === 0) {
       return null
@@ -60,7 +53,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
     const employee = new Employee({
       name: data.name,
       email: data.email,
-      password: data.password,
       phone: data.phone,
       avatar: data.avatar,
       roles: [],
@@ -85,7 +77,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
     const employee = new Employee({
       name: data.name,
       email: data.email,
-      password: data.password,
       phone: data.phone,
       avatar: data.avatar,
       roles: [],
@@ -98,14 +89,13 @@ export class PGEmployeesRepository implements EmployeesRepository {
   }
 
   async create(employee: Employee, roleId: string): Promise<void> {
-    const { id, name, email, password, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
+    const { id, name, email, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
 
-    const query = "INSERT INTO employees (id, name, email, password, phone, avatar, dismissedAt, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
+    const query = "INSERT INTO employees (id, name, email, phone, avatar, dismissedAt, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
     const values = [
       id,
       name,
       email,
-      password,
       phone,
       avatar,
       dismissedAt,
@@ -114,13 +104,30 @@ export class PGEmployeesRepository implements EmployeesRepository {
     ]
 
     await client.query(query, values)
+    await client.query("INSERT INTO employee_roles (id, employee_id, role_id) VALUES ($1, $2, $3)", [randomUUID(), id, roleId])
   }
 
-  save(employee: Employee): Promise<void> {
-    throw new Error('Method not implemented.')
+  async save(employee: Employee): Promise<void> {
+    const { id, name, email, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
+
+    const query = "UPDATE employees SET name = $1, email = $2, phone = $3, avatar = $4, dismissedAt = $5, createdAt = $6, updatedAt = $7 WHERE id = $8"
+    const values = [
+      name,
+      email,
+      phone,
+      avatar,
+      dismissedAt,
+      createdAt,
+      updatedAt,
+      id,
+    ]
+
+    await client.query(query, values)
   }
 
-  delete(employeeId: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  async delete(employeeId: string): Promise<void> {
+    const query = "DELETE FROM users WHERE id = $1"
+
+    await client.query(query, [employeeId])
   }
 }

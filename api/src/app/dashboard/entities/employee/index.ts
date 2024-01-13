@@ -4,7 +4,6 @@ import { randomUUID } from 'node:crypto'
 interface EmployeeProps {
   name: string
   email: string
-  password: string
   phone: number
   avatar: string | null
   roles: string[] | null
@@ -46,14 +45,6 @@ export class Employee {
 
   public set email(email: string) {
     this.props.email = email
-  }
-
-  public get password(): string {
-    return this.props.password
-  }
-
-  public set password(password: string) {
-    this.props.password = password
   }
 
   public get phone(): number {

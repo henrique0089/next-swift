@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
-import { HireEmployeeUseCase } from '@app/usecases/employees/hire-employee-usecase'
-import { PGEmployeesRepository } from '@infra/database/pg/repositories/pg-employees-repository'
+import { HireEmployeeUseCase } from '@app/dashboard/usecases/employees/hire-employee-usecase'
+import { PGEmployeesRepository } from '@infra/database/pg/dashboard/repositories/pg-employees-repository'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 const bodySchema = z.object({

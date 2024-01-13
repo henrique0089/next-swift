@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 
-import { GetAllEmployeesController } from '../controllers/employees/get-all-employees-controller'
-import { HireEmployeeController } from '../controllers/employees/hire-employee-controller'
+import { GetAllEmployeesController } from '@infra/http/controllers/dashboard/employees/get-all-employees-controller'
+import { HireEmployeeController } from '@infra/http/controllers/dashboard/employees/hire-employee-controller'
 
 const getAllEmployeesController = new GetAllEmployeesController()
 const hireEmployeeController = new HireEmployeeController()

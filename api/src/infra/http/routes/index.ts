@@ -1,8 +1,6 @@
 import { FastifyInstance } from 'fastify'
-import { categoriesRoutes } from './categories'
-import { employeesRoutes } from './employees'
+import { dashboardRoutes } from './dashboard'
 
 export async function appRoutes(app: FastifyInstance) {
-  app.register(employeesRoutes)
-  app.register(categoriesRoutes)
+  app.register(dashboardRoutes, { prefix: '/dashboard' })
 }

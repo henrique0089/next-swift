@@ -1,5 +1,5 @@
-import { Employee } from '@app/entities/employee'
-import { EmployeesRepository } from '@app/repositories/employees-repository'
+import { Employee } from '@app/dashboard/entities/employee'
+import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
 
 export class GetAllEmployeesUseCase {
   constructor(private employeesRepo: EmployeesRepository) {}
