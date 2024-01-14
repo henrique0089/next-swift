@@ -6,7 +6,8 @@ import { client } from '../../connection'
 
 interface EmployeeRecord {
   id: string
-  name: string
+  first_name: string
+  last_name: string
   email: string
   phone: number
   avatar: string | null
@@ -24,7 +25,8 @@ export class PGEmployeesRepository implements EmployeesRepository {
 
     for (const data of result.rows) {
       const employee = new Employee({
-        name: data.name,
+        firstName: data.first_name,
+        lastName: data.last_name,
         email: data.email,
         phone: data.phone,
         avatar: data.avatar,
@@ -51,7 +53,8 @@ export class PGEmployeesRepository implements EmployeesRepository {
     const data = result.rows[0]
 
     const employee = new Employee({
-      name: data.name,
+      firstName: data.first_name,
+      lastName: data.last_name,
       email: data.email,
       phone: data.phone,
       avatar: data.avatar,
@@ -75,7 +78,8 @@ export class PGEmployeesRepository implements EmployeesRepository {
     const data = result.rows[0]
 
     const employee = new Employee({
-      name: data.name,
+      firstName: data.first_name,
+      lastName: data.last_name,
       email: data.email,
       phone: data.phone,
       avatar: data.avatar,
@@ -89,12 +93,13 @@ export class PGEmployeesRepository implements EmployeesRepository {
   }
 
   async create(employee: Employee, roleId: string): Promise<void> {
-    const { id, name, email, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
+    const { id, firstName, lastName, email, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
 
-    const query = "INSERT INTO employees (id, name, email, phone, avatar, dismissed_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
+    const query = "INSERT INTO employees (id, first_name, last_name, email, phone, avatar, dismissed_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)"
     const values = [
       id,
-      name,
+      firstName,
+      lastName,
       email,
       phone,
       avatar,
@@ -108,11 +113,12 @@ export class PGEmployeesRepository implements EmployeesRepository {
   }
 
   async save(employee: Employee): Promise<void> {
-    const { id, name, email, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
+    const { id, firstName, lastName, email, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
 
-    const query = "UPDATE employees SET name = $1, email = $2, phone = $3, avatar = $4, dismissedAt = $5, createdAt = $6, updatedAt = $7 WHERE id = $8"
+    const query = "UPDATE employees SET first_name = $1, last_name = $2, email = $3, phone = $4, avatar = $5, dismissedAt = $6, createdAt = $7, updatedAt = $8 WHERE id = $9"
     const values = [
-      name,
+      firstName,
+      lastName,
       email,
       phone,
       avatar,

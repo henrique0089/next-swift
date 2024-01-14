@@ -3,7 +3,8 @@ import { AppError } from '@app/dashboard/errors/app-error'
 import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
 
 interface Request {
-  name: string
+  firstName: string
+  lastName: string
   email: string
   phone: number
   avatar: string | null
@@ -16,7 +17,7 @@ export class HireEmployeeUseCase {
   constructor(private employeesRepo: EmployeesRepository) {}
 
   async execute(data: Request): Promise<Response> {
-    const { name, email, phone, avatar, roleId } = data
+    const { firstName, lastName, email, phone, avatar, roleId } = data
 
     const employeeAlreadyExists = await this.employeesRepo.findByEmail(email)
 
@@ -27,7 +28,8 @@ export class HireEmployeeUseCase {
     // const password = randomBytes(10).toString('hex')
 
     const employee = new Employee({
-      name,
+      firstName,
+      lastName,
       email,
       phone,
       avatar,

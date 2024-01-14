@@ -3,7 +3,6 @@ import { randomUUID } from 'node:crypto'
 
 interface CategoryProps {
   name: string
-  productId: string | null
   createdAt: Date
 }
 
@@ -32,14 +31,6 @@ export class Category {
 
   public set name(name: string) {
     this.props.name = name
-  }
-
-  public get productId(): string | null {
-    return this.props.productId
-  }
-
-  public set productId(productId: string | null) {
-    this.props.productId = productId
   }
 
   public get createdAt(): Date {

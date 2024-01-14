@@ -2,7 +2,8 @@ import { Replace } from '@helpers/replace'
 import { randomUUID } from 'node:crypto'
 
 interface EmployeeProps {
-  name: string
+  firstName: string
+  lastName: string
   email: string
   phone: number
   avatar: string | null
@@ -31,12 +32,20 @@ export class Employee {
     return this._id
   }
 
-  public get name(): string {
-    return this.props.name
+  public get firstName(): string {
+    return this.props.firstName
   }
 
-  public set name(name: string) {
-    this.props.name = name
+  public set firstName(firstName: string) {
+    this.props.firstName = firstName
+  }
+
+  public get lastName(): string {
+    return this.props.lastName
+  }
+
+  public set lastName(lastName: string) {
+    this.props.lastName = lastName
   }
 
   public get email(): string {

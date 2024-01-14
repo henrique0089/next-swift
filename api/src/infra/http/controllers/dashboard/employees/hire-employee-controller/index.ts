@@ -5,7 +5,8 @@ import { PGEmployeesRepository } from '@infra/database/pg/dashboard/repositories
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 const bodySchema = z.object({
-  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   email: z.string().email(),
   phone: z.coerce.number(),
   roleId: z.string(),
@@ -13,7 +14,9 @@ const bodySchema = z.object({
 
 export class HireEmployeeController {
   async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
-    const { name, email, phone, roleId } = bodySchema.parse(req.body)
+    const { firstName, lastName, email, phone, roleId } = bodySchema.parse(
+      req.body,
+    )
     const avatar = 'avatar.png'
 
     const employeesRepository = new PGEmployeesRepository()
@@ -21,7 +24,8 @@ export class HireEmployeeController {
     const hireEmployeeUseCase = new HireEmployeeUseCase(employeesRepository)
 
     await hireEmployeeUseCase.execute({
-      name,
+      firstName,
+      lastName,
       email,
       phone: Number(phone),
       avatar: avatar ?? null,
