@@ -8,13 +8,14 @@ const bodySchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email(),
+  ddd: z.coerce.number(),
   phone: z.coerce.number(),
   roleId: z.string(),
 })
 
 export class HireEmployeeController {
   async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
-    const { firstName, lastName, email, phone, roleId } = bodySchema.parse(
+    const { firstName, lastName, email, ddd, phone, roleId } = bodySchema.parse(
       req.body,
     )
     const avatar = 'avatar.png'
@@ -27,6 +28,7 @@ export class HireEmployeeController {
       firstName,
       lastName,
       email,
+      ddd,
       phone: Number(phone),
       avatar: avatar ?? null,
       roleId,

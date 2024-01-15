@@ -6,6 +6,7 @@ interface Request {
   firstName: string
   lastName: string
   email: string
+  ddd: number
   phone: number
   avatar: string | null
   roleId: string
@@ -17,7 +18,7 @@ export class HireEmployeeUseCase {
   constructor(private employeesRepo: EmployeesRepository) {}
 
   async execute(data: Request): Promise<Response> {
-    const { firstName, lastName, email, phone, avatar, roleId } = data
+    const { firstName, lastName, email, ddd, phone, avatar, roleId } = data
 
     const employeeAlreadyExists = await this.employeesRepo.findByEmail(email)
 
@@ -31,9 +32,10 @@ export class HireEmployeeUseCase {
       firstName,
       lastName,
       email,
+      ddd,
       phone,
       avatar,
-      roles: null,
+      role: null,
     })
 
     await this.employeesRepo.create(employee, roleId)

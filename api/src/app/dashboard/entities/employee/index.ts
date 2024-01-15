@@ -1,13 +1,15 @@
 import { Replace } from '@helpers/replace'
 import { randomUUID } from 'node:crypto'
+import { Role } from '../role'
 
 interface EmployeeProps {
   firstName: string
   lastName: string
   email: string
+  ddd: number
   phone: number
   avatar: string | null
-  roles: string[] | null
+  role: Role | null
   createdAt: Date
   updatedAt?: Date | null
   dismissedAt?: Date | null
@@ -56,6 +58,14 @@ export class Employee {
     this.props.email = email
   }
 
+  public get ddd(): number {
+    return this.props.ddd
+  }
+
+  public set ddd(ddd: number) {
+    this.props.ddd = ddd
+  }
+
   public get phone(): number {
     return this.props.phone
   }
@@ -72,12 +82,12 @@ export class Employee {
     this.props.avatar = avatar
   }
 
-  public get roles(): string[] | null {
-    return this.props.roles
+  public get role(): Role | null {
+    return this.props.role
   }
 
-  public set roles(roles: string[] | null) {
-    this.props.roles = roles
+  public set role(role: Role | null) {
+    this.props.role = role
   }
 
   public get createdAt(): Date {

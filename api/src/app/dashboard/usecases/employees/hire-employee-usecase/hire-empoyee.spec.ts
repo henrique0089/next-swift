@@ -1,4 +1,5 @@
 import { Employee } from '@app/dashboard/entities/employee'
+import { Role } from '@app/dashboard/entities/role'
 import { InMemoryEmployeesRepository } from 'src/test/dashboard/repositories/in-memory-employees-repository'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { HireEmployeeUseCase } from '.'
@@ -39,7 +40,12 @@ describe('Hire Employee UseCase', () => {
       phone: 99999999,
       avatar: 'https://github.com/henrique998.png',
       updatedAt: null,
-      roles: null,
+      role: new Role(
+        {
+          name: 'fake-role',
+        },
+        'fake-id',
+      ),
     })
 
     await inMemoryEmployeesRepository.create(

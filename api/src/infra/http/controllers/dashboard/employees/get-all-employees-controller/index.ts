@@ -1,5 +1,6 @@
 import { GetAllEmployeesUseCase } from '@app/dashboard/usecases/employees/get-all-employees-usecase'
 import { PGEmployeesRepository } from '@infra/database/pg/dashboard/repositories/pg-employees-repository'
+import { EmployeeViewModel } from '@infra/http/view-models/employee-view-model'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 export class GetAllEmployeesController {
@@ -10,7 +11,8 @@ export class GetAllEmployeesController {
       employeesRepository,
     )
 
-    const employees = await getAllEmployeesUseCase.execute()
+    const employeesData = await getAllEmployeesUseCase.execute()
+    const employees = employeesData.map(EmployeeViewModel.toHttp)
 
     return rep.send({ employees })
   }
