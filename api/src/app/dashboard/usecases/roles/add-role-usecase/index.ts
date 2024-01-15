@@ -8,10 +8,6 @@ export class AddRoleUseCase {
   constructor(private rolesRepo: RolesRepository) {}
 
   async execute(name: string): Promise<Response> {
-    if (!name) {
-      throw new AppError('name is required!')
-    }
-
     const roleAlreadyExists = await this.rolesRepo.findByName(name)
 
     if (roleAlreadyExists) {
