@@ -133,7 +133,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
   }
 
   async save(employee: Employee): Promise<void> {
-    const { id, firstName, lastName, email, ddd, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
+    const { id, firstName, lastName, email, ddd, phone, avatar, dismissedAt, updatedAt } = employee
 
     const query = "UPDATE employees SET first_name = $1, last_name = $2, email = $3, ddd = $4, phone = $5, avatar = $6, dismissedAt = $7, updatedAt = $8 WHERE id = $9"
     const values = [

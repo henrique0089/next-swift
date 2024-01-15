@@ -24,7 +24,7 @@ export class HireEmployeeController {
 
     const hireEmployeeUseCase = new HireEmployeeUseCase(employeesRepository)
 
-    await hireEmployeeUseCase.execute({
+    const { password } = await hireEmployeeUseCase.execute({
       firstName,
       lastName,
       email,
@@ -34,6 +34,6 @@ export class HireEmployeeController {
       roleId,
     })
 
-    return rep.status(201).send({ message: 'Employee hired!' })
+    return rep.status(201).send({ password })
   }
 }

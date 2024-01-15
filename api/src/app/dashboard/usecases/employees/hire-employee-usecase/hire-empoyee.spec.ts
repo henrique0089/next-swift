@@ -24,13 +24,14 @@ describe('Hire Employee UseCase', () => {
       roleId: 'role_id',
     }
 
-    await hireEmployeeUseCase.execute(requestData)
+    const { password } = await hireEmployeeUseCase.execute(requestData)
 
     const employee = await inMemoryEmployeesRepository.findByEmail(
       'john.doe@example.com',
     )
 
     expect(inMemoryEmployeesRepository.employees[0].id).toEqual(employee?.id)
+    expect(password).toBeDefined()
   })
 
   it('should not able to hire an employee if already has been hired', async () => {

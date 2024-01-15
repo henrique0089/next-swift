@@ -10,6 +10,24 @@ interface RoleRecord {
 }
 
 export class PGRolesRepository implements RolesRepository {
+  async findAll(): Promise<Role[]> {
+    const query = "SELECT * FROM roles"
+    const { rows } = await client.query<RoleRecord>(query)
+
+    const roles: Role[] = []
+
+    for (const data of rows) {
+      const role = new Role({
+        name: data.name,
+        createdAt: data.created_at,
+      }, data.id)
+
+      roles.push(role)
+    }
+
+    return roles
+  }
+
   async findByName(name: string): Promise<Role | null> {
     const query = "SELECT * FROM roles WHERE name = $1 LIMIT 1"
     const { rows } = await client.query<RoleRecord>(

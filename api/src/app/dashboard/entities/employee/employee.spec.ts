@@ -8,10 +8,11 @@ beforeAll(() => {
     firstName: 'Jhon',
     lastName: 'doe',
     email: 'jhondoe@email.com',
+    ddd: 99,
     phone: 99999999,
     avatar: 'https://github.com/henrique998.png',
     updatedAt: null,
-    roles: null,
+    role: null,
   })
 })
 

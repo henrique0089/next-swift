@@ -19,7 +19,7 @@ describe('Get All Roles UseCase', () => {
 
     await inMemoryRolesRepository.create(role)
 
-    const roles = await getAllRolesUseCase.execute()
+    const { roles } = await getAllRolesUseCase.execute()
 
     expect(roles.length).toEqual(1)
     expect(roles[0].id).toEqual(role.id)

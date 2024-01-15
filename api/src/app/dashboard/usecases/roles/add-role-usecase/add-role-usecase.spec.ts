@@ -12,7 +12,7 @@ beforeAll(() => {
 
 describe('Add Role UseCase', () => {
   it('should be to add a new role', async () => {
-    await addRoleUseCase.execute('viewer')
+    await addRoleUseCase.execute({ name: 'viewer' })
 
     const role = await inMemoryRolesRepository.findByName('viewer')
 
@@ -21,9 +21,9 @@ describe('Add Role UseCase', () => {
   })
 
   it('should not be to add an role if already exists', async () => {
-    await addRoleUseCase.execute('admin')
+    await addRoleUseCase.execute({ name: 'admin' })
 
-    await expect(addRoleUseCase.execute('admin')).rejects.toThrow(
+    await expect(addRoleUseCase.execute({ name: 'admin' })).rejects.toThrow(
       'role already exists!',
     )
   })

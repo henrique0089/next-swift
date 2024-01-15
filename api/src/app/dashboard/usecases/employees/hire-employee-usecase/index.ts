@@ -1,6 +1,7 @@
 import { Employee } from '@app/dashboard/entities/employee'
 import { AppError } from '@app/dashboard/errors/app-error'
 import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
+import { randomBytes } from 'crypto'
 
 interface Request {
   firstName: string
@@ -12,7 +13,9 @@ interface Request {
   roleId: string
 }
 
-type Response = void
+interface Response {
+  password: string
+}
 
 export class HireEmployeeUseCase {
   constructor(private employeesRepo: EmployeesRepository) {}
@@ -26,7 +29,7 @@ export class HireEmployeeUseCase {
       throw new AppError('Employee already exists!')
     }
 
-    // const password = randomBytes(10).toString('hex')
+    const password = randomBytes(10).toString('hex')
 
     const employee = new Employee({
       firstName,
@@ -39,5 +42,9 @@ export class HireEmployeeUseCase {
     })
 
     await this.employeesRepo.create(employee, roleId)
+
+    return {
+      password,
+    }
   }
 }

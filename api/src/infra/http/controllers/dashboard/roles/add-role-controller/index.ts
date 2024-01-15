@@ -14,7 +14,7 @@ export class AddRoleController {
     const rolesRepository = new PGRolesRepository()
     const addRoleUseCase = new AddRoleUseCase(rolesRepository)
 
-    await addRoleUseCase.execute(name)
+    await addRoleUseCase.execute({ name })
 
     return rep.status(201).send('role added successfuly!')
   }
