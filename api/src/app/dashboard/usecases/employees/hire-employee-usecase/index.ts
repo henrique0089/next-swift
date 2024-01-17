@@ -1,4 +1,4 @@
-import { Employee } from '@app/dashboard/entities/employee'
+import { Employee, Gender } from '@app/dashboard/entities/employee'
 import { AppError } from '@app/dashboard/errors/app-error'
 import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
 import { randomBytes } from 'crypto'
@@ -10,6 +10,7 @@ interface Request {
   ddd: number
   phone: number
   avatar: string | null
+  gender: Gender
   roleId: string
 }
 
@@ -21,7 +22,8 @@ export class HireEmployeeUseCase {
   constructor(private employeesRepo: EmployeesRepository) {}
 
   async execute(data: Request): Promise<Response> {
-    const { firstName, lastName, email, ddd, phone, avatar, roleId } = data
+    const { firstName, lastName, email, ddd, phone, avatar, gender, roleId } =
+      data
 
     const employeeAlreadyExists = await this.employeesRepo.findByEmail(email)
 
@@ -38,6 +40,7 @@ export class HireEmployeeUseCase {
       ddd,
       phone,
       avatar,
+      gender,
       role: null,
     })
 

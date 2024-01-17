@@ -19,6 +19,7 @@ describe('Get Profile Info UseCase', () => {
       email: 'jhondoe@email.com',
       ddd: 99,
       phone: 99999999,
+      gender: 'M',
       avatar: 'avatar.png',
       updatedAt: null,
       role: null,

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Employee } from '@app/dashboard/entities/employee'
+import { Employee, Gender } from '@app/dashboard/entities/employee'
 import { Role } from '@app/dashboard/entities/role'
 import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
 import { client } from '../../connection'
@@ -12,6 +12,7 @@ interface EmployeeRecord {
   ddd: number
   phone: number
   avatar: string | null
+  gender: Gender
   dismissedAt: Date | null
   createdAt: Date
   updatedAt: Date | null
@@ -23,7 +24,7 @@ interface EmployeeRecord {
 export class PGEmployeesRepository implements EmployeesRepository {
   async findAll(): Promise<Employee[]> {
     const query = `
-      SELECT e.id, e.first_name, e.last_name, e.email, e.ddd, e.phone, e.avatar, e.dismissed_at, e.created_at, e.updated_at, r.id AS role_id, r.name AS role_name, r.created_at AS role_created_at 
+      SELECT e.id, e.first_name, e.last_name, e.email, e.ddd, e.phone, e.avatar, e.gender, e.dismissed_at, e.created_at, e.updated_at, r.id AS role_id, r.name AS role_name, r.created_at AS role_created_at 
       FROM employees e
       JOIN roles r ON e.role_id = r.id
     `
@@ -39,6 +40,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
         ddd: data.ddd,
         phone: data.phone,
         avatar: data.avatar,
+        gender: data.gender,
         role: new Role({
           name: data.role_name,
           createdAt: data.role_created_at
@@ -71,10 +73,11 @@ export class PGEmployeesRepository implements EmployeesRepository {
       ddd: data.ddd,
       phone: data.phone,
       avatar: data.avatar,
+      gender: data.gender,
       role: new Role({
-        name: 'admin',
-        createdAt: new Date()
-      }, 'sdsdjh'),
+        name: data.role_name,
+        createdAt: data.role_created_at,
+      }, data.role_id),
       dismissedAt: data.dismissedAt,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
@@ -100,9 +103,11 @@ export class PGEmployeesRepository implements EmployeesRepository {
       ddd: data.ddd,
       phone: data.phone,
       avatar: data.avatar,
+      gender: data.gender,
       role: new Role({
-        name: 'admin',
-      }, 'sdsdjh'),
+        name: data.role_name,
+        createdAt: data.role_created_at,
+      }, data.role_id),
       dismissedAt: data.dismissedAt,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
@@ -112,9 +117,9 @@ export class PGEmployeesRepository implements EmployeesRepository {
   }
 
   async create(employee: Employee, roleId: string): Promise<void> {
-    const { id, firstName, lastName, email, ddd, phone, avatar, dismissedAt, createdAt, updatedAt } = employee
+    const { id, firstName, lastName, email, ddd, phone, avatar, gender, dismissedAt, createdAt, updatedAt } = employee
 
-    const query = "INSERT INTO employees (id, first_name, last_name, email, ddd, phone, avatar, role_id, dismissed_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"
+    const query = "INSERT INTO employees (id, first_name, last_name, email, ddd, phone, avatar, gender, role_id, dismissed_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
     const values = [
       id,
       firstName,
@@ -123,6 +128,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       ddd,
       phone,
       avatar,
+      gender,
       roleId,
       dismissedAt,
       createdAt,

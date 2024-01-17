@@ -10,6 +10,7 @@ export class EmployeeViewModel {
       ddd: employee.ddd,
       phone: employee.phone,
       avatar: employee.avatar,
+      gender: employee.gender,
       role: {
         id: employee.role?.id,
         name: employee.role?.name,

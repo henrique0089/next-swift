@@ -21,6 +21,7 @@ describe('Get All Employees UseCase', () => {
       email: 'jhondoe@email.com',
       ddd: 99,
       phone: 99999999,
+      gender: 'M',
       avatar: 'https://github.com/henrique998.png',
       updatedAt: null,
       role: null,

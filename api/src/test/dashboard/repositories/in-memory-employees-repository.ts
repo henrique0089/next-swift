@@ -37,7 +37,7 @@ export class InMemoryEmployeesRepository implements EmployeesRepository {
       (data) => data.id === employee.id,
     )
 
-    if (employeeIndex !== -1) {
+    if (employeeIndex > -1) {
       this.employees[employeeIndex] = employee
     }
   }
@@ -47,6 +47,8 @@ export class InMemoryEmployeesRepository implements EmployeesRepository {
       (employee) => employee.id === employeeId,
     )
 
-    this.employees.splice(employeeIndex, 1)
+    if (employeeIndex > -1) {
+      this.employees.splice(employeeIndex, 1)
+    }
   }
 }
