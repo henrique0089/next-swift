@@ -8,8 +8,7 @@ interface CustomerProps {
   cpf: string
   ddd: number
   phone: number
-  addresses: Address[]
-  deletedAt?: Date | null
+  address: Address
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -73,16 +72,12 @@ export class Customer {
     this.props.phone = phone
   }
 
-  public get addresses(): Address[] {
-    return this.props.addresses
+  public get address(): Address {
+    return this.props.address
   }
 
-  public set addresses(addresses: Address[]) {
-    this.props.addresses = addresses
-  }
-
-  public get deletedAt(): Date | null | undefined {
-    return this.props.deletedAt
+  public set address(address: Address) {
+    this.props.address = address
   }
 
   public get createdAt(): Date {
@@ -95,9 +90,5 @@ export class Customer {
 
   public update() {
     this.props.updatedAt = new Date()
-  }
-
-  public remove() {
-    this.props.deletedAt = new Date()
   }
 }

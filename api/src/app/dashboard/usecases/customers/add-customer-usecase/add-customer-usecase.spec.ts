@@ -20,15 +20,13 @@ describe('Add Customer Repository', () => {
       cpf: '000.000.000-00',
       ddd: 99,
       phone: 999999999,
-      addresses: [
-        {
-          city: 'são paulo',
-          street: 'são paulo',
-          state: 'SP',
-          number: 34,
-          postalCode: '00.000-00',
-        },
-      ],
+      address: {
+        city: 'são paulo',
+        street: 'são paulo',
+        state: 'SP',
+        number: 34,
+        postalCode: '00.000-00',
+      },
     })
 
     expect(inMemoryCustomersRepository.customers).toHaveLength(1)
@@ -42,21 +40,19 @@ describe('Add Customer Repository', () => {
   })
 
   it('should not be able to add an customer that already exists', async () => {
-    const address = new Address({
-      city: 'são paulo',
-      street: 'são paulo',
-      state: 'SP',
-      number: 34,
-      postalCode: '00.000-00',
-    })
-
     const customer = new Customer({
       name: 'henrique',
       email: 'henrique@gmail.com',
       cpf: '000.000.000-00',
       ddd: 99,
       phone: 999999999,
-      addresses: [address],
+      address: new Address({
+        city: 'são paulo',
+        street: 'são paulo',
+        state: 'SP',
+        number: 34,
+        postalCode: '00.000-00',
+      }),
     })
 
     await inMemoryCustomersRepository.create(customer)
@@ -68,15 +64,13 @@ describe('Add Customer Repository', () => {
         cpf: '111.111.111-11',
         ddd: 99,
         phone: 888888888,
-        addresses: [
-          {
-            city: 'são paulo',
-            street: 'são paulo',
-            state: 'SP',
-            number: 35,
-            postalCode: '11.111-11',
-          },
-        ],
+        address: {
+          city: 'são paulo',
+          street: 'são paulo',
+          state: 'SP',
+          number: 35,
+          postalCode: '11.111-11',
+        },
       }),
     ).rejects.toThrow('Customer Already Exists!')
   })

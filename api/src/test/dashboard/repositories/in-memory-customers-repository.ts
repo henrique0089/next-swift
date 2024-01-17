@@ -51,4 +51,14 @@ export class InMemoryCustomersRepository implements CustomersRepository {
       this.customers[customerIndex] = customer
     }
   }
+
+  async delete(customerId: string): Promise<void> {
+    const customerIndex = this.customers.findIndex(
+      (customer) => customer.id === customerId,
+    )
+
+    if (customerIndex > -1) {
+      this.customers.splice(customerIndex, 1)
+    }
+  }
 }

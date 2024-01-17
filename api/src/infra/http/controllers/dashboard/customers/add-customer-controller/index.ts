@@ -9,23 +9,19 @@ const bodySchema = z.object({
   cpf: z.string(),
   ddd: z.number(),
   phone: z.number(),
-  addresses: z
-    .object({
-      street: z.string(),
-      number: z.number(),
-      complement: z.string().optional(),
-      city: z.string(),
-      state: z.string(),
-      postalCode: z.string(),
-    })
-    .array(),
+  address: z.object({
+    street: z.string(),
+    number: z.number(),
+    complement: z.string().optional(),
+    city: z.string(),
+    state: z.string(),
+    postalCode: z.string(),
+  }),
 })
 
 export class AddCustomerController {
   async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
-    const { name, email, cpf, ddd, phone, addresses } = bodySchema.parse(
-      req.body,
-    )
+    const { name, email, cpf, ddd, phone, address } = bodySchema.parse(req.body)
 
     const customersRepo = new PGCustomersRepository()
     const addCustomerUseCase = new AddCustomerUseCase(customersRepo)
@@ -36,7 +32,7 @@ export class AddCustomerController {
       cpf,
       ddd,
       phone,
-      addresses,
+      address,
     })
 
     return rep.send()

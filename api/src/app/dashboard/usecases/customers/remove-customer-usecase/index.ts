@@ -18,8 +18,6 @@ export class RemoveCustomerUseCase {
       throw new AppError('Customer not found!')
     }
 
-    customer.remove()
-
-    await this.customersRepo.save(customer)
+    await this.customersRepo.delete(customerId)
   }
 }

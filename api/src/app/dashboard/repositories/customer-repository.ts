@@ -11,4 +11,5 @@ export interface CustomersRepository {
   paginate(params: PaginateParams): Promise<Customer[]>
   create(customer: Customer): Promise<void>
   save(customer: Customer): Promise<void>
+  delete(customerId: string): Promise<void>
 }
