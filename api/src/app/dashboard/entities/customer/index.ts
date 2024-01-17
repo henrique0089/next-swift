@@ -9,6 +9,7 @@ interface CustomerProps {
   ddd: number
   phone: number
   addresses: Address[]
+  deletedAt?: Date | null
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -80,6 +81,10 @@ export class Customer {
     this.props.addresses = addresses
   }
 
+  public get deletedAt(): Date | null | undefined {
+    return this.props.deletedAt
+  }
+
   public get createdAt(): Date {
     return this.props.createdAt
   }
@@ -90,5 +95,9 @@ export class Customer {
 
   public update() {
     this.props.updatedAt = new Date()
+  }
+
+  public remove() {
+    this.props.deletedAt = new Date()
   }
 }
