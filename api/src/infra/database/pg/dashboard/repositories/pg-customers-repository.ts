@@ -29,10 +29,10 @@ interface CustomerRecord {
 export class PGCustomersRepository implements CustomersRepository {
   async findById(customerId: string): Promise<Customer | null> {
     const query = 
-      `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id AS address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
-        FROM customers c
-        JOIN addresses a ON c.address_id = a.id
-        WHERE id = $1 LIMIT 1
+      `SELECT customers.id, customers.name, customers.email, customers.document, customers.ddd, customers.phone, customers.created_at, customers.updated_at, a.id AS address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
+        FROM customers
+        JOIN addresses a ON customers.address_id = a.id
+        WHERE customers.id = $1 LIMIT 1
       `
     const { rows } = await client.query<CustomerRecord>(query, [customerId])
 
@@ -59,7 +59,7 @@ export class PGCustomersRepository implements CustomersRepository {
       }, data.address_id),
       createdAt: data.created_at,
       updatedAt: data.updated_at,
-    })
+    }, data.id)
 
     return customer
   }
@@ -96,7 +96,7 @@ export class PGCustomersRepository implements CustomersRepository {
       }, data.address_id),
       createdAt: data.created_at,
       updatedAt: data.updated_at,
-    })
+    }, data.id)
 
     return customer
   }
@@ -243,7 +243,7 @@ export class PGCustomersRepository implements CustomersRepository {
     const { id, name, email, cpf, ddd, phone, updatedAt } = customer
 
     const query = 
-      `UPDATE customers 
+      `UPDATE customers
       SET name = $1, email = $2, document = $3, ddd = $4, phone = $5, updated_at = $6
       WHERE id = $7
       `
