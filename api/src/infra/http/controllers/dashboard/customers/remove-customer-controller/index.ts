@@ -11,7 +11,6 @@ export class RemoveCustomerController {
   async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
     const { customerId } = paramsSchema.parse(req.params)
 
-    console.log('IP', req.ip)
     const customersRepo = new PGCustomersRepository()
     const removeCustomerUseCase = new RemoveCustomerUseCase(customersRepo)
 
