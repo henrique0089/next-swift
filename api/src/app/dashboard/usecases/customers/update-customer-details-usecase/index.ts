@@ -28,8 +28,6 @@ export class UpdateCustomerDetailsUseCase {
       throw new AppError('Customer not found!')
     }
 
-    console.log(customerId)
-
     customer.name = data.name ?? customer.name
     customer.email = data.email ?? customer.email
     customer.ddd = data.ddd ?? customer.ddd
@@ -43,8 +41,6 @@ export class UpdateCustomerDetailsUseCase {
       complement: data.complement ?? customer.address.complement,
     })
     customer.update()
-
-    console.log(customer)
 
     await this.customersRepo.save(customer)
   }

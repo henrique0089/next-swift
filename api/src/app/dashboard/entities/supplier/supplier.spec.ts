@@ -7,17 +7,19 @@ describe('Supplier Entity', () => {
     const supplier = new Supplier({
       name: 'jhon doe',
       email: 'jhondoe@gmail.com',
-      cpf: '000.000.000-00',
+      cnpj: '000.000.000-00',
       ddd: 88,
       phone: 999999999,
-      address: new Address({
-        street: 'street',
-        number: 31,
-        complement: 'complement',
-        city: 'são paulo',
-        state: 'SP',
-        postalCode: '85.300-000',
-      }),
+      addresses: [
+        new Address({
+          street: 'street',
+          number: 31,
+          complement: 'complement',
+          city: 'são paulo',
+          state: 'SP',
+          postalCode: '85.300-000',
+        }),
+      ],
       updatedAt: null,
     })
 
@@ -25,7 +27,7 @@ describe('Supplier Entity', () => {
     expect(supplier.id).toBeDefined()
     expect(supplier.name).toBe('jhon doe')
     expect(supplier.email).toBe('jhondoe@gmail.com')
-    expect(supplier.cpf).toBe('000.000.000-00')
+    expect(supplier.cnpj).toBe('000.000.000-00')
     expect(supplier.ddd).toBe(88)
     expect(supplier.phone).toBe(999999999)
   })

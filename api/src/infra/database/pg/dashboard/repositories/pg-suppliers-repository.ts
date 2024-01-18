@@ -56,7 +56,7 @@ export class PGSuppliersRepository implements SuppliersRepository {
     const supplier = new Supplier({
       name: data.name,
       email: data.email,
-      cpf: data.document,
+      cnpj: data.document,
       ddd: data.ddd,
       phone: data.phone,
       addresses: data.addresses.map((address) => {
@@ -108,7 +108,7 @@ export class PGSuppliersRepository implements SuppliersRepository {
     const supplier = new Supplier({
       name: data.name,
       email: data.email,
-      cpf: data.document,
+      cnpj: data.document,
       ddd: data.ddd,
       phone: data.phone,
       addresses: data.addresses.map((address) => {
@@ -198,7 +198,7 @@ export class PGSuppliersRepository implements SuppliersRepository {
       const supplier = new Supplier({
         name: data.name,
         email: data.email,
-        cpf: data.document,
+        cnpj: data.document,
         ddd: data.ddd,
         phone: data.phone,
         addresses: data.addresses.map((address) => {
@@ -223,7 +223,7 @@ export class PGSuppliersRepository implements SuppliersRepository {
   }
 
   async create(supplier: Supplier): Promise<void> {
-    const { id, name, email, cpf, ddd, phone, createdAt, updatedAt } = supplier
+    const { id, name, email, cnpj, ddd, phone, createdAt, updatedAt } = supplier
 
     const supplierQuery = 
       `INSERT INTO suppliers (id, name, email, document, ddd, phone, created_at, updated_at)
@@ -238,13 +238,13 @@ export class PGSuppliersRepository implements SuppliersRepository {
     const addrsVals = supplier.addresses.flatMap((addr) => [addr.id, addr.street, addr.number, addr.complement, addr.city, addr.state, addr.postalCode, supplier.id, addr.createdAt])  
  
     await Promise.all([
-      client.query(supplierQuery, [id, name, email, cpf, ddd, phone, createdAt, updatedAt]),
+      client.query(supplierQuery, [id, name, email, cnpj, ddd, phone, createdAt, updatedAt]),
       client.query(addrsQuery, addrsVals)
     ])
   }
 
   async save(supplier: Supplier): Promise<void> {
-    const { id, name, email, cpf, ddd, phone, updatedAt } = supplier
+    const { id, name, email, cnpj, ddd, phone, updatedAt } = supplier
 
     const query = 
       `UPDATE suppliers
@@ -252,7 +252,7 @@ export class PGSuppliersRepository implements SuppliersRepository {
       WHERE id = $7
       `
 
-    await client.query(query, [name, email, cpf, ddd, phone, updatedAt, id])
+    await client.query(query, [name, email, cnpj, ddd, phone, updatedAt, id])
   }
 
   async delete(supplierId: string): Promise<void> {
