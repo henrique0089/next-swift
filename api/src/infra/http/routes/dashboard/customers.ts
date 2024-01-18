@@ -12,7 +12,7 @@ const updateCustomerDetailsController = new UpdateCustomerDetailsController()
 export async function customersRoutes(app: FastifyInstance) {
   app.get('/customers', getPaginatedCustomersController.handle)
   app.post('/customers', addCustomerController.handle)
-  app.patch('/customers/:customerId/remove', removeCustomerController.handle)
+  app.delete('/customers/:customerId/remove', removeCustomerController.handle)
   app.put(
     '/customers/:customerId/update',
     updateCustomerDetailsController.handle,
