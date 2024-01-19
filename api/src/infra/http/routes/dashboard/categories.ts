@@ -1,7 +1,8 @@
+import { AddCategoryController } from '@infra/http/controllers/dashboard/categories/add-category-controller'
 import { FastifyInstance } from 'fastify'
 
+const addCategoryController = new AddCategoryController()
+
 export async function categoriesRoutes(app: FastifyInstance) {
-  app.get('/categories', async (req, rep) => {
-    return rep.send('Hello')
-  })
+  app.post('/categories', addCategoryController.handle)
 }
