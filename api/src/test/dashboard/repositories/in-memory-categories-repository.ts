@@ -47,6 +47,8 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
       (category) => category.id === categoryId,
     )
 
-    this.categories.splice(categoryIndex, 1)
+    if (categoryIndex > -1) {
+      this.categories.splice(categoryIndex, 1)
+    }
   }
 }
