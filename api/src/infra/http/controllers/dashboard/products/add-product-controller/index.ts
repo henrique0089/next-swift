@@ -49,6 +49,6 @@ export class AddProductController {
       images,
     })
 
-    return rep.send()
+    return rep.status(201).send()
   }
 }

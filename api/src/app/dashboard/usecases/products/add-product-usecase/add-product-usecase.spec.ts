@@ -1,17 +1,34 @@
+import { Category } from '@app/dashboard/entities/category'
+import { InMemoryCategoriesRepository } from 'src/test/dashboard/repositories/in-memory-categories-repository'
 import { InMemoryProductsRepository } from 'src/test/dashboard/repositories/in-memory-products-repository'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { AddProductUseCase } from '.'
 
 let inMemoryProductsRepo: InMemoryProductsRepository
+let inMemoryCategoriesRepo: InMemoryCategoriesRepository
 let addProductUseCase: AddProductUseCase
 
 beforeAll(() => {
   inMemoryProductsRepo = new InMemoryProductsRepository()
-  addProductUseCase = new AddProductUseCase(inMemoryProductsRepo)
+  inMemoryCategoriesRepo = new InMemoryCategoriesRepository()
+  addProductUseCase = new AddProductUseCase(
+    inMemoryProductsRepo,
+    inMemoryCategoriesRepo,
+  )
 })
 
 describe('Add Product UseCase', () => {
   it('should be able to add a new product', async () => {
+    const shoesCategory = new Category({
+      name: 'shoes',
+    })
+    const pantsCategory = new Category({
+      name: 'pants',
+    })
+
+    await inMemoryCategoriesRepo.create(shoesCategory)
+    await inMemoryCategoriesRepo.create(pantsCategory)
+
     const requestData = {
       name: 'Black shoes',
       description: 'Black shoes description',
@@ -20,7 +37,7 @@ describe('Add Product UseCase', () => {
       price: 7990,
       quantity: 23,
       weight: 258,
-      categories: ['asasjahsh', 'asasjhajsh'],
+      categories: [shoesCategory.id, pantsCategory.id],
       images: ['image-01.png', 'image-02.png', 'image-03.png'],
     }
 

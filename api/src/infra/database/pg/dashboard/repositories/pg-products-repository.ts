@@ -34,25 +34,25 @@ interface ProductRecord {
 
 export class PGProductsRepository implements ProductsRepository {
   async findById(productId: string): Promise<Product | null> {
-    const query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+    const query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
         ARRAY_AGG(
           JSON_BUILD_OBJECT(
             'id', c.id,
             'name', c.name,
             'created_at', c.created_at
           )
-        ) AS categories
+        ) AS categories,
         ARRAY_AGG(
           JSON_BUILD_OBJECT(
             'id', pi.id,
-            'url', pi.name,
+            'url', pi.url,
             'created_at', pi.created_at
           )
         ) AS images
         FROM products p
-        JOIN products_categories pc ON p.id = pc.product_id
-        JOIN categories c ON c.id = pc.category_id
-        JOIN product_images pi ON c.id = pi.product_id
+        LEFT JOIN products_categories pc ON p.id = pc.product_id
+        LEFT JOIN categories c ON c.id = pc.category_id
+        LEFT JOIN product_images pi ON p.id = pi.product_id
         WHERE p.id = $1
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
         ORDER BY p.created_at
@@ -66,33 +66,39 @@ export class PGProductsRepository implements ProductsRepository {
 
     const data = rows[0]
 
+    const productCategories = data.categories.map((category) => {
+      return new Category(
+        {
+          name: category.name,
+          createdAt: category.created_at,
+        },
+        category.id,
+      )
+    }).filter(c => c.name !== null)
+
+    const productImages = data.images.map((img) => {
+      return new Image(
+        {
+          url: img.url,
+          createdAt: img.created_at,
+        },
+        img.id,
+      )
+    }).filter(i => i.url !== null)
+
+    console.log({ productCategories: productCategories.map(p => p.name), productImages: productImages.map(i => i.url) })
+
     const product = new Product(
       {
         name: data.name,
-        description: 't-shirt description',
+        description: data.description,
         width: data.width,
         height: data.height,
         weight: data.weight,
         price: data.price,
         quantity: data.quantity,
-        categories: data.categories.map((category) => {
-          return new Category(
-            {
-              name: category.name,
-              createdAt: category.created_at,
-            },
-            category.id,
-          )
-        }),
-        images: data.images.map((img) => {
-          return new Image(
-            {
-              url: img.url,
-              createdAt: img.created_at,
-            },
-            img.id,
-          )
-        }),
+        categories: productCategories,
+        images: productImages,
         updatedAt: data.updated_at,
         removedAt: data.removed_at,
       },
@@ -135,7 +141,6 @@ export class PGProductsRepository implements ProductsRepository {
     const categoriesValuesPlaceholder = categories.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(', ');
     const productCategoriesQuery = `INSERT INTO products_categories(product_id, category_id) VALUES ${categoriesValuesPlaceholder};`
     const categoriesVals = categories.flatMap((category) => [productId, category.id])
-    console.log({ categoriesVals })
 
     await client.query(productCategoriesQuery, categoriesVals)
   }
@@ -152,7 +157,7 @@ export class PGProductsRepository implements ProductsRepository {
     const { images, categories } = product
 
     const productsQuery = 
-      `UPDATE suppliers
+      `UPDATE products
       SET name = $1, description = $2, width = $3, height = $4, weight = $5, price = $6, quantity = $7, updated_at = $8
       WHERE id = $9
       `
@@ -170,8 +175,8 @@ export class PGProductsRepository implements ProductsRepository {
 
     await client.query(productsQuery, productsVals)
 
-    const deleteImagesQuery = "DELETE product_images WHERE product_id = $1"
-    const deleteCategoriesQuery = "DELETE products_categories WHERE product_id = $1"
+    const deleteImagesQuery = "DELETE FROM product_images WHERE product_id = $1"
+    const deleteCategoriesQuery = "DELETE FROM products_categories WHERE product_id = $1"
 
     if (categories.length > 0) {
       await client.query(deleteCategoriesQuery, [product.id])
@@ -199,7 +204,7 @@ export class PGProductsRepository implements ProductsRepository {
       ARRAY_AGG(
         JSON_BUILD_OBJECT(
           'id', pi.id,
-          'url', pi.name,
+          'url', pi.url,
           'created_at', pi.created_at
         )
       ) AS images
