@@ -3,13 +3,13 @@ import { ProductsRepository } from '@app/dashboard/repositories/products-reposit
 
 interface Request {
   productId: string
-  name: string
-  description: string
-  width: number
-  height: number
-  quantity: number
-  price: number
-  weight: number
+  name?: string
+  description?: string
+  width?: number
+  height?: number
+  quantity?: number
+  price?: number
+  weight?: number
 }
 
 type Response = void
