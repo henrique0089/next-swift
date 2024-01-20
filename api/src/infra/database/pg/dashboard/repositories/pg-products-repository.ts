@@ -158,8 +158,8 @@ export class PGProductsRepository implements ProductsRepository {
 
     const productsQuery = 
       `UPDATE products
-      SET name = $1, description = $2, width = $3, height = $4, weight = $5, price = $6, quantity = $7, updated_at = $8
-      WHERE id = $9
+      SET name = $1, description = $2, width = $3, height = $4, weight = $5, price = $6, quantity = $7, removed_at = $8, updated_at = $9
+      WHERE id = $10
       `
     const productsVals = [
       product.name, 
@@ -169,6 +169,7 @@ export class PGProductsRepository implements ProductsRepository {
       product.weight, 
       product.price, 
       product.quantity, 
+      product.removedAt,
       product.updatedAt,
       product.id,
     ]
