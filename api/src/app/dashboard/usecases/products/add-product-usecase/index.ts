@@ -1,6 +1,6 @@
-import { Category } from '@app/dashboard/entities/category'
 import { Product } from '@app/dashboard/entities/product'
 import { Image } from '@app/dashboard/entities/product/image'
+import { CategoriesRepository } from '@app/dashboard/repositories/categories-repository'
 // import { IBarCodeProvider } from '@app/providers/IBarCodeProvider'
 // import { IStorageProvider } from '@app/providers/IStorageProvider'
 import { ProductsRepository } from '@app/dashboard/repositories/products-repository'
@@ -22,6 +22,7 @@ type Response = void
 export class AddProductUseCase {
   constructor(
     private productsRepo: ProductsRepository,
+    private categoriesRepo: CategoriesRepository,
     // private storageProvider: IStorageProvider,
     // private barCodeProvider: IBarCodeProvider,
   ) {}
@@ -39,9 +40,8 @@ export class AddProductUseCase {
       images,
     } = data
 
-    const productCategories = categories.map(
-      (category) => new Category({ name: category }),
-    )
+    const productCategories =
+      await this.categoriesRepo.findManyByIds(categories)
     const productImages = images.map((image) => new Image({ url: image }))
 
     const product = new Product({

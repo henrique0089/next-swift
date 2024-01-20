@@ -71,10 +71,10 @@ export class PGCategoriesRepository implements CategoriesRepository {
   }
 
   async findManyByIds(categoriesIds: string[]): Promise<Category[]> {
-    const query = "SELECT * FROM categories WHERE id = ANY($1)"
+    const query = "SELECT * FROM categories WHERE id IN ($1)"
     const { rows } = await client.query<CategoryRecord>(
       query,
-      [categoriesIds],
+      categoriesIds,
     )
 
     const categories: Category[] = []

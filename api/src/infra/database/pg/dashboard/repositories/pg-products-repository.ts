@@ -120,26 +120,33 @@ export class PGProductsRepository implements ProductsRepository {
       product.updatedAt,
     ]
 
-    const categoriesValuesPlaceholder = categories.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2}`).join(', ');
-    const productCategoriesQuery = `INSERT INTO products_categories (product_id, category_id) VALUES ${categoriesValuesPlaceholder};`
-    const categoriesVals = categories.flatMap((category) => [category.id, category.name, category.createdAt])
-
-    const imagesValuesPlaceholder = images.map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3}`).join(', ');
-    const productImagesQuery = `INSERT INTO products_categories (id, url, created_at) VALUES ${imagesValuesPlaceholder};`
-    const productImagesVals = images.flatMap((img) => [img.id, img.url, img.createdAt])
-
     await client.query(productsQuery, productsVals)
 
     if (categories.length > 0) {
-      await client.query(productCategoriesQuery, categoriesVals)
+      await this.createCategories(product.id, categories)
     }
 
     if (images.length > 0) {
-      await client.query(productImagesQuery, productImagesVals)
+      await this.createImages(product.id, images)
     }
   }
 
-  // private async createCategories
+  private async createCategories(productId: string, categories: Category[]) {
+    const categoriesValuesPlaceholder = categories.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(', ');
+    const productCategoriesQuery = `INSERT INTO products_categories(product_id, category_id) VALUES ${categoriesValuesPlaceholder};`
+    const categoriesVals = categories.flatMap((category) => [productId, category.id])
+    console.log({ categoriesVals })
+
+    await client.query(productCategoriesQuery, categoriesVals)
+  }
+
+  private async createImages(productId: string, images: Image[]) {
+    const imagesValuesPlaceholder = images.map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ');
+    const productImagesQuery = `INSERT INTO product_images (id, url, product_id, created_at) VALUES ${imagesValuesPlaceholder};`
+    const productImagesVals = images.flatMap((img) => [img.id, img.url, productId, img.createdAt])
+
+    await client.query(productImagesQuery, productImagesVals)
+  }
 
   async save(product: Product): Promise<void> {
     const { images, categories } = product
@@ -166,26 +173,87 @@ export class PGProductsRepository implements ProductsRepository {
     const deleteImagesQuery = "DELETE product_images WHERE product_id = $1"
     const deleteCategoriesQuery = "DELETE products_categories WHERE product_id = $1"
 
-    const categoriesValuesPlaceholder = categories.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2}`).join(', ');
-    const productCategoriesQuery = `INSERT INTO products_categories (product_id, category_id) VALUES ${categoriesValuesPlaceholder};`
-    const categoriesVals = categories.flatMap((category) => [category.id, category.name, category.createdAt])
-
-    const imagesValuesPlaceholder = images.map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3}`).join(', ');
-    const productImagesQuery = `INSERT INTO products_categories (id, url, created_at) VALUES ${imagesValuesPlaceholder};`
-    const productImagesVals = images.flatMap((img) => [img.id, img.url, img.createdAt])
-
     if (categories.length > 0) {
       await client.query(deleteCategoriesQuery, [product.id])
-      await client.query(productCategoriesQuery, categoriesVals)
+      await this.createCategories(product.id, categories)
     }
     
     if (images.length > 0) {
       await client.query(deleteImagesQuery, [product.id])
-      await client.query(productImagesQuery, productImagesVals)
+      await this.createImages(product.id, images)
     }
   }
 
-  paginate(params: PaginateProductParams): Promise<Product[] | null> {
-    throw new Error('Method not implemented.')
+  async paginate({ page, limit = 10, categoryId }: PaginateProductParams): Promise<Product[] | null> {
+    const offset = (page - 1) * limit
+
+    const query = 
+      `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+      ARRAY_AGG(
+        JSON_BUILD_OBJECT(
+          'id', c.id,
+          'name', c.name,
+          'created_at', c.created_at
+        )
+      ) AS categories
+      ARRAY_AGG(
+        JSON_BUILD_OBJECT(
+          'id', pi.id,
+          'url', pi.name,
+          'created_at', pi.created_at
+        )
+      ) AS images
+      FROM products p
+      JOIN products_categories pc ON p.id = pc.product_id
+      JOIN categories c ON c.id = pc.category_id
+      JOIN product_images pi ON c.id = pi.product_id
+      GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+      WHERE c.id = $1
+      ORDER BY p.created_at
+      LIMIT $2 OFFSET $3
+      `
+    
+    const { rows } = await client.query<ProductRecord>(query, [categoryId, limit, offset])
+
+    const products: Product[] = []
+
+    for (const data of rows) {
+      const product = new Product(
+        {
+          name: data.name,
+          description: data.description,
+          width: data.width,
+          height: data.height,
+          weight: data.weight,
+          price: data.price,
+          quantity: data.quantity,
+          categories: data.categories.map((category) => {
+            return new Category(
+              {
+                name: category.name,
+                createdAt: category.created_at,
+              },
+              category.id,
+            )
+          }),
+          images: data.images.map((img) => {
+            return new Image(
+              {
+                url: img.url,
+                createdAt: img.created_at,
+              },
+              img.id,
+            )
+          }),
+          updatedAt: data.updated_at,
+          removedAt: data.removed_at,
+        },
+        data.id,
+      )
+
+      products.push(product)
+    }
+
+    return products
   }
 }

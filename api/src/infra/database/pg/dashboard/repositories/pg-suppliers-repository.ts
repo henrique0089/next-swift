@@ -168,7 +168,7 @@ export class PGSuppliersRepository implements SuppliersRepository {
   // }
 
   async paginate({ limit, page }: PaginateParams): Promise<Supplier[]> {
-    const offset = (page - 1) * limit;
+    const offset = (page - 1) * limit
     const query = 
       `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, 
       ARRAY_AGG(
