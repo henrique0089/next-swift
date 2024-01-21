@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 
 interface ImageProps {
   url: string
+  productId: string
   createdAt: Date
 }
 
@@ -28,6 +29,14 @@ export class Image {
 
   public set url(url: string) {
     this.props.url = url
+  }
+
+  public get productId(): string {
+    return this.props.productId
+  }
+
+  public set productId(productId: string) {
+    this.props.productId = productId
   }
 
   public get createdAt(): Date {

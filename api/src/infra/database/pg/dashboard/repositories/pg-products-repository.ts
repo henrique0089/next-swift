@@ -28,6 +28,7 @@ interface ProductRecord {
   images: {
     id: string
     url: string
+    product_id: string
     created_at: Date
   }[]
 }
@@ -46,6 +47,7 @@ export class PGProductsRepository implements ProductsRepository {
           JSON_BUILD_OBJECT(
             'id', pi.id,
             'url', pi.url,
+            'product_id', pi.product_id,
             'created_at', pi.created_at
           )
         ) AS images
@@ -80,13 +82,12 @@ export class PGProductsRepository implements ProductsRepository {
       return new Image(
         {
           url: img.url,
+          productId: img.product_id,
           createdAt: img.created_at,
         },
         img.id,
       )
     }).filter(i => i.url !== null)
-
-    console.log({ productCategories: productCategories.map(p => p.name), productImages: productImages.map(i => i.url) })
 
     const product = new Product(
       {
@@ -206,6 +207,7 @@ export class PGProductsRepository implements ProductsRepository {
         JSON_BUILD_OBJECT(
           'id', pi.id,
           'url', pi.url,
+          'product_id', pi.product_id,
           'created_at', pi.created_at
         )
       ) AS images
@@ -246,6 +248,7 @@ export class PGProductsRepository implements ProductsRepository {
             return new Image(
               {
                 url: img.url,
+                productId: img.product_id,
                 createdAt: img.created_at,
               },
               img.id,
