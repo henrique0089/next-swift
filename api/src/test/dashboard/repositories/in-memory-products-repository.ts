@@ -1,8 +1,8 @@
-import { Product } from '@app/dashboard/entities/product'
 import {
-  PaginateProductParams,
-  ProductsRepository,
+    PaginateProductParams,
+    ProductsRepository,
 } from '@app/dashboard/repositories/products-repository'
+import { Product } from '@app/entities/product'
 
 export class InMemoryProductsRepository implements ProductsRepository {
   public products: Product[] = []

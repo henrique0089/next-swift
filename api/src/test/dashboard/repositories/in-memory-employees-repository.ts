@@ -1,5 +1,5 @@
-import { Employee } from '@app/dashboard/entities/employee'
 import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
+import { Employee } from '@app/entities/employee'
 
 export class InMemoryEmployeesRepository implements EmployeesRepository {
   public employees: Employee[] = []

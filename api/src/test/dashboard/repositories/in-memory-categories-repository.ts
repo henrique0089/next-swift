@@ -1,5 +1,5 @@
-import { Category } from '@app/dashboard/entities/category'
 import { CategoriesRepository } from '@app/dashboard/repositories/categories-repository'
+import { Category } from '@app/entities/category'
 
 export class InMemoryCategoriesRepository implements CategoriesRepository {
   public categories: Category[] = []

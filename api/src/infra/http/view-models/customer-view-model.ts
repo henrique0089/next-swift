@@ -1,4 +1,4 @@
-import { Customer } from '@app/dashboard/entities/customer'
+import { Customer } from '@app/entities/customer'
 
 export class CustomerViewModel {
   static toHttp(customer: Customer) {

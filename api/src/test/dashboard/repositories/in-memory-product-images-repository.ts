@@ -1,5 +1,5 @@
-import { Image } from '@app/dashboard/entities/product/image'
 import { ProductImagesRepository } from '@app/dashboard/repositories/product-images-repository'
+import { Image } from '@app/entities/product/image'
 
 export class InMemoryProductImagesRepository
   implements ProductImagesRepository

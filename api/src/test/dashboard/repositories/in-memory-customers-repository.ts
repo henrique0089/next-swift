@@ -1,8 +1,8 @@
-import { Customer } from '@app/dashboard/entities/customer'
 import {
-  CustomersRepository,
-  PaginateParams,
+    CustomersRepository,
+    PaginateParams,
 } from '@app/dashboard/repositories/customer-repository'
+import { Customer } from '@app/entities/customer'
 
 export class InMemoryCustomersRepository implements CustomersRepository {
   public customers: Customer[] = []

@@ -1,4 +1,4 @@
-import { Category } from '@app/dashboard/entities/category'
+import { Category } from '@app/entities/category'
 
 export class CategoryViewModel {
   static toHttp(category: Category) {

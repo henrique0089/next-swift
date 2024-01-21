@@ -1,4 +1,4 @@
-import { Supplier } from '@app/dashboard/entities/supplier'
+import { Supplier } from '@app/entities/supplier'
 
 export class SupplierViewModel {
   static toHttp(customer: Supplier) {

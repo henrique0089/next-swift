@@ -1,8 +1,8 @@
-import { Supplier } from '@app/dashboard/entities/supplier'
 import {
-  PaginateParams,
-  SuppliersRepository,
+    PaginateParams,
+    SuppliersRepository,
 } from '@app/dashboard/repositories/suppliers-repository'
+import { Supplier } from '@app/entities/supplier'
 
 export class InMemorySuppliersRepository implements SuppliersRepository {
   public suppliers: Supplier[] = []
