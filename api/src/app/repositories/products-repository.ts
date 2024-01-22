@@ -6,10 +6,18 @@ export type PaginateProductParams = {
   limit?: number
 }
 
+export type SearchProductParams = {
+  startDate?: Date
+  endDate?: Date
+  search?: string
+  categories: string[]
+  page?: number
+}
+
 export interface ProductsRepository {
   findById(productId: string): Promise<Product | null>
   create(product: Product): Promise<void>
   save(product: Product): Promise<void>
-  paginate(params: PaginateProductParams): Promise<Product[] | null>
-  // search(params: SearchProductParams): Promise<Product[] | null>
+  paginate(params: PaginateProductParams): Promise<Product[]>
+  search(params: SearchProductParams): Promise<Product[]>
 }
