@@ -22,7 +22,7 @@ interface ProfileFormProps {
   user: {
     firstName: string | null
     lastName: string | null
-    imageUrl: string
+    avatar: string
   }
 }
 

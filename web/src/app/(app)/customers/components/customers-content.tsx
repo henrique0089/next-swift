@@ -74,8 +74,8 @@ export function CustomersContent() {
             <TableHead>E-mail</TableHead>
             <TableHead>CPF</TableHead>
             <TableHead>DDD</TableHead>
-            <TableHead>Number</TableHead>
-            <TableHead>Registered in</TableHead>
+            <TableHead>Phone</TableHead>
+            <TableHead>Created at</TableHead>
             <TableHead>Updated at</TableHead>
             <TableHead></TableHead>
             <TableHead></TableHead>

@@ -15,14 +15,6 @@ import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-interface UpdatePasswordFormProps {
-  user: {
-    firstName: string | null
-    lastName: string | null
-    imageUrl: string
-  }
-}
-
 const updatePasswordFormSchema = z.object({
   password: z.string(),
   newPass: z.string(),

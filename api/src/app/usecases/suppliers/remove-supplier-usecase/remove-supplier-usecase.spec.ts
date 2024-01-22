@@ -44,6 +44,6 @@ describe('Remove Supplier UseCase', () => {
   it('should not be able to remove a supplier that not exists', async () => {
     await expect(
       removeSupplierUseCase.execute({ supplierId: 'fake-id' }),
-    ).rejects.toEqual(new AppError('Supplier not found!'))
+    ).rejects.toEqual(new AppError('supplier not found!'))
   })
 })

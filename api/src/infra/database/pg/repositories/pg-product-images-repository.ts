@@ -31,11 +31,11 @@ export class PGProductImagesRepository implements ProductImagesRepository {
   }
 
   async create(images: Image[]): Promise<void> {
-    const valuesPlaceHolder = images.map((_, i) => `($${i * 4 + 1}, ${i * 4 + 2}, ${i * 4 + 3}, ${i * 4 + 4})`).join(', ')
+    const valuesPlaceHolder = images.map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ')
 
     const query = 
       `INSERT INTO product_images(id, url, product_id, created_at)
-      VALUES ${valuesPlaceHolder};
+      VALUES ${valuesPlaceHolder}
       `
     
     const values = images.flatMap((img) => [img.id, img.url, img.productId, img.createdAt])
