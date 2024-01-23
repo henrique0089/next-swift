@@ -1,8 +1,10 @@
-import {
-    PaginateProductParams,
-    ProductsRepository,
-} from '@app/dashboard/repositories/products-repository'
 import { Product } from '@app/entities/product'
+import {
+  PaginateProductParams,
+  ProductsRepository,
+  SearchProductParams,
+} from '@app/repositories/products-repository'
+import dayjs from 'dayjs'
 
 export class InMemoryProductsRepository implements ProductsRepository {
   public products: Product[] = []
@@ -33,7 +35,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
     page,
     limit = 10,
     categoryId,
-  }: PaginateProductParams): Promise<Product[] | null> {
+  }: PaginateProductParams): Promise<Product[]> {
     const offset = (page - 1) * limit
 
     const filteredProducts = this.products.filter((product) =>
@@ -43,5 +45,34 @@ export class InMemoryProductsRepository implements ProductsRepository {
     const paginatedProducts = filteredProducts.slice(offset, offset + limit)
 
     return paginatedProducts
+  }
+
+  async search({
+    startDate,
+    endDate,
+    search,
+    categories,
+    page = 1,
+  }: SearchProductParams): Promise<Product[]> {
+    const searchStartDate =
+      startDate || dayjs(new Date()).subtract(1, 'month').toDate()
+    const searchEndDate = endDate || new Date()
+    const offset = (page - 1) * 10
+
+    let result: Product[] = []
+
+    if (search && categories.length === 0) {
+      result = this.products
+        .filter(
+          (product) =>
+            product.createdAt >= searchStartDate &&
+            product.createdAt <= searchEndDate &&
+            (product.name.toLowerCase().includes(search.toLowerCase()) ||
+              product.description.toLowerCase().includes(search.toLowerCase())),
+        )
+        .slice(offset, offset + 10)
+    }
+
+    return []
   }
 }
