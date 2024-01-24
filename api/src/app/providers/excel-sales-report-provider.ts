@@ -5,6 +5,6 @@ export interface SalesReportData {
   fullFilePath: string
 }
 
-export interface SalesReportProvider {
-  generateExcel(sales: Sale[]): Promise<SalesReportData>
+export interface ExcelSalesReportProvider {
+  generate(sales: Sale[]): Promise<SalesReportData>
 }

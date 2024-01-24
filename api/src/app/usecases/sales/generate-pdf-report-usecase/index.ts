@@ -1,5 +1,5 @@
 import { AppError } from '@app/errors/app-error'
-import { ExcelSalesReportProvider } from '@app/providers/excel-sales-report-provider'
+import { PDFSalesReportProvider } from '@app/providers/pdf-sales-report-provider'
 import { SalesRepository } from '@app/repositories/sales-repository'
 
 interface Request {
@@ -10,14 +10,13 @@ interface Request {
 }
 
 interface Response {
-  filename: string
-  fullFilePath: string
+  report: Buffer
 }
 
-export class GenerateExcelReportUseCase {
+export class GeneratePDFReportUseCase {
   constructor(
     private salesRepo: SalesRepository,
-    private excelSalesReportProvider: ExcelSalesReportProvider,
+    private pdfSalesReportProvider: PDFSalesReportProvider,
   ) {}
 
   async execute({
@@ -37,9 +36,8 @@ export class GenerateExcelReportUseCase {
       throw new AppError('report generation is not possible. not enough sales!')
     }
 
-    const { filename, fullFilePath } =
-      await this.excelSalesReportProvider.generate(sales)
+    const report = await this.pdfSalesReportProvider.generate(sales)
 
-    return { filename, fullFilePath }
+    return { report }
   }
 }

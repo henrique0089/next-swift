@@ -1,28 +1,28 @@
 import dayjs from 'dayjs'
 import { randomUUID } from 'node:crypto'
-import fs from 'node:fs'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { PaymentMethod, Sale } from '@app/entities/sale'
 import { ExceljsSalesReportProvider } from '@infra/providers/report/exceljs-sales-excel-report-provider'
+import { PDFKitSalesReportProvider } from '@infra/providers/report/pdfkit-sales-report-provider'
 import { InMemorySalesRepository } from 'src/test/dashboard/repositories/in-memory-sales-repository'
-import { GenerateExcelReportUseCase } from '.'
+import { GeneratePDFReportUseCase } from '.'
 
 let inMemorySalesRepo: InMemorySalesRepository
 let salesReportProvider: ExceljsSalesReportProvider
-let generateExcelReportUseCase: GenerateExcelReportUseCase
+let generatePDFReportUseCase: GeneratePDFReportUseCase
 
 beforeAll(() => {
   inMemorySalesRepo = new InMemorySalesRepository()
-  salesReportProvider = new ExceljsSalesReportProvider()
-  generateExcelReportUseCase = new GenerateExcelReportUseCase(
+  salesReportProvider = new PDFKitSalesReportProvider()
+  generatePDFReportUseCase = new GeneratePDFReportUseCase(
     inMemorySalesRepo,
     salesReportProvider,
   )
 })
 
-describe('Generate Excel Report UseCase', () => {
-  it('should be able to generate excel report', async () => {
+describe('Generate PDF Report UseCase', () => {
+  it('should be able to generate pdf report', async () => {
     const productId = randomUUID()
     const productName = 'shoes'
     const productPrice = 12550
@@ -49,17 +49,16 @@ describe('Generate Excel Report UseCase', () => {
       .toDate()
     const endDate = dayjs(new Date()).endOf('day').toDate()
 
-    const { filename, fullFilePath } = await generateExcelReportUseCase.execute(
-      { startDate, endDate },
-    )
+    const { report } = await generatePDFReportUseCase.execute({
+      startDate,
+      endDate,
+    })
 
-    await fs.promises.unlink(fullFilePath)
-
-    expect(filename).toBeDefined()
-    expect(fullFilePath).toBeDefined()
+    expect(report).toBeDefined()
+    expect(report).instanceOf(Buffer)
   })
 
-  it('should not be able to generate excel report if sales length equals to 0', async () => {
+  it('should not be able to generate pdf report if sales length equals to 0', async () => {
     inMemorySalesRepo.sales = []
 
     const startDate = dayjs(new Date())
@@ -69,7 +68,7 @@ describe('Generate Excel Report UseCase', () => {
     const endDate = dayjs(new Date()).endOf('day').toDate()
 
     await expect(
-      generateExcelReportUseCase.execute({ startDate, endDate }),
+      generatePDFReportUseCase.execute({ startDate, endDate }),
     ).rejects.toThrow('report generation is not possible. not enough sales!')
   })
 })

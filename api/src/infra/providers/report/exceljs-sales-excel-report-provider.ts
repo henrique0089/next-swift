@@ -8,7 +8,7 @@ import { randomBytes } from 'node:crypto'
 import { resolve } from 'node:path'
 
 export class ExceljsSalesReportProvider implements SalesReportProvider {
-  async generateExcel(sales: Sale[]): Promise<SalesReportData> {
+  async generate(sales: Sale[]): Promise<SalesReportData> {
     const workbook = new Workbook()
     const worksheet = workbook.addWorksheet('Vendas')
 
