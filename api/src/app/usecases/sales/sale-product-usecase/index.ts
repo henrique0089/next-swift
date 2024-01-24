@@ -50,10 +50,12 @@ export class SaleProductUseCase {
 
     const sale = new Sale({
       total,
-      quantity: productsQty,
-      buyerId,
       paymentMethod,
+      buyerId,
       productId,
+      productName: product.name,
+      productPrice: product.price,
+      productQty: productsQty,
     })
 
     await this.salesRepo.create(sale)

@@ -186,7 +186,7 @@ export class PGSuppliersRepository implements SuppliersRepository {
       FROM suppliers c
       JOIN suppliers_addresses a ON a.supplier_id = c.id
       GROUP BY c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at
-      ORDER BY c.created_at
+      ORDER BY c.created_at DESC
       LIMIT $1 OFFSET $2
       `
 

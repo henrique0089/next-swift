@@ -71,7 +71,7 @@ describe('Sale Product UseCase', () => {
       paymentMethod: PaymentMethod.debit,
     })
 
-    expect(salesRepo.sales[0].quantity).toEqual(2)
+    expect(salesRepo.sales[0].productQty).toEqual(2)
     expect(salesRepo.sales[0].productId).toEqual(product.id)
     expect(salesRepo.sales[0].buyerId).toEqual(customer.id)
     expect(salesRepo.sales[0].paymentMethod).toEqual(PaymentMethod.debit)

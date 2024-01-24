@@ -9,10 +9,12 @@ export enum PaymentMethod {
 
 interface SaleProps {
   total: number
-  quantity: number
   paymentMethod: PaymentMethod
-  productId: string
   buyerId: string
+  productId: string
+  productName: string
+  productPrice: number
+  productQty: number
   createdAt: Date
 }
 
@@ -40,20 +42,20 @@ export class Sale {
     this.props.total = total
   }
 
-  public get quantity(): number {
-    return this.props.quantity
-  }
-
-  public set quantity(quantity: number) {
-    this.props.quantity = quantity
-  }
-
   public get paymentMethod(): PaymentMethod {
     return this.props.paymentMethod
   }
 
   public set paymentMethod(paymentMethod: PaymentMethod) {
     this.props.paymentMethod = paymentMethod
+  }
+
+  public get buyerId(): string {
+    return this.props.buyerId
+  }
+
+  public set buyerId(buyerId: string) {
+    this.props.buyerId = buyerId
   }
 
   public get productId(): string {
@@ -64,12 +66,28 @@ export class Sale {
     this.props.productId = productId
   }
 
-  public get buyerId(): string {
-    return this.props.buyerId
+  public get productName(): string {
+    return this.props.productName
   }
 
-  public set buyerId(buyerId: string) {
-    this.props.buyerId = buyerId
+  public set productName(productName: string) {
+    this.props.productName = productName
+  }
+
+  public get productPrice(): number {
+    return this.props.productPrice
+  }
+
+  public set productPrice(productPrice: number) {
+    this.props.productPrice = productPrice
+  }
+
+  public get productQty(): number {
+    return this.props.productQty
+  }
+
+  public set productQty(productQty: number) {
+    this.props.productQty = productQty
   }
 
   public get createdAt(): Date {

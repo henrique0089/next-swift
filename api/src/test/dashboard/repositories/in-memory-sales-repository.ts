@@ -16,7 +16,7 @@ export class InMemorySalesRepository implements SalesRepository {
     endDate,
     page = 1,
     limit = 10,
-  }: PaginateParams): Promise<Sale[] | null> {
+  }: PaginateParams): Promise<Sale[]> {
     const offset = (page - 1) * limit
 
     const filteredSales = this.sales.filter((product) => {

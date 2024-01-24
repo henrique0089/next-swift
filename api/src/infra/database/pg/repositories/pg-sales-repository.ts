@@ -12,6 +12,9 @@ interface SaleRecord {
   qtd: number
   payment_method: PaymentMethod
   product_id: string
+  product_name: string
+  product_price: number
+  product_quantity: number
   buyer_id: string
   created_at: Date
 }
@@ -21,7 +24,7 @@ export class PGSalesRepository implements SalesRepository {
     const {
       id,
       total,
-      quantity,
+      productQty,
       paymentMethod,
       productId,
       buyerId,
@@ -34,7 +37,7 @@ export class PGSalesRepository implements SalesRepository {
     await client.query(query, [
       id,
       total,
-      quantity,
+      productQty,
       paymentMethod,
       productId,
       buyerId,
@@ -47,17 +50,19 @@ export class PGSalesRepository implements SalesRepository {
     endDate,
     page = 1,
     limit = 10,
-  }: PaginateParams): Promise<Sale[] | null> {
-    const searchStartDate =
-      startDate || dayjs(startDate).subtract(1, 'month').toDate()
-    const searchEndDate = endDate || new Date()
+  }: PaginateParams): Promise<Sale[]> {
+    const searchStartDate = dayjs(startDate).startOf('day').toDate()
+    const searchEndDate = dayjs(endDate).endOf('day').toDate()
 
     const offset = (page - 1) * limit
-    const query = `SELECT * FROM sales
-       WHERE created_at BETWEEN $1 AND $2
-       ORDER BY created_at DESC 
-       LIMIT $3 OFFSET $4
-      `
+    const query = `SELECT s.id, s.total, s.qtd, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, p.quantity AS product_quantity
+      FROM sales s
+      JOIN products p ON s.product_id = p.id
+      WHERE s.created_at BETWEEN $1 AND $2
+      GROUP BY s.id, s.total, s.qtd, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity
+      ORDER BY s.created_at DESC 
+      LIMIT $3 OFFSET $4
+    `
 
     const { rows } = await client.query<SaleRecord>(query, [
       searchStartDate,
@@ -72,10 +77,12 @@ export class PGSalesRepository implements SalesRepository {
       const sale = new Sale(
         {
           total: data.total,
-          quantity: data.qtd,
           paymentMethod: data.payment_method,
-          productId: data.product_id,
           buyerId: data.buyer_id,
+          productId: data.product_id,
+          productName: data.product_name,
+          productQty: data.product_quantity,
+          productPrice: data.product_price,
           createdAt: data.created_at,
         },
         data.id,

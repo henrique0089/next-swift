@@ -7,7 +7,15 @@ export interface PaginateParams {
   limit?: number
 }
 
+export interface SalePaginatedResult {
+  id: string
+  productName: string
+  productQty: number
+  productPrice: number
+  total: number
+}
+
 export interface SalesRepository {
   create(sale: Sale): Promise<void>
-  paginate(params: PaginateParams): Promise<Sale[] | null>
+  paginate(params: PaginateParams): Promise<Sale[]>
 }

@@ -16,6 +16,7 @@ export type SearchProductParams = {
 
 export interface ProductsRepository {
   findById(productId: string): Promise<Product | null>
+  findManyByIds(productIds: string[]): Promise<Product[]>
   create(product: Product): Promise<void>
   save(product: Product): Promise<void>
   paginate(params: PaginateProductParams): Promise<Product[]>
