@@ -12,4 +12,6 @@ export interface CustomersRepository {
   create(customer: Customer): Promise<void>
   save(customer: Customer): Promise<void>
   delete(customerId: string): Promise<void>
+  getCurrentMonthTotalCount(): Promise<number>
+  getLastMonthTotalCount(): Promise<number>
 }

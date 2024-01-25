@@ -55,7 +55,7 @@ export class AddProductUseCase {
         width,
         height,
         quantity,
-        price,
+        price: price * 100,
         categories: productCategories,
         weight,
         images: productImages,

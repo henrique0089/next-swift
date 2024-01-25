@@ -7,9 +7,16 @@ export enum PaymentMethod {
   debit = 'debit',
 }
 
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  CANCELED = 'CANCELED',
+}
+
 interface SaleProps {
   total: number
   paymentMethod: PaymentMethod
+  status: PaymentStatus
   buyerId: string
   productId: string
   productName: string
@@ -48,6 +55,14 @@ export class Sale {
 
   public set paymentMethod(paymentMethod: PaymentMethod) {
     this.props.paymentMethod = paymentMethod
+  }
+
+  public get status(): PaymentStatus {
+    return this.props.status
+  }
+
+  public set status(status: PaymentStatus) {
+    this.props.status = status
   }
 
   public get buyerId(): string {

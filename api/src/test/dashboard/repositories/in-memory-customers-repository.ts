@@ -1,8 +1,9 @@
-import {
-    CustomersRepository,
-    PaginateParams,
-} from '@app/dashboard/repositories/customer-repository'
 import { Customer } from '@app/entities/customer'
+import {
+  CustomersRepository,
+  PaginateParams,
+} from '@app/repositories/customer-repository'
+import dayjs from 'dayjs'
 
 export class InMemoryCustomersRepository implements CustomersRepository {
   public customers: Customer[] = []
@@ -60,5 +61,33 @@ export class InMemoryCustomersRepository implements CustomersRepository {
     if (customerIndex > -1) {
       this.customers.splice(customerIndex, 1)
     }
+  }
+
+  async getCurrentMonthTotalCount(): Promise<number> {
+    const currentMonth = dayjs().format('YYYY-MM-DD').split('-')[1]
+
+    const filtereCustomers = this.customers.filter((customer) => {
+      const isSameMonth =
+        dayjs(customer.createdAt).format('YYYY-MM-DD').split('-')[1] ===
+        currentMonth
+
+      return isSameMonth
+    })
+
+    return filtereCustomers.length
+  }
+
+  async getLastMonthTotalCount(): Promise<number> {
+    const currentMonth = dayjs().format('YYYY-MM-DD').split('-')[1]
+
+    const filtereCustomers = this.customers.filter((customer) => {
+      const isSameMonth =
+        dayjs(customer.createdAt).format('YYYY-MM-DD').split('-')[1] ===
+        currentMonth
+
+      return isSameMonth
+    })
+
+    return filtereCustomers.length
   }
 }

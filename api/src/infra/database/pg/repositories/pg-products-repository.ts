@@ -270,7 +270,7 @@ export class PGProductsRepository implements ProductsRepository {
   }
 
   async search({ startDate, endDate, search, page = 1, categories }: SearchProductParams): Promise<Product[]> {
-    const searchStartDate = startDate ||dayjs(new Date()).subtract(1, 'month').toDate()
+    const searchStartDate = startDate || dayjs(new Date()).subtract(1, 'month').toDate()
     const searchEndDate = endDate || new Date()
     const offset = (page - 1) * 10
   

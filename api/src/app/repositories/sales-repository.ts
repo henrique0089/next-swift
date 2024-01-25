@@ -18,4 +18,10 @@ export interface SalePaginatedResult {
 export interface SalesRepository {
   create(sale: Sale): Promise<void>
   paginate(params: PaginateParams): Promise<Sale[]>
+  getCurrentMonthTotal(): Promise<string>
+  getLastMonthTotal(): Promise<string>
+  getTodayTotalCount(): Promise<number>
+  getPreviousDayTotalCount(): Promise<number>
+  getCanceledSalesTotalCount(): Promise<number>
+  getLastMonthCanceledSalesTotalCount(): Promise<number>
 }
