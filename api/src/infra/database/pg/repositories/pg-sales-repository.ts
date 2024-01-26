@@ -16,6 +16,7 @@ interface SaleRecord {
   product_name: string
   product_price: number
   buyer_id: string
+  buyer_name: string
   created_at: Date
 }
 
@@ -37,7 +38,7 @@ export class PGSalesRepository implements SalesRepository {
     } = sale
 
     const query =
-      'INSERT INTO sales (id, total, status, qty, payment_method, product_id, buyer_id, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)'
+      'INSERT INTO sales (id, total, status, qty, payment_method, product_id, buyer_id, created_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8)'
 
     await client.query(query, [
       id,
@@ -61,11 +62,12 @@ export class PGSalesRepository implements SalesRepository {
     const searchEndDate = dayjs(endDate).endOf('day').toDate()
 
     const offset = (page - 1) * limit
-    const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price
+    const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
       FROM sales s
       JOIN products p ON s.product_id = p.id
+      JOIN customers c ON s.buyer_id = c.id
       WHERE s.created_at BETWEEN $1 AND $2
-      GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity
+      GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
       ORDER BY s.created_at DESC 
       LIMIT $3 OFFSET $4
     `
@@ -86,6 +88,44 @@ export class PGSalesRepository implements SalesRepository {
           status: data.status,
           paymentMethod: data.payment_method,
           buyerId: data.buyer_id,
+          buyerName: data.buyer_name,
+          productId: data.product_id,
+          productName: data.product_name,
+          productQty: data.qty,
+          productPrice: data.product_price,
+          createdAt: data.created_at,
+        },
+        data.id,
+      )
+
+      sales.push(sale)
+    }
+
+    return sales
+  }
+
+  async getLastSix(): Promise<Sale[]> {
+    const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+      FROM sales s
+      JOIN products p ON s.product_id = p.id
+      JOIN customers c ON s.buyer_id = c.id
+      GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+      ORDER BY s.created_at DESC 
+      LIMIT 6
+    `
+
+    const { rows } = await client.query<SaleRecord>(query)
+
+    const sales: Sale[] = []
+
+    for (const data of rows) {
+      const sale = new Sale(
+        {
+          total: data.total,
+          status: data.status,
+          paymentMethod: data.payment_method,
+          buyerId: data.buyer_id,
+          buyerName: data.buyer_name,
           productId: data.product_id,
           productName: data.product_name,
           productQty: data.qty,

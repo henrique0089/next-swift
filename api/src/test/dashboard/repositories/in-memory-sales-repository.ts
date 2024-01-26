@@ -29,6 +29,12 @@ export class InMemorySalesRepository implements SalesRepository {
     return paginatedSales
   }
 
+  async getLastSix(): Promise<Sale[]> {
+    const sales = this.sales.reverse().slice(0, 6)
+
+    return sales
+  }
+
   async getCurrentMonthTotal(): Promise<string> {
     const currentMonth = dayjs().format('YYYY-MM-DD').split('-')[1]
 

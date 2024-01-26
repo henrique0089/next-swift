@@ -18,6 +18,7 @@ interface SaleProps {
   paymentMethod: PaymentMethod
   status: PaymentStatus
   buyerId: string
+  buyerName: string | null
   productId: string
   productName: string
   productPrice: number
@@ -71,6 +72,14 @@ export class Sale {
 
   public set buyerId(buyerId: string) {
     this.props.buyerId = buyerId
+  }
+
+  public get buyerName(): string | null {
+    return this.props.buyerName
+  }
+
+  public set buyerName(buyerName: string | null) {
+    this.props.buyerName = buyerName
   }
 
   public get productId(): string {

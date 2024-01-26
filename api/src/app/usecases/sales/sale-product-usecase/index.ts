@@ -1,4 +1,4 @@
-import { PaymentMethod, Sale } from '@app/entities/sale'
+import { PaymentMethod, PaymentStatus, Sale } from '@app/entities/sale'
 import { AppError } from '@app/errors/app-error'
 import { NFEProvider } from '@app/providers/nfe-provider'
 import { CustomersRepository } from '@app/repositories/customer-repository'
@@ -56,6 +56,8 @@ export class SaleProductUseCase {
       productName: product.name,
       productPrice: product.price,
       productQty: productsQty,
+      status: PaymentStatus.PAID,
+      buyerName: null,
     })
 
     await this.salesRepo.create(sale)
