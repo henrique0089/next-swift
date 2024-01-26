@@ -22,6 +22,7 @@ describe('Get Last Six Sales UseCase', () => {
         paymentMethod: PaymentMethod.debit,
         productId: `product-${i}`,
         buyerId: `buyer-${i}`,
+        buyerName: `buyer name`,
         productName: `shoes-${i}`,
         productPrice: 7500,
         productQty: i,

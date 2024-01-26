@@ -1,6 +1,8 @@
 import { PaymentStatus, Sale } from '@app/entities/sale'
 import {
   PaginateParams,
+  RevenueMetrics,
+  RevenueParams,
   SalesRepository,
 } from '@app/repositories/sales-repository'
 import dayjs from 'dayjs'
@@ -130,5 +132,25 @@ export class InMemorySalesRepository implements SalesRepository {
     })
 
     return filteredSales.length
+  }
+
+  async getRevenueMetrics({
+    startDate,
+    endDate,
+  }: RevenueParams): Promise<RevenueMetrics[]> {
+    const metrics = this.sales
+      .filter(
+        (sale) => sale.createdAt >= startDate && sale.createdAt <= endDate,
+      )
+      .map((sale) => {
+        const formattedDate = dayjs(sale.createdAt).format('DD/MM')
+
+        return {
+          date: formattedDate,
+          revenue: sale.total,
+        }
+      })
+
+    return metrics
   }
 }

@@ -1,6 +1,8 @@
 import { PaymentMethod, PaymentStatus, Sale } from '@app/entities/sale'
 import {
   PaginateParams,
+  RevenueMetrics,
+  RevenueParams,
   SalesRepository,
 } from '@app/repositories/sales-repository'
 import dayjs from 'dayjs'
@@ -199,5 +201,36 @@ export class PGSalesRepository implements SalesRepository {
     const total = rows[0].count
 
     return total
+  }
+
+  async getRevenueMetrics({
+    startDate,
+    endDate,
+  }: RevenueParams): Promise<RevenueMetrics[]> {
+    const searchStartDate = dayjs(startDate).startOf('day').toDate()
+    const searchEndDate = dayjs(endDate).endOf('day').toDate()
+
+    const sql = `SELECT TO_CHAR(created_at, 'DD/MM') AS date,
+      total / 100.0 AS revenue
+      FROM sales
+      WHERE created_at BETWEEN $1 AND $2
+      ORDER BY created_at DESC
+      `
+
+    const { rows } = await client.query<RevenueMetrics>(sql, [
+      searchStartDate,
+      searchEndDate,
+    ])
+
+    const metrics = rows.map((row) => {
+      const revenue = Number(row.revenue).toFixed(2)
+
+      return {
+        date: row.date,
+        revenue: Number(revenue),
+      }
+    })
+
+    return metrics
   }
 }

@@ -15,6 +15,16 @@ export interface SalePaginatedResult {
   total: number
 }
 
+export interface RevenueParams {
+  startDate: Date
+  endDate: Date
+}
+
+export interface RevenueMetrics {
+  date: string
+  revenue: number
+}
+
 export interface SalesRepository {
   create(sale: Sale): Promise<void>
   paginate(params: PaginateParams): Promise<Sale[]>
@@ -25,4 +35,5 @@ export interface SalesRepository {
   getPreviousDayTotalCount(): Promise<number>
   getCanceledSalesTotalCount(): Promise<number>
   getLastMonthCanceledSalesTotalCount(): Promise<number>
+  getRevenueMetrics(params: RevenueParams): Promise<RevenueMetrics[]>
 }
