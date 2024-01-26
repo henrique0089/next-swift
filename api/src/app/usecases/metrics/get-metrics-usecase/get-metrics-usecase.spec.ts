@@ -66,7 +66,7 @@ describe('Get Metrics UseCase', () => {
       }),
     })
 
-    const sale02Total = 7500 * 2 * 100
+    const sale02Total = 7500 * 2
     const sale02 = new Sale({
       total: sale02Total,
       status: PaymentStatus.PAID,
@@ -85,9 +85,7 @@ describe('Get Metrics UseCase', () => {
 
     const { metrics } = await getMetricsUseCase.execute()
 
-    console.log({ total: sale01Total + sale02Total, metrics })
-
     expect(metrics.salesCurrentMonthTotal).toBeDefined()
-    expect(metrics.salesCurrentMonthTotal).toBe(sale02Total)
+    expect(metrics.salesCurrentMonthTotal).toEqual(sale02Total / 100)
   })
 })
