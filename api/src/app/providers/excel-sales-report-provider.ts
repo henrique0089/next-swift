@@ -5,6 +5,12 @@ export interface SalesReportData {
   fullFilePath: string
 }
 
+export interface RevenueParams {
+  date: Date
+  revenue: number
+}
+
 export interface ExcelSalesReportProvider {
   generate(sales: Sale[]): Promise<SalesReportData>
+  generateRevenue(params: RevenueParams[]): Promise<SalesReportData>
 }
