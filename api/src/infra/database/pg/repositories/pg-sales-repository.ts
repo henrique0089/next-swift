@@ -57,22 +57,108 @@ export class PGSalesRepository implements SalesRepository {
   async paginate({
     startDate,
     endDate,
+    search,
+    paymentMethod,
+    status,
     page = 1,
     limit = 10,
   }: PaginateParams): Promise<Sale[]> {
-    const searchStartDate = dayjs(startDate).startOf('day').toDate()
-    const searchEndDate = dayjs(endDate).endOf('day').toDate()
+    const searchStartDate =
+      startDate && dayjs(startDate).startOf('day').toDate()
+    const searchEndDate = endDate && dayjs(endDate).endOf('day').toDate()
 
     const offset = (page - 1) * limit
-    const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
-      FROM sales s
-      JOIN products p ON s.product_id = p.id
-      JOIN customers c ON s.buyer_id = c.id
-      WHERE s.created_at BETWEEN $1 AND $2
-      GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
-      ORDER BY s.created_at DESC 
-      LIMIT $3 OFFSET $4
-    `
+    let query = ''
+    const values: any[] = []
+
+    if (startDate && endDate && !search && !paymentMethod && !status) {
+      query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+        FROM sales s
+        JOIN products p ON s.product_id = p.id
+        JOIN customers c ON s.buyer_id = c.id
+        WHERE s.created_at BETWEEN $1 AND $2
+        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+        ORDER BY s.created_at DESC
+        LIMIT $3 OFFSET $4
+      `
+
+      values.push(searchStartDate)
+      values.push(searchEndDate)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && search && !paymentMethod && !status) {
+      query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+        FROM sales s
+        JOIN products p ON s.product_id = p.id
+        JOIN customers c ON s.buyer_id = c.id
+        WHERE p.name ILIKE $1
+        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+        ORDER BY s.created_at DESC
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(`%${search}%`)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && !search && paymentMethod && !status) {
+      query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+        FROM sales s
+        JOIN products p ON s.product_id = p.id
+        JOIN customers c ON s.buyer_id = c.id
+        WHERE s.payment_method = $1
+        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+        ORDER BY s.created_at DESC
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(paymentMethod)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && !search && !paymentMethod && status) {
+      query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+        FROM sales s
+        JOIN products p ON s.product_id = p.id
+        JOIN customers c ON s.buyer_id = c.id
+        WHERE s.status = $1
+        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+        ORDER BY s.created_at DESC
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(status)
+      values.push(limit)
+      values.push(offset)
+    } else if (startDate && endDate && search && paymentMethod && status) {
+      query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+        FROM sales s
+        JOIN products p ON s.product_id = p.id
+        JOIN customers c ON s.buyer_id = c.id
+        WHERE (s.created_at BETWEEN $1 AND $2) AND (p.name ILIKE $3) AND (s.payment_method = $4) AND (s.status = $5)
+        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+        ORDER BY s.created_at DESC
+        LIMIT $6 OFFSET $7
+      `
+
+      values.push(searchStartDate)
+      values.push(searchEndDate)
+      values.push(`%${search}%`)
+      values.push(paymentMethod)
+      values.push(status)
+      values.push(limit)
+      values.push(offset)
+    } else {
+      query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+        FROM sales s
+        JOIN products p ON s.product_id = p.id
+        JOIN customers c ON s.buyer_id = c.id
+        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+        ORDER BY s.created_at DESC
+        LIMIT $1 OFFSET $2
+      `
+
+      values.push(limit)
+      values.push(offset)
+    }
 
     const { rows } = await client.query<SaleRecord>(query, [
       searchStartDate,

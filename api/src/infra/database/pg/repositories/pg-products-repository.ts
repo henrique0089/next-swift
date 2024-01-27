@@ -112,6 +112,69 @@ export class PGProductsRepository implements ProductsRepository {
     return product
   }
 
+  async findManyByIds(productIds: string[]): Promise<Product[]> {
+    const query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
+        ARRAY_AGG(
+          JSON_BUILD_OBJECT(
+            'id', c.id,
+            'name', c.name,
+            'created_at', c.created_at
+          )
+        ) AS categories,
+        ARRAY_AGG(
+          JSON_BUILD_OBJECT(
+            'id', pi.id,
+            'url', pi.url,
+            'product_id', pi.product_id,
+            'created_at', pi.created_at
+          )
+        ) AS images
+        FROM products p
+        LEFT JOIN products_categories pc ON p.id = pc.product_id
+        LEFT JOIN categories c ON c.id = pc.category_id
+        LEFT JOIN product_images pi ON p.id = pi.product_id
+        WHERE p.id = ANY($1)
+        GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+        ORDER BY p.created_at
+        LIMIT 1
+      `
+    const { rows } = await client.query<ProductRecord>(query, [productIds])
+
+    const products: Product[] = []
+  
+    for (const data of rows) {
+      const product = new Product(
+        {
+          name: data.name,
+          description: data.description,
+          width: data.width,
+          height: data.height,
+          weight: data.weight,
+          price: data.price,
+          quantity: data.quantity,
+          categories: [],
+          images: data.images.map((img) => {
+            return new Image(
+              {
+                url: img.url,
+                productId: img.product_id,
+                createdAt: img.created_at,
+              },
+              img.id,
+            );
+          }),
+          updatedAt: data.updated_at,
+          removedAt: data.removed_at,
+        },
+        data.id,
+      );
+  
+      products.push(product);
+    }
+  
+    return products
+  }
+
   async create(product: Product): Promise<void> {
     const { categories, images } = product
 
@@ -410,7 +473,7 @@ export class PGProductsRepository implements ProductsRepository {
       products.push(product);
     }
   
-    return products;
+    return products
   }
   
 }

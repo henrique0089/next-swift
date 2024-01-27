@@ -1,10 +1,13 @@
-import { Sale } from '@app/entities/sale'
+import { PaymentMethod, PaymentStatus, Sale } from '@app/entities/sale'
 
 export interface PaginateParams {
-  startDate: Date
-  endDate: Date
-  page?: number
+  startDate?: Date
+  endDate?: Date
+  search?: string
+  paymentMethod?: PaymentMethod
+  status?: PaymentStatus
   limit?: number
+  page?: number
 }
 
 export interface SalePaginatedResult {
