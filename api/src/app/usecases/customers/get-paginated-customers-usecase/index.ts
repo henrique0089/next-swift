@@ -2,6 +2,11 @@ import { Customer } from '@app/entities/customer'
 import { CustomersRepository } from '@app/repositories/customer-repository'
 
 interface Request {
+  customer?: string
+  email?: string
+  document?: string
+  startDate?: Date
+  endDate?: Date
   page?: number
   limit?: number
 }
@@ -13,8 +18,24 @@ interface Response {
 export class GetPaginatedCustomersUseCase {
   constructor(private customersRepo: CustomersRepository) {}
 
-  async execute({ page = 1, limit = 10 }: Request): Promise<Response> {
-    const customers = await this.customersRepo.paginate({ page, limit })
+  async execute({
+    customer,
+    email,
+    document,
+    startDate,
+    endDate,
+    page,
+    limit,
+  }: Request): Promise<Response> {
+    const customers = await this.customersRepo.paginate({
+      customer,
+      email,
+      document,
+      startDate,
+      endDate,
+      page,
+      limit,
+    })
 
     return {
       customers,

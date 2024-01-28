@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable prettier/prettier */
 import { Category } from '@app/entities/category'
 import { Product } from '@app/entities/product'
 import { Image } from '@app/entities/product/image'
@@ -8,7 +6,6 @@ import {
   ProductsRepository,
   SearchProductParams,
 } from '@app/repositories/products-repository'
-import dayjs from 'dayjs'
 import { client } from '../connection'
 
 interface ProductRecord {
@@ -71,26 +68,30 @@ export class PGProductsRepository implements ProductsRepository {
 
     const data = rows[0]
 
-    const productCategories = data.categories.map((category) => {
-      return new Category(
-        {
-          name: category.name,
-          createdAt: category.created_at,
-        },
-        category.id,
-      )
-    }).filter(c => c.name !== null)
+    const productCategories = data.categories
+      .map((category) => {
+        return new Category(
+          {
+            name: category.name,
+            createdAt: category.created_at,
+          },
+          category.id,
+        )
+      })
+      .filter((c) => c.name !== null)
 
-    const productImages = data.images.map((img) => {
-      return new Image(
-        {
-          url: img.url,
-          productId: img.product_id,
-          createdAt: img.created_at,
-        },
-        img.id,
-      )
-    }).filter(i => i.url !== null)
+    const productImages = data.images
+      .map((img) => {
+        return new Image(
+          {
+            url: img.url,
+            productId: img.product_id,
+            createdAt: img.created_at,
+          },
+          img.id,
+        )
+      })
+      .filter((i) => i.url !== null)
 
     const product = new Product(
       {
@@ -141,7 +142,7 @@ export class PGProductsRepository implements ProductsRepository {
     const { rows } = await client.query<ProductRecord>(query, [productIds])
 
     const products: Product[] = []
-  
+
     for (const data of rows) {
       const product = new Product(
         {
@@ -161,24 +162,25 @@ export class PGProductsRepository implements ProductsRepository {
                 createdAt: img.created_at,
               },
               img.id,
-            );
+            )
           }),
           updatedAt: data.updated_at,
           removedAt: data.removed_at,
         },
         data.id,
-      );
-  
-      products.push(product);
+      )
+
+      products.push(product)
     }
-  
+
     return products
   }
 
   async create(product: Product): Promise<void> {
     const { categories, images } = product
 
-    const productsQuery = "INSERT INTO products (id, name, description, width, height, weight, price, quantity, removed_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"
+    const productsQuery =
+      'INSERT INTO products (id, name, description, width, height, weight, price, quantity, removed_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)'
     const productsVals = [
       product.id,
       product.name,
@@ -205,17 +207,32 @@ export class PGProductsRepository implements ProductsRepository {
   }
 
   private async createCategories(productId: string, categories: Category[]) {
-    const categoriesValuesPlaceholder = categories.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(', ');
+    const categoriesValuesPlaceholder = categories
+      .map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`)
+      .join(', ')
     const productCategoriesQuery = `INSERT INTO products_categories(product_id, category_id) VALUES ${categoriesValuesPlaceholder};`
-    const categoriesVals = categories.flatMap((category) => [productId, category.id])
+    const categoriesVals = categories.flatMap((category) => [
+      productId,
+      category.id,
+    ])
 
     await client.query(productCategoriesQuery, categoriesVals)
   }
 
   private async createImages(productId: string, images: Image[]) {
-    const imagesValuesPlaceholder = images.map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ');
+    const imagesValuesPlaceholder = images
+      .map(
+        (_, i) =>
+          `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`,
+      )
+      .join(', ')
     const productImagesQuery = `INSERT INTO product_images (id, url, product_id, created_at) VALUES ${imagesValuesPlaceholder};`
-    const productImagesVals = images.flatMap((img) => [img.id, img.url, productId, img.createdAt])
+    const productImagesVals = images.flatMap((img) => [
+      img.id,
+      img.url,
+      productId,
+      img.createdAt,
+    ])
 
     await client.query(productImagesQuery, productImagesVals)
   }
@@ -223,19 +240,18 @@ export class PGProductsRepository implements ProductsRepository {
   async save(product: Product): Promise<void> {
     const { images, categories } = product
 
-    const productsQuery = 
-      `UPDATE products
+    const productsQuery = `UPDATE products
       SET name = $1, description = $2, width = $3, height = $4, weight = $5, price = $6, quantity = $7, removed_at = $8, updated_at = $9
       WHERE id = $10
       `
     const productsVals = [
-      product.name, 
-      product.description, 
-      product.width, 
-      product.height, 
-      product.weight, 
-      product.price, 
-      product.quantity, 
+      product.name,
+      product.description,
+      product.width,
+      product.height,
+      product.weight,
+      product.price,
+      product.quantity,
       product.removedAt,
       product.updatedAt,
       product.id,
@@ -243,25 +259,29 @@ export class PGProductsRepository implements ProductsRepository {
 
     await client.query(productsQuery, productsVals)
 
-    const deleteImagesQuery = "DELETE FROM product_images WHERE product_id = $1"
-    const deleteCategoriesQuery = "DELETE FROM products_categories WHERE product_id = $1"
+    const deleteImagesQuery = 'DELETE FROM product_images WHERE product_id = $1'
+    const deleteCategoriesQuery =
+      'DELETE FROM products_categories WHERE product_id = $1'
 
     if (categories.length > 0) {
       await client.query(deleteCategoriesQuery, [product.id])
       await this.createCategories(product.id, categories)
     }
-    
+
     if (images.length > 0) {
       await client.query(deleteImagesQuery, [product.id])
       await this.createImages(product.id, images)
     }
   }
 
-  async paginate({ page, limit = 10, categoryId }: PaginateProductParams): Promise<Product[]> {
+  async paginate({
+    page,
+    limit = 10,
+    categoryId,
+  }: PaginateProductParams): Promise<Product[]> {
     const offset = (page - 1) * limit
 
-    const query = 
-      `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+    const query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
       ARRAY_AGG(
         JSON_BUILD_OBJECT(
           'id', c.id,
@@ -286,8 +306,12 @@ export class PGProductsRepository implements ProductsRepository {
       ORDER BY p.created_at
       LIMIT $2 OFFSET $3
       `
-    
-    const { rows } = await client.query<ProductRecord>(query, [categoryId, limit, offset])
+
+    const { rows } = await client.query<ProductRecord>(query, [
+      categoryId,
+      limit,
+      offset,
+    ])
 
     const products: Product[] = []
 
@@ -332,92 +356,85 @@ export class PGProductsRepository implements ProductsRepository {
     return products
   }
 
-  async search({ startDate, endDate, search, page = 1, categories }: SearchProductParams): Promise<Product[]> {
-    const searchStartDate = startDate || dayjs(new Date()).subtract(1, 'month').toDate()
-    const searchEndDate = endDate || new Date()
+  async search({
+    startDate,
+    endDate,
+    search,
+    page = 1,
+    categories,
+  }: SearchProductParams): Promise<Product[]> {
     const offset = (page - 1) * 10
-  
+
     let query = ''
-  
-    const values: any[] = [searchStartDate, searchEndDate]
 
-    if (search && categories.length === 0) {
-      query = `
-        SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
-          ARRAY_AGG(
-            JSON_BUILD_OBJECT(
-              'id', pi.id,
-              'url', pi.url,
-              'product_id', pi.product_id,
-              'created_at', pi.created_at
-            )
-          ) AS images
+    const values: any[] = []
+
+    if (startDate && endDate && !search && categories.length === 0) {
+      query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
+        ARRAY_AGG(
+          JSON_BUILD_OBJECT(
+            'id', pi.id,
+            'url', pi.url,
+            'product_id', pi.product_id,
+            'created_at', pi.created_at
+          )
+        ) AS images
         FROM 
           products p
           LEFT JOIN products_categories pc ON p.id = pc.product_id
           LEFT JOIN product_images pi ON p.id = pi.product_id
-        WHERE 
-          (p.created_at >= $1 AND p.created_at <= $2)
-          AND (p.name ILIKE $3 OR p.description ILIKE $3)
+        WHERE p.created_at BETWEEN $1 AND $2
+        GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+        LIMIT 10 OFFSET $3
+      `
+
+      values.push(startDate)
+      values.push(endDate)
+      values.push(offset)
+    } else if (!startDate && !endDate && search && categories.length === 0) {
+      query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
+        ARRAY_AGG(
+          JSON_BUILD_OBJECT(
+            'id', pi.id,
+            'url', pi.url,
+            'product_id', pi.product_id,
+            'created_at', pi.created_at
+          )
+        ) AS images
+        FROM 
+          products p
+          LEFT JOIN products_categories pc ON p.id = pc.product_id
+          LEFT JOIN product_images pi ON p.id = pi.product_id
+        WHERE p.name ILIKE $1 OR p.description ILIKE $1
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
         LIMIT 10 OFFSET $4
       `
 
       values.push(`%${search}%`)
       values.push(offset)
-    } else if (!search && categories.length > 0) {
-      query = `
-        SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
-          ARRAY_AGG(
-            JSON_BUILD_OBJECT(
-              'id', pi.id,
-              'url', pi.url,
-              'product_id', pi.product_id,
-              'created_at', pi.created_at
-            )
-          ) AS images
+    } else if (!startDate && !endDate && !search && categories.length > 0) {
+      query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
+        ARRAY_AGG(
+          JSON_BUILD_OBJECT(
+            'id', pi.id,
+            'url', pi.url,
+            'product_id', pi.product_id,
+            'created_at', pi.created_at
+          )
+        ) AS images
         FROM 
           products p
           LEFT JOIN products_categories pc ON p.id = pc.product_id
           LEFT JOIN product_images pi ON p.id = pi.product_id
-        WHERE 
-          (p.created_at >= $1 AND p.created_at <= $2)
-          AND pc.category_id = ANY($3)
+        WHERE pc.category_id = ANY($1)
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
-        LIMIT 10 OFFSET $4
+        LIMIT 10 OFFSET $2
       `
 
       values.push(categories)
       values.push(offset)
-    } else if (search && categories.length > 0) {
-      query = `
-        SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
-          ARRAY_AGG(
-            JSON_BUILD_OBJECT(
-              'id', pi.id,
-              'url', pi.url,
-              'product_id', pi.product_id,
-              'created_at', pi.created_at
-            )
-          ) AS images
-        FROM 
-          products p
-          JOIN products_categories pc ON p.id = pc.product_id
-          JOIN product_images pi ON p.id = pi.product_id
-        WHERE 
-          p.created_at BETWEEN $1 AND $2
-          AND (LOWER(p.name) LIKE LOWER($3) OR LOWER(p.description) LIKE LOWER($3))
-          AND pc.category_id = ANY($4)
-        GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
-        LIMIT 10 OFFSET $5
-      `
-
-      values.push(`%${search}%`)
-      values.push(categories)
-      values.push(offset)
-    } else {
-      query = `
-        SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
+    } else if (startDate && endDate && search && categories.length > 0) {
+      query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
         ARRAY_AGG(
           JSON_BUILD_OBJECT(
             'id', pi.id,
@@ -430,19 +447,39 @@ export class PGProductsRepository implements ProductsRepository {
           products p
           JOIN products_categories pc ON p.id = pc.product_id
           JOIN product_images pi ON p.id = pi.product_id
-        WHERE 
-          p.created_at BETWEEN $1 AND $2
-          GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
-          LIMIT 10 OFFSET $3
+        WHERE (p.created_at BETWEEN $1 AND $2) AND (p.name ILIKE $3 OR p.description ILIKE $3) AND (pc.category_id = ANY($4))
+        GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+        LIMIT 10 OFFSET $5
+      `
+
+      values.push(`%${search}%`)
+      values.push(categories)
+      values.push(offset)
+    } else {
+      query = `SELECT p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at,
+        ARRAY_AGG(
+          JSON_BUILD_OBJECT(
+            'id', pi.id,
+            'url', pi.url,
+            'product_id', pi.product_id,
+            'created_at', pi.created_at
+          )
+        ) AS images
+        FROM 
+          products p
+          JOIN products_categories pc ON p.id = pc.product_id
+          JOIN product_images pi ON p.id = pi.product_id
+        GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
+        LIMIT 10 OFFSET $1
       `
 
       values.push(offset)
     }
-  
+
     const { rows } = await client.query<ProductRecord>(query, values)
-  
+
     const products: Product[] = []
-  
+
     for (const data of rows) {
       const product = new Product(
         {
@@ -462,18 +499,17 @@ export class PGProductsRepository implements ProductsRepository {
                 createdAt: img.created_at,
               },
               img.id,
-            );
+            )
           }),
           updatedAt: data.updated_at,
           removedAt: data.removed_at,
         },
         data.id,
-      );
-  
-      products.push(product);
+      )
+
+      products.push(product)
     }
-  
+
     return products
   }
-  
 }

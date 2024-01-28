@@ -5,13 +5,19 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
 const querySchema = z.object({
+  customer: z.string().optional(),
+  email: z.string().optional(),
+  document: z.string().optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
   page: z.coerce.number().optional(),
   limit: z.coerce.number().optional(),
 })
 
 export class GetPaginatedCustomersController {
   async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
-    const { page, limit } = querySchema.parse(req.query)
+    const { customer, email, document, startDate, endDate, page, limit } =
+      querySchema.parse(req.query)
 
     const customersRepo = new PGCustomersRepository()
     const getPaginatedCustomersUseCase = new GetPaginatedCustomersUseCase(
@@ -19,6 +25,11 @@ export class GetPaginatedCustomersController {
     )
 
     const result = await getPaginatedCustomersUseCase.execute({
+      customer,
+      email,
+      document,
+      startDate,
+      endDate,
       page,
       limit,
     })

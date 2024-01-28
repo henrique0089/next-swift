@@ -1,8 +1,13 @@
 import { Customer } from '@app/entities/customer'
 
 export type PaginateParams = {
-  page: number
-  limit: number
+  customer?: string
+  email?: string
+  document?: string
+  startDate?: Date
+  endDate?: Date
+  page?: number
+  limit?: number
 }
 
 export interface CustomersRepository {

@@ -110,15 +110,98 @@ export class PGCustomersRepository implements CustomersRepository {
     return customer
   }
 
-  async paginate({ limit, page }: PaginateParams): Promise<Customer[]> {
+  async paginate({
+    customer,
+    email,
+    document,
+    startDate,
+    endDate,
+    limit = 10,
+    page = 1,
+  }: PaginateParams): Promise<Customer[]> {
     const offset = (page - 1) * limit
-    const query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
-      FROM customers c
-      JOIN addresses a ON a.id = c.address_id
-      ORDER BY c.created_at
-      LIMIT $1 OFFSET $2
+
+    let query = ''
+    const values: any[] = []
+
+    if (startDate && endDate && !customer && !email && !document) {
+      query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
+        FROM customers c
+        JOIN addresses a ON a.id = c.address_id
+        WHERE c.created_at BETWEEN $1 AND $2
+        ORDER BY c.created_at
+        LIMIT $3 OFFSET $4
       `
-    const { rows } = await client.query<CustomerRecord>(query, [limit, offset])
+
+      values.push(startDate)
+      values.push(endDate)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && customer && !email && !document) {
+      query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
+        FROM customers c
+        JOIN addresses a ON a.id = c.address_id
+        WHERE c.name ILIKE $1
+        ORDER BY c.created_at
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(`%${customer}%`)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && !customer && email && !document) {
+      query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
+        FROM customers c
+        JOIN addresses a ON a.id = c.address_id
+        WHERE c.email = $1
+        ORDER BY c.created_at
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(email)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && !customer && !email && document) {
+      query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
+        FROM customers c
+        JOIN addresses a ON a.id = c.address_id
+        WHERE c.document = $1
+        ORDER BY c.created_at
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(document)
+      values.push(limit)
+      values.push(offset)
+    } else if (startDate && endDate && customer && email && document) {
+      query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
+        FROM customers c
+        JOIN addresses a ON a.id = c.address_id
+        WHERE (c.created_at BETWEEN $1 AND $2) AND (c.name ILIKE $3) AND (c.email = $4) AND (c.document = $5)
+        ORDER BY c.created_at
+        LIMIT $6 OFFSET $7
+      `
+
+      values.push(startDate)
+      values.push(endDate)
+      values.push(`%${customer}%`)
+      values.push(email)
+      values.push(document)
+      values.push(limit)
+      values.push(offset)
+    } else {
+      query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
+        FROM customers c
+        JOIN addresses a ON a.id = c.address_id
+        ORDER BY c.created_at
+        LIMIT $1 OFFSET $2
+      `
+
+      values.push(limit)
+      values.push(offset)
+    }
+
+    const { rows } = await client.query<CustomerRecord>(query, values)
 
     const customers: Customer[] = []
 
