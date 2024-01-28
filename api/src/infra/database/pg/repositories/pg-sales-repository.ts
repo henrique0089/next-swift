@@ -160,12 +160,7 @@ export class PGSalesRepository implements SalesRepository {
       values.push(offset)
     }
 
-    const { rows } = await client.query<SaleRecord>(query, [
-      searchStartDate,
-      searchEndDate,
-      limit,
-      offset,
-    ])
+    const { rows } = await client.query<SaleRecord>(query, values)
 
     const sales: Sale[] = []
 

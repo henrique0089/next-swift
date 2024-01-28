@@ -17,16 +17,38 @@ export class InMemorySalesRepository implements SalesRepository {
   async paginate({
     startDate,
     endDate,
+    search,
+    paymentMethod,
+    status,
     page = 1,
     limit = 10,
   }: PaginateParams): Promise<Sale[]> {
     const offset = (page - 1) * limit
 
-    const filteredSales = this.sales.filter((product) => {
-      return product.createdAt >= startDate && product.createdAt <= endDate
-    })
+    let filteredSales: Sale[] = []
+    let paginatedSales: Sale[] = []
 
-    const paginatedSales = filteredSales.slice(offset, offset + limit)
+    if (startDate && endDate && !search && !paymentMethod && !status) {
+      filteredSales = this.sales.filter((sale) => {
+        return sale.createdAt >= startDate && sale.createdAt <= endDate
+      })
+      paginatedSales = filteredSales.slice(offset, offset + limit)
+    } else if (!startDate && !endDate && search && !paymentMethod && !status) {
+      filteredSales = this.sales.filter((sale) =>
+        sale.productName.includes(search),
+      )
+      paginatedSales = filteredSales.slice(offset, offset + limit)
+    } else if (!startDate && !endDate && !search && paymentMethod && !status) {
+      filteredSales = this.sales.filter(
+        (sale) => sale.paymentMethod === paymentMethod,
+      )
+      paginatedSales = filteredSales.slice(offset, offset + limit)
+    } else if (!startDate && !endDate && !search && paymentMethod && !status) {
+      filteredSales = this.sales.filter((sale) => sale.status === status)
+      paginatedSales = filteredSales.slice(offset, offset + limit)
+    } else {
+      paginatedSales = this.sales.slice(offset, offset + limit)
+    }
 
     return paginatedSales
   }

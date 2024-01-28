@@ -24,7 +24,7 @@ export interface RevenueParams {
 }
 
 export interface RevenueMetrics {
-  date: Date
+  date: string
   revenue: number
 }
 
