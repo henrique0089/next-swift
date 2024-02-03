@@ -1,0 +1,15 @@
+@url = https://3333-henrique0089-nextswift-l7jc5jg033c.ws-us108.gitpod.io
+
+###
+POST {{url}}/employees
+Content-Type: application/json
+
+{
+  "firstName": "jhon",
+  "lastName": "doe",
+  "email": "jhondoe2@gmail.com",
+  "ddd": 82,
+  "phone": 999999999,
+  "gender": "M",
+  "roleId": "roleId"
+}

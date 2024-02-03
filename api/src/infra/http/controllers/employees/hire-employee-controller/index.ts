@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 import { HireEmployeeUseCase } from '@app/usecases/employees/hire-employee-usecase'
 import { PGEmployeesRepository } from '@infra/database/pg/repositories/pg-employees-repository'
+import { ClerkAuthProvider } from '@infra/providers/auth/clerk-auth-provider'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 const bodySchema = z.object({
@@ -21,8 +22,12 @@ export class HireEmployeeController {
     const avatar = 'avatar.png'
 
     const employeesRepository = new PGEmployeesRepository()
+    const authProvider = new ClerkAuthProvider()
 
-    const hireEmployeeUseCase = new HireEmployeeUseCase(employeesRepository)
+    const hireEmployeeUseCase = new HireEmployeeUseCase(
+      employeesRepository,
+      authProvider,
+    )
 
     const { password } = await hireEmployeeUseCase.execute({
       firstName,

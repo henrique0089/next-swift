@@ -4,6 +4,8 @@ import { z } from 'zod'
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('production'),
   PORT: z.number().default(3333),
+  CLERK_PUBLISHABLE_KEY: z.string(),
+  CLERK_SECRET_KEY: z.string(),
   // AWS_BUCKET: z.string(),
   // FORGOT_MAIL_URL: z.string().default('http://localhost:3000/password?reset='),
   // APP_BASE_URL: z.string().default('http://localhost:3000'),
