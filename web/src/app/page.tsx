@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button'
+import { auth } from '@clerk/nextjs'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 
 export default function Home() {
+  const { sessionId } = auth()
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-6">
       <Image
@@ -22,11 +24,19 @@ export default function Home() {
         className="hidden dark:block select-none"
       />
 
-      <Button variant="secondary" asChild className="rounded-full">
-        <Link href="/sign-in">
-          Sign In <ArrowRight />{' '}
-        </Link>
-      </Button>
+      {sessionId ? (
+        <Button variant="outline" asChild className="rounded-full">
+          <a href="/dashboard">
+            Go to dashboard <ArrowRight />{' '}
+          </a>
+        </Button>
+      ) : (
+        <Button variant="secondary" asChild className="rounded-full">
+          <a href="/sign-in">
+            Sign In <ArrowRight />{' '}
+          </a>
+        </Button>
+      )}
     </main>
   )
 }

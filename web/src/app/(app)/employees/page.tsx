@@ -19,7 +19,7 @@ export default function Employees() {
           <EmployeesDatePicker />
 
           <Button asChild className="items-center gap-2 hidden lg:flex">
-            <Link href="/customers/add">
+            <Link href="/employees/add">
               <PlusCircle className="h-5 w-5" />
               <span>Add Employee</span>
             </Link>
@@ -28,6 +28,7 @@ export default function Employees() {
       </div>
 
       <EmployeesContent />
+      {/* <EmailTemplate /> */}
     </section>
   )
 }

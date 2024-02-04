@@ -17,7 +17,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { api } from '@/lib/axios'
 import { formatPrice } from '@/utils/format-price'
+import { useAuth } from '@clerk/nextjs'
+import { useEffect } from 'react'
 
 const data = [
   { date: '10/12', revenue: 1200 * 100 },
@@ -30,6 +33,22 @@ const data = [
 ]
 
 export function RevenueChart() {
+  const { getToken } = useAuth()
+
+  useEffect(() => {
+    async function getChartMetrics() {
+      const res = await api.get('/metrics/revenue', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+
+      console.log(res.data)
+    }
+
+    getChartMetrics()
+  }, [getToken])
+
   return (
     <Card className="col-span-6">
       <CardHeader className="flex-row items-center justify-between pb-8">

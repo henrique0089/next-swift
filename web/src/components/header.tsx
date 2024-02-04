@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { MobileSidebar } from './mobile-sidebar'
 import { NavLink } from './nav-link'
+import { ProductsNavigationMenu } from './navigation-menu'
 import { Separator } from './ui/separator'
 import { UserNav } from './user-nav'
 
@@ -19,7 +20,7 @@ export function Header() {
 
         <nav className="items-center space-x-6 hidden lg:flex">
           <NavLink href="/dashboard">Dashboard</NavLink>
-          <NavLink href="/products">Products</NavLink>
+          <ProductsNavigationMenu />
           <NavLink href="/sales">Sales</NavLink>
           <NavLink href="/customers">Customers</NavLink>
           <NavLink href="/employees">Employees</NavLink>

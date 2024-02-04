@@ -2,7 +2,17 @@ import { ShoppingBag } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export function TodaySalesAmountCard() {
+interface TodaySalesAmountCardProps {
+  count: number
+  percentageIncrease: number
+}
+
+export function TodaySalesAmountCard({
+  count,
+  percentageIncrease,
+}: TodaySalesAmountCardProps) {
+  const isIncreasePositive = percentageIncrease >= 0
+
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
@@ -10,10 +20,17 @@ export function TodaySalesAmountCard() {
         <ShoppingBag className="h-4 w-4 stroke-muted-foreground" />
       </CardHeader>
       <CardContent className="space-y-1">
-        <span className="text-2xl font-bold tracking-tight">12</span>
+        <span className="text-2xl font-bold tracking-tight">{count}</span>
         <p className="text-xs text-muted-foreground">
-          <span className="text-rose-500 dark:text-rose-400">-4%</span> Compared
-          to yesterday
+          <span
+            data-positive={isIncreasePositive}
+            className="data-[positive=true]:text-emerald-500 data-[positive=true]:dark:text-emerald-400 data-[positive=false]:text-red-500 data-[positive=false]:dark:text-red-500"
+          >
+            {isIncreasePositive
+              ? `+${percentageIncrease}%`
+              : `-${percentageIncrease}%`}
+          </span>{' '}
+          Compared to yesterday
         </p>
       </CardContent>
     </Card>
