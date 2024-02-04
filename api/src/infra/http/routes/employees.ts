@@ -24,11 +24,7 @@ employeesRouter.get(
   ClerkExpressRequireAuth(),
   getAllEmployeesController.handle,
 )
-employeesRouter.post(
-  '/',
-  ClerkExpressRequireAuth(),
-  hireEmployeeController.handle,
-)
+employeesRouter.post('/', hireEmployeeController.handle)
 employeesRouter.delete(
   '/dismiss',
   ClerkExpressRequireAuth(),
