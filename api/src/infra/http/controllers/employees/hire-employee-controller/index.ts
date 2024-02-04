@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { HireEmployeeUseCase } from '@app/usecases/employees/hire-employee-usecase'
 import { PGEmployeesRepository } from '@infra/database/pg/repositories/pg-employees-repository'
 import { ClerkAuthProvider } from '@infra/providers/auth/clerk-auth-provider'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 
 const bodySchema = z.object({
   firstName: z.string(),
@@ -16,7 +16,7 @@ const bodySchema = z.object({
 })
 
 export class HireEmployeeController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { firstName, lastName, email, ddd, phone, gender, roleId } =
       bodySchema.parse(req.body)
     const avatar = 'avatar.png'
@@ -40,6 +40,6 @@ export class HireEmployeeController {
       roleId,
     })
 
-    return rep.status(201).send({ password })
+    return res.status(201).send({ password })
   }
 }

@@ -1,6 +1,6 @@
 import { AddCustomerUseCase } from '@app/usecases/customers/add-customer-usecase'
 import { PGCustomersRepository } from '@infra/database/pg/repositories/pg-customers-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -20,7 +20,7 @@ const bodySchema = z.object({
 })
 
 export class AddCustomerController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { name, email, cpf, ddd, phone, address } = bodySchema.parse(req.body)
 
     const customersRepo = new PGCustomersRepository()
@@ -35,6 +35,6 @@ export class AddCustomerController {
       address,
     })
 
-    return rep.send()
+    return res.send()
   }
 }

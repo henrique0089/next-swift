@@ -2,7 +2,7 @@ import { PaymentMethod, PaymentStatus } from '@app/entities/sale'
 import { GetPaginatedSalesUseCase } from '@app/usecases/sales/get-paginated-sales-usecase'
 import { PGSalesRepository } from '@infra/database/pg/repositories/pg-sales-repository'
 import { SaleViewModel } from '@infra/http/view-models/sale-view-model'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const querySchema = z.object({
@@ -16,7 +16,7 @@ const querySchema = z.object({
 })
 
 export class GetPaginatedSalesController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { startDate, endDate, search, paymentMethod, status, limit, page } =
       querySchema.parse(req.query)
 
@@ -35,6 +35,6 @@ export class GetPaginatedSalesController {
 
     const sales = result.sales.map(SaleViewModel.toHttp)
 
-    return rep.send({ sales })
+    return res.json({ sales })
   }
 }

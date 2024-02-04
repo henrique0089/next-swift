@@ -1,14 +1,16 @@
 import { AddCategoryController } from '@infra/http/controllers/categories/add-category-controller'
 import { DeleteCategoryController } from '@infra/http/controllers/categories/delete-category-controller'
 import { GetAllCategoriesController } from '@infra/http/controllers/categories/get-all-categories-controller'
-import { FastifyInstance } from 'fastify'
+import { Router } from 'express'
 
 const getAllCategoriesController = new GetAllCategoriesController()
 const addCategoryController = new AddCategoryController()
 const deleteCategoryController = new DeleteCategoryController()
 
-export async function categoriesRoutes(app: FastifyInstance) {
-  app.get('/categories', getAllCategoriesController.handle)
-  app.post('/categories', addCategoryController.handle)
-  app.delete('/categories/:categoryId/delete', deleteCategoryController.execute)
-}
+const categoriesRouter = Router()
+
+categoriesRouter.get('/', getAllCategoriesController.handle)
+categoriesRouter.post('/', addCategoryController.handle)
+categoriesRouter.delete('/:categoryId/delete', deleteCategoryController.execute)
+
+export { categoriesRouter as categoriesRoutes }

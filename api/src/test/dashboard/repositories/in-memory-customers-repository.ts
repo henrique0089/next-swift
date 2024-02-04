@@ -32,7 +32,10 @@ export class InMemoryCustomersRepository implements CustomersRepository {
     return customer
   }
 
-  async paginate({ page, limit }: PaginateParams): Promise<Customer[]> {
+  async paginate({
+    page = 1,
+    limit = 10,
+  }: PaginateParams): Promise<Customer[]> {
     const start = (page - 1) * limit
     const end = page * limit
 

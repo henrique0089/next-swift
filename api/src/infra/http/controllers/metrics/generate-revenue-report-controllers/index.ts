@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { GenerateRevenueReportUseCase } from '@app/usecases/metrics/generate-revenue-report-usecase'
 import { PGSalesRepository } from '@infra/database/pg/repositories/pg-sales-repository'
 import { ExceljsSalesReportProvider } from '@infra/providers/report/exceljs-sales-excel-report-provider'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const querySchema = z.object({
@@ -12,7 +12,7 @@ const querySchema = z.object({
 })
 
 export class GenerateRevenueReportController {
-  async handle(req: FastifyRequest, rep: FastifyReply) {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { startDate, endDate } = querySchema.parse(req.query)
 
     const salesRepo = new PGSalesRepository()
@@ -29,16 +29,16 @@ export class GenerateRevenueReportController {
       },
     )
 
-    rep.header(
+    res.header(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
-    rep.header('Content-Disposition', `${filename}`)
+    res.header('Content-Disposition', `${filename}`)
 
-    const fileContent = fs.readFileSync(fullFilePath)
-
-    rep.send(fileContent)
+    res.download(fullFilePath)
 
     await fs.promises.unlink(fullFilePath)
+
+    return res.send()
   }
 }

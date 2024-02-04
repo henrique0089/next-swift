@@ -1,7 +1,7 @@
 import { GetPaginatedSuppliersUseCase } from '@app/usecases/suppliers/get-paginated-suppliers-usecase'
 import { PGSuppliersRepository } from '@infra/database/pg/repositories/pg-suppliers-repository'
 import { SupplierViewModel } from '@infra/http/view-models/supplier-view-model'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const querySchema = z.object({
@@ -10,7 +10,7 @@ const querySchema = z.object({
 })
 
 export class GetPaginatedSuppliersController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { page, limit } = querySchema.parse(req.query)
 
     const supplierssRepo = new PGSuppliersRepository()
@@ -25,6 +25,6 @@ export class GetPaginatedSuppliersController {
 
     const suppliers = result.suppliers.map(SupplierViewModel.toHttp)
 
-    return rep.send({ suppliers })
+    return res.send({ suppliers })
   }
 }

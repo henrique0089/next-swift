@@ -1,7 +1,7 @@
 import { AddProductUseCase } from '@app/usecases/products/add-product-usecase'
 import { PGCategoriesRepository } from '@infra/database/pg/repositories/pg-categories-repository'
 import { PGProductsRepository } from '@infra/database/pg/repositories/pg-products-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -17,7 +17,7 @@ const bodySchema = z.object({
 })
 
 export class AddProductController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const {
       name,
       description,
@@ -49,6 +49,6 @@ export class AddProductController {
       images,
     })
 
-    return rep.status(201).send()
+    return res.status(201).send()
   }
 }

@@ -1,8 +1,10 @@
 import { AddRoleController } from '@infra/http/controllers/roles/add-role-controller'
-import { FastifyInstance } from 'fastify'
+import { Router } from 'express'
 
 const addRoleController = new AddRoleController()
 
-export async function rolesRoutes(app: FastifyInstance) {
-  app.post('/roles', addRoleController.handle)
-}
+const rolesRouter = Router()
+
+rolesRouter.post('/', addRoleController.handle)
+
+export { rolesRouter as rolesRoutes }

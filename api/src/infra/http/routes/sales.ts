@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify'
+import { Router } from 'express'
 import { GenerateExcelReportController } from '../controllers/sales/generate-excel-report-controller'
 import { GeneratePDFReportController } from '../controllers/sales/generate-pdf-report-controller'
 import { GetLastSixSalesController } from '../controllers/sales/get-last-six-sales-controller'
@@ -11,10 +11,12 @@ const generatePDFReportController = new GeneratePDFReportController()
 const getLastSixSalesController = new GetLastSixSalesController()
 const getPaginatedSalesController = new GetPaginatedSalesController()
 
-export async function salesRoutes(app: FastifyInstance) {
-  app.post('/sales', saleProductController.handle)
-  app.get('/sales', getPaginatedSalesController.handle)
-  app.get('/sales/report/excel', generateExcelReportController.handle)
-  app.get('/sales/report/pdf', generatePDFReportController.handle)
-  app.get('/sales/last-six', getLastSixSalesController.handle)
-}
+const salesRouter = Router()
+
+salesRouter.post('/', saleProductController.handle)
+salesRouter.get('/', getPaginatedSalesController.handle)
+salesRouter.get('/report/excel', generateExcelReportController.handle)
+salesRouter.get('/report/pdf', generatePDFReportController.handle)
+salesRouter.get('/last-six', getLastSixSalesController.handle)
+
+export { salesRouter as salesRoutes }

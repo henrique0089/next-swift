@@ -1,7 +1,7 @@
 import { GetPaginatedProductsBySearchUseCase } from '@app/usecases/products/get-paginated-products-by-search-usecase'
 import { PGProductsRepository } from '@infra/database/pg/repositories/pg-products-repository'
 import { ProductViewModel } from '@infra/http/view-models/product-view-model'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const querySchema = z.object({
@@ -13,7 +13,7 @@ const querySchema = z.object({
 })
 
 export class GetPaginatedProductsBySearchController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { startDate, endDate, search, categories, page } = querySchema.parse(
       req.query,
     )
@@ -32,6 +32,6 @@ export class GetPaginatedProductsBySearchController {
 
     const products = result.products.map(ProductViewModel.toHttp)
 
-    return rep.send({ products })
+    return res.send({ products })
   }
 }

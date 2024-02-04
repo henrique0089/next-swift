@@ -1,11 +1,11 @@
 import { AddCategoyToProductUseCase } from '@app/usecases/products/add-categories-to-product-usecase'
 import { PGCategoriesRepository } from '@infra/database/pg/repositories/pg-categories-repository'
 import { PGProductsRepository } from '@infra/database/pg/repositories/pg-products-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const paramsSchema = z.object({
-  productId: z.string().nonempty(),
+  productId: z.string(),
 })
 
 const bodySchema = z.object({
@@ -13,7 +13,7 @@ const bodySchema = z.object({
 })
 
 export class AddCategoriesToProductController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { productId } = paramsSchema.parse(req.params)
     const { categoriesIds } = bodySchema.parse(req.body)
 
@@ -29,6 +29,6 @@ export class AddCategoriesToProductController {
       categoriesIds,
     })
 
-    return rep.status(201).send()
+    return res.status(201).send()
   }
 }

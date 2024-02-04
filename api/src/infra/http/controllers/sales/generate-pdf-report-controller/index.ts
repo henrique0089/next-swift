@@ -1,7 +1,7 @@
 import { GeneratePDFReportUseCase } from '@app/usecases/sales/generate-pdf-report-usecase'
 import { PGSalesRepository } from '@infra/database/pg/repositories/pg-sales-repository'
 import { PDFKitSalesReportProvider } from '@infra/providers/report/pdfkit-sales-report-provider'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { randomBytes } from 'node:crypto'
 import { z } from 'zod'
 
@@ -13,7 +13,7 @@ const querySchema = z.object({
 })
 
 export class GeneratePDFReportController {
-  async handle(req: FastifyRequest, rep: FastifyReply) {
+  async handle(req: Request, res: Response): Promise<Response> {
     const {
       startDate,
       endDate,
@@ -38,12 +38,12 @@ export class GeneratePDFReportController {
     const hash = randomBytes(6).toString('hex')
     const filename = `${hash}-report.pdf`
 
-    rep.header(
+    res.header(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
-    rep.header('Content-Disposition', `${filename}`)
+    res.header('Content-Disposition', `${filename}`)
 
-    rep.send(report)
+    return res.send(report)
   }
 }

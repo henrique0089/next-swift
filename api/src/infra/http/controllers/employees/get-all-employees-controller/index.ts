@@ -1,10 +1,10 @@
 import { GetAllEmployeesUseCase } from '@app/usecases/employees/get-all-employees-usecase'
 import { PGEmployeesRepository } from '@infra/database/pg/repositories/pg-employees-repository'
 import { EmployeeViewModel } from '@infra/http/view-models/employee-view-model'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 
 export class GetAllEmployeesController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const employeesRepository = new PGEmployeesRepository()
 
     const getAllEmployeesUseCase = new GetAllEmployeesUseCase(
@@ -14,6 +14,6 @@ export class GetAllEmployeesController {
     const employeesData = await getAllEmployeesUseCase.execute()
     const employees = employeesData.map(EmployeeViewModel.toHttp)
 
-    return rep.send({ employees })
+    return res.json({ employees })
   }
 }

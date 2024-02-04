@@ -6,6 +6,7 @@ const envSchema = z.object({
   PORT: z.number().default(3333),
   CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),
+  CLERK_PEM_PUBLIC_KEY: z.string(),
   // AWS_BUCKET: z.string(),
   // FORGOT_MAIL_URL: z.string().default('http://localhost:3000/password?reset='),
   // APP_BASE_URL: z.string().default('http://localhost:3000'),

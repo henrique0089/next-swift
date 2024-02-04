@@ -1,4 +1,5 @@
 import { Customer } from '@app/entities/customer'
+import { Address } from '@app/entities/customer/address'
 import { InMemoryCustomersRepository } from 'src/test/dashboard/repositories/in-memory-customers-repository'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { GetPaginatedCustomersUseCase } from '.'
@@ -21,7 +22,13 @@ describe('Get Paginated Customers UseCase', () => {
       cpf: '000.000.000-00',
       ddd: 88,
       phone: 999999999,
-      addresses: [],
+      address: new Address({
+        city: 'são paulo',
+        street: 'são paulo',
+        state: 'SP',
+        number: 34,
+        postalCode: '00.000-00',
+      }),
       updatedAt: null,
     })
 

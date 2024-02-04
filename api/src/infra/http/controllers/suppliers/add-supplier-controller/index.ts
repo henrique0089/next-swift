@@ -1,6 +1,6 @@
 import { AddSupplierUseCase } from '@app/usecases/suppliers/add-supplier-usecase'
 import { PGSuppliersRepository } from '@infra/database/pg/repositories/pg-suppliers-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -22,7 +22,7 @@ const bodySchema = z.object({
 })
 
 export class AddSupplierController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { name, email, cnpj, ddd, phone, addresses } = bodySchema.parse(
       req.body,
     )
@@ -39,6 +39,6 @@ export class AddSupplierController {
       addresses,
     })
 
-    return rep.send()
+    return res.send()
   }
 }

@@ -1,5 +1,5 @@
 import { AccountData, AuthProvider } from '@app/providers/auth-provider'
-import { clerkClient } from '@infra/app'
+import clerkClient from '@clerk/clerk-sdk-node'
 
 export class ClerkAuthProvider implements AuthProvider {
   async createAccount({

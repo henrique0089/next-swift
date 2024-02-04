@@ -4,7 +4,7 @@ import { PGCustomersRepository } from '@infra/database/pg/repositories/pg-custom
 import { PGProductsRepository } from '@infra/database/pg/repositories/pg-products-repository'
 import { PGSalesRepository } from '@infra/database/pg/repositories/pg-sales-repository'
 import { PDFKitNfeProvider } from '@infra/providers/nfe/pdfkit-nfe-provider'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -15,7 +15,7 @@ const bodySchema = z.object({
 })
 
 export class SaleProductController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { productsQty, productId, buyerId, paymentMethod } = bodySchema.parse(
       req.body,
     )
@@ -38,6 +38,6 @@ export class SaleProductController {
       paymentMethod: paymentMethod as PaymentMethod,
     })
 
-    return rep.status(201).send({ billet: nfe })
+    return res.status(201).json({ billet: nfe })
   }
 }

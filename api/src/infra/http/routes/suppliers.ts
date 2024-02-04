@@ -2,19 +2,21 @@ import { AddSupplierController } from '@infra/http/controllers/suppliers/add-sup
 import { GetPaginatedSuppliersController } from '@infra/http/controllers/suppliers/get-paginated-suppliers-controller'
 import { RemoveSupplierController } from '@infra/http/controllers/suppliers/remove-supplier-controller'
 import { UpdateSupplierDetailsController } from '@infra/http/controllers/suppliers/update-supplier-details-controller'
-import { FastifyInstance } from 'fastify'
+import { Router } from 'express'
 
 const getPaginatedsuppliersController = new GetPaginatedSuppliersController()
 const addSupplierController = new AddSupplierController()
 const removeSupplierController = new RemoveSupplierController()
 const updateSupplierDetailsController = new UpdateSupplierDetailsController()
 
-export async function suppliersRoutes(app: FastifyInstance) {
-  app.get('/suppliers', getPaginatedsuppliersController.handle)
-  app.post('/suppliers', addSupplierController.handle)
-  app.delete('/suppliers/:supplierId/remove', removeSupplierController.handle)
-  app.put(
-    '/suppliers/:supplierId/update',
-    updateSupplierDetailsController.handle,
-  )
-}
+const suppliersRouter = Router()
+
+suppliersRouter.get('/', getPaginatedsuppliersController.handle)
+suppliersRouter.post('/', addSupplierController.handle)
+suppliersRouter.delete('/:supplierId/remove', removeSupplierController.handle)
+suppliersRouter.put(
+  '/:supplierId/update',
+  updateSupplierDetailsController.handle,
+)
+
+export { suppliersRouter as suppliersRoutes }

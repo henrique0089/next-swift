@@ -1,4 +1,5 @@
 import { Employee, Gender } from '@app/entities/employee'
+import { AppError } from '@app/errors/app-error'
 import { AuthProvider } from '@app/providers/auth-provider'
 import { EmployeesRepository } from '@app/repositories/employees-repository'
 import { randomBytes } from 'crypto'
@@ -28,11 +29,11 @@ export class HireEmployeeUseCase {
     const { firstName, lastName, email, ddd, phone, avatar, gender, roleId } =
       data
 
-    // const employeeAlreadyExists = await this.employeesRepo.findByEmail(email)
+    const employeeAlreadyExists = await this.employeesRepo.findByEmail(email)
 
-    // if (employeeAlreadyExists) {
-    //   throw new AppError('Employee already exists!')
-    // }
+    if (employeeAlreadyExists) {
+      throw new AppError('Employee already exists!')
+    }
 
     const password = randomBytes(10).toString('hex')
 
@@ -47,7 +48,7 @@ export class HireEmployeeUseCase {
       role: null,
     })
 
-    // await this.employeesRepo.create(employee, roleId)
+    await this.employeesRepo.create(employee, roleId)
     await this.authProvider.createAccount({
       firstName,
       lastName,

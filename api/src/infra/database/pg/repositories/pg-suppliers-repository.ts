@@ -128,44 +128,6 @@ export class PGSuppliersRepository implements SuppliersRepository {
 
     return supplier
   }
-  // async paginate({ limit, page }: PaginateParams): Promise<Customer[]> {
-  //   const offset = (page - 1) * limit;
-  //   const query = 
-  //     `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
-  //     FROM customers c
-  //     JOIN addresses a ON a.id = c.address_id
-  //     ORDER BY c.created_at
-  //     LIMIT $1 OFFSET $2
-  //     `
-  //   const { rows } = await client.query<SupplierRecord>(query, [limit, offset])
-
-  //   const customers: Customer[] = []
-
-  //   for (const data of rows) {
-  //     const customer = new Customer({
-  //       name: data.name,
-  //       email: data.email,
-  //       cpf: data.document,
-  //       ddd: data.ddd,
-  //       phone: data.phone,
-  //       address: new Address({
-  //         street: data.street,
-  //         number: data.number,
-  //         complement: data.complement,
-  //         state: data.state,
-  //         city: data.city,
-  //         postalCode: data.postal_code,
-  //         createdAt: data.address_created_at
-  //       }, data.address_id),
-  //       createdAt: data.created_at,
-  //       updatedAt: data.updated_at
-  //     })
-  
-  //     customers.push(customer)
-  //   }
-
-  //   return customers
-  // }
 
   async paginate({ limit, page }: PaginateParams): Promise<Supplier[]> {
     const offset = (page - 1) * limit

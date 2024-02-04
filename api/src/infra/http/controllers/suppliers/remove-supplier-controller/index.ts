@@ -1,6 +1,6 @@
 import { RemoveSupplierUseCase } from '@app/usecases/suppliers/remove-supplier-usecase'
 import { PGSuppliersRepository } from '@infra/database/pg/repositories/pg-suppliers-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const paramsSchema = z.object({
@@ -8,7 +8,7 @@ const paramsSchema = z.object({
 })
 
 export class RemoveSupplierController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { supplierId } = paramsSchema.parse(req.params)
 
     const suppliersRepo = new PGSuppliersRepository()
@@ -16,6 +16,6 @@ export class RemoveSupplierController {
 
     await removeSupplierUseCase.execute({ supplierId })
 
-    return rep.status(204).send()
+    return res.status(204).send()
   }
 }

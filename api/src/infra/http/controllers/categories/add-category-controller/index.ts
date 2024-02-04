@@ -1,6 +1,6 @@
 import { AddCategoryUseCase } from '@app/usecases/categories/add-category-usecase'
 import { PGCategoriesRepository } from '@infra/database/pg/repositories/pg-categories-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -8,7 +8,7 @@ const bodySchema = z.object({
 })
 
 export class AddCategoryController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { name } = bodySchema.parse(req.body)
 
     const categoriesRepo = new PGCategoriesRepository()
@@ -16,6 +16,6 @@ export class AddCategoryController {
 
     await addCategoryUseCase.execute({ name })
 
-    return rep.send()
+    return res.send()
   }
 }

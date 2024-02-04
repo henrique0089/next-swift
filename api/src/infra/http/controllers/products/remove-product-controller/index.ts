@@ -1,6 +1,6 @@
 import { RemoveProductUseCase } from '@app/usecases/products/remove-product-usecase'
 import { PGProductsRepository } from '@infra/database/pg/repositories/pg-products-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const paramsSchema = z.object({
@@ -8,7 +8,7 @@ const paramsSchema = z.object({
 })
 
 export class RemoveProductController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { productId } = paramsSchema.parse(req.params)
 
     const productsRepo = new PGProductsRepository()
@@ -16,6 +16,6 @@ export class RemoveProductController {
 
     await removeProductUseCase.execute({ productId })
 
-    return rep.status(204).send()
+    return res.status(204).send()
   }
 }

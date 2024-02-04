@@ -1,5 +1,4 @@
-import { FastifyInstance } from 'fastify'
-
+import { Router } from 'express'
 import { categoriesRoutes } from './categories'
 import { customersRoutes } from './customers'
 import { employeesRoutes } from './employees'
@@ -8,12 +7,14 @@ import { productsRoutes } from './products'
 import { rolesRoutes } from './roles'
 import { salesRoutes } from './sales'
 
-export async function appRoutes(app: FastifyInstance) {
-  app.register(employeesRoutes)
-  app.register(customersRoutes)
-  app.register(rolesRoutes)
-  app.register(categoriesRoutes)
-  app.register(productsRoutes)
-  app.register(salesRoutes)
-  app.register(metricsRoutes)
-}
+const router = Router()
+
+router.use('/employees', employeesRoutes)
+router.use('/customers', customersRoutes)
+router.use('/roles', rolesRoutes)
+router.use('/categories', categoriesRoutes)
+router.use('/products', productsRoutes)
+router.use('/sales', salesRoutes)
+router.use('/metrics', metricsRoutes)
+
+export { router as routes }

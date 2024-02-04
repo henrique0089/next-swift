@@ -1,6 +1,15 @@
 @url = https://3333-henrique0089-nextswift-l7jc5jg033c.ws-us108.gitpod.io
 
 ###
+
+POST {{url}}/roles
+Content-Type: application/json
+
+{
+  "name": "editor"
+}
+###
+
 POST {{url}}/employees
 Content-Type: application/json
 
@@ -11,5 +20,18 @@ Content-Type: application/json
   "ddd": 82,
   "phone": 999999999,
   "gender": "M",
-  "roleId": "roleId"
+  "roleId": "1394bd71-62cd-4a58-b852-ca2f9dca962e"
 }
+
+###
+GET {{url}}/employees
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+###
+# @name token
+GET {{url}}/token
+Content-Type: application/json
+
+###
+@access_token = {{token.response.body.token.token}}

@@ -1,6 +1,6 @@
 import { DismissEmployeeUseCase } from '@app/usecases/employees/dismiss-employee-usecase'
 import { PGEmployeesRepository } from '@infra/database/pg/repositories/pg-employees-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -8,7 +8,7 @@ const bodySchema = z.object({
 })
 
 export class DismissEmployeeController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const adminId = 'adminId'
     const { employeeId } = bodySchema.parse(req.body)
 
@@ -17,6 +17,6 @@ export class DismissEmployeeController {
 
     await dismissEmployeeUseCase.execute({ adminId, employeeId })
 
-    return rep.status(204).send()
+    return res.status(204).send()
   }
 }

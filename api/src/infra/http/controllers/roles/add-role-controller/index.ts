@@ -1,6 +1,6 @@
 import { AddRoleUseCase } from '@app/usecases/roles/add-role-usecase'
 import { PGRolesRepository } from '@infra/database/pg/repositories/pg-roles-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -8,7 +8,7 @@ const bodySchema = z.object({
 })
 
 export class AddRoleController {
-  async handle(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const { name } = bodySchema.parse(req.body)
 
     const rolesRepository = new PGRolesRepository()
@@ -16,6 +16,6 @@ export class AddRoleController {
 
     await addRoleUseCase.execute({ name })
 
-    return rep.status(201).send('role added successfuly!')
+    return res.status(201).json({ message: 'role added successfuly!' })
   }
 }

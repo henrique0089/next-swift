@@ -1,6 +1,6 @@
 import { DeleteCategoryUseCase } from '@app/usecases/categories/delete-category-usecase'
 import { PGCategoriesRepository } from '@infra/database/pg/repositories/pg-categories-repository'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const paramsSchema = z.object({
@@ -8,7 +8,7 @@ const paramsSchema = z.object({
 })
 
 export class DeleteCategoryController {
-  async execute(req: FastifyRequest, rep: FastifyReply): Promise<FastifyReply> {
+  async execute(req: Request, res: Response): Promise<Response> {
     const { categoryId } = paramsSchema.parse(req.params)
 
     const categoriesRepo = new PGCategoriesRepository()
@@ -16,6 +16,6 @@ export class DeleteCategoryController {
 
     await deleteCategoryUseCase.execute({ categoryId })
 
-    return rep.status(204).send()
+    return res.status(204).send()
   }
 }
