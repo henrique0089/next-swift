@@ -187,14 +187,14 @@ export class PGSalesRepository implements SalesRepository {
     return sales
   }
 
-  async getLastSix(): Promise<Sale[]> {
+  async getRecent(): Promise<Sale[]> {
     const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
       FROM sales s
       JOIN products p ON s.product_id = p.id
       JOIN customers c ON s.buyer_id = c.id
       GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
       ORDER BY s.created_at DESC 
-      LIMIT 6
+      LIMIT 5
     `
 
     const { rows } = await client.query<SaleRecord>(query)
@@ -288,8 +288,12 @@ export class PGSalesRepository implements SalesRepository {
     startDate,
     endDate,
   }: RevenueParams): Promise<RevenueMetrics[]> {
-    const searchStartDate = dayjs(startDate).startOf('day').toDate()
-    const searchEndDate = dayjs(endDate).endOf('day').toDate()
+    const searchStartDate = startDate
+      ? dayjs(startDate).startOf('day').toDate()
+      : dayjs().subtract(1, 'month').startOf('day').toDate()
+    const searchEndDate = endDate
+      ? dayjs(endDate).endOf('day').toDate()
+      : dayjs().endOf('day').toDate()
 
     const sql = `SELECT TO_CHAR(created_at, 'DD/MM') AS date,
       total / 100.0 AS revenue

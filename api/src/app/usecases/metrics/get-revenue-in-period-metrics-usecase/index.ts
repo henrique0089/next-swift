@@ -1,13 +1,13 @@
 import { SalesRepository } from '@app/repositories/sales-repository'
 
 interface Request {
-  startDate: Date
-  endDate: Date
+  startDate?: Date
+  endDate?: Date
 }
 
 interface Response {
   metrics: {
-    date: string
+    date: Date
     revenue: number
   }[]
 }

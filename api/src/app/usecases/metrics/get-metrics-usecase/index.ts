@@ -4,13 +4,13 @@ import { SalesRepository } from '@app/repositories/sales-repository'
 interface Response {
   metrics: {
     salesCurrentMonthTotal: number
-    salesCurrentMonthPercentageIncrease: string
+    salesCurrentMonthPercentageIncrease: number
     salesTodayTotalCount: number
-    salesTodayPercentageIncrease: string
+    salesTodayPercentageIncrease: number
     canceledSalesTotalCount: number
-    canceledSalesPercentageIncrease: string
+    canceledSalesPercentageIncrease: number
     customersCurrentMonthTotalCount: number
-    customersPercentageIncrease: string
+    customersPercentageIncrease: number
   }
 }
 
@@ -29,18 +29,14 @@ export class GetMetricsUseCase {
     const salesCurrentMonthTotal = Number(salesCurrentMonthTotalString) / 100
     const salesLastMonthTotal = Number(salesLastMonthTotalString) / 100
 
-    let salesPercentageIncrease = 0
+    let salesCurrentMonthPercentageIncrease = 0
 
     if (salesLastMonthTotal > 0) {
-      salesPercentageIncrease = this.getPercentage(
+      salesCurrentMonthPercentageIncrease = this.getPercentage(
         salesCurrentMonthTotal,
         salesLastMonthTotal,
       )
     }
-
-    const salesPercentageIncreaseFormatted = `${salesPercentageIncrease.toFixed(
-      0,
-    )}%`
 
     const salesTodayTotalCount = await this.salesRepo.getTodayTotalCount()
 
@@ -55,10 +51,6 @@ export class GetMetricsUseCase {
         salesPreviousDayTotalCount,
       )
     }
-
-    const salesTodayPercentageIncreaseFormatted = `${salesTodayPercentageIncrease.toFixed(
-      0,
-    )}%`
 
     const canceledSalesTotalCount =
       await this.salesRepo.getCanceledSalesTotalCount()
@@ -75,10 +67,6 @@ export class GetMetricsUseCase {
       )
     }
 
-    const canceledSalesPercentageIncreaseFormatted = `${canceledSalesPercentageIncrease.toFixed(
-      0,
-    )}%`
-
     const customersCurrentMonthTotalCount =
       await this.customersRepo.getCurrentMonthTotalCount()
 
@@ -94,19 +82,15 @@ export class GetMetricsUseCase {
       )
     }
 
-    const customersPercentageIncreaseFormatted = `${customersPercentageIncrease.toFixed(
-      0,
-    )}%`
-
     const metrics = {
       salesCurrentMonthTotal,
-      salesCurrentMonthPercentageIncrease: salesPercentageIncreaseFormatted,
+      salesCurrentMonthPercentageIncrease,
       salesTodayTotalCount,
-      salesTodayPercentageIncrease: salesTodayPercentageIncreaseFormatted,
+      salesTodayPercentageIncrease,
       canceledSalesTotalCount,
-      canceledSalesPercentageIncrease: canceledSalesPercentageIncreaseFormatted,
+      canceledSalesPercentageIncrease,
       customersCurrentMonthTotalCount,
-      customersPercentageIncrease: customersPercentageIncreaseFormatted,
+      customersPercentageIncrease,
     }
 
     return {

@@ -1,4 +1,3 @@
-import { api } from '@/lib/axios'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -21,21 +20,21 @@ export async function POST(req: NextRequest) {
   }
 
   const { firstName, lastName, email, cpf, ddd, phone } = bodySchema.parse(body)
-
-  const res = await api.post<{ password: string }>(
-    '/employees',
-    {
-      firstName,
-      lastName,
-      email,
-      cpf,
-      ddd,
-      phone,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${await getToken()}`,
-      },
-    },
-  )
+  console.log(req)
+  // const res = await api.post<{ password: string }>(
+  //   '/employees',
+  //   {
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     cpf,
+  //     ddd,
+  //     phone,
+  //   },
+  //   {
+  //     headers: {
+  //       Authorization: `Bearer ${await getToken()}`,
+  //     },
+  //   },
+  // )
 }
