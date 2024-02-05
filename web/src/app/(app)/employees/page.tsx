@@ -28,7 +28,6 @@ export default function Employees() {
       </div>
 
       <EmployeesContent />
-      {/* <EmailTemplate /> */}
     </section>
   )
 }

@@ -21,6 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { Role } from '../hire/page'
 
 const hireEmployeeFormSchema = z.object({
   firstName: z.string(),
@@ -34,7 +35,11 @@ const hireEmployeeFormSchema = z.object({
 
 type HireEmployeeFormValues = z.infer<typeof hireEmployeeFormSchema>
 
-export function HireEmployeeForm() {
+interface HireEmployeeFormProps {
+  roles: Role[]
+}
+
+export function HireEmployeeForm({ roles }: HireEmployeeFormProps) {
   const form = useForm<HireEmployeeFormValues>({
     resolver: zodResolver(hireEmployeeFormSchema),
   })
@@ -46,8 +51,7 @@ export function HireEmployeeForm() {
 
   async function handleHireEmployee(data: HireEmployeeFormValues) {
     try {
-      // await axios.post('/employees', data)
-      await fetch('/employees', {
+      await fetch('/api/employees', {
         method: 'POST',
         body: JSON.stringify(data),
       })
@@ -125,8 +129,11 @@ export function HireEmployeeForm() {
                         <SelectValue placeholder="Select a role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="3j4hj3h4h">admin</SelectItem>
-                        <SelectItem value="485845dfjhdfhj">editor</SelectItem>
+                        {roles.map((role) => (
+                          <SelectItem key={role.id} value={role.id}>
+                            {role.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>

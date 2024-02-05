@@ -14,12 +14,10 @@ import {
 } from '@react-email/components'
 
 interface EmailTemplateProps {
-  validationCode?: string
+  pass: string
 }
 
-export function EmailTemplate({
-  validationCode = 'sdjhsdjhh45h45',
-}: EmailTemplateProps) {
+export function EmailTemplate({ pass }: EmailTemplateProps) {
   return (
     <Html>
       <Head />
@@ -44,7 +42,7 @@ export function EmailTemplate({
             link does not work, you can use the login verification code
             directly:
           </Text>
-          <code style={code}>{validationCode}</code>
+          <code style={code}>{pass}</code>
           <Hr style={hr} />
           <Link href="https://linear.app" style={reportLink}>
             Linear
@@ -54,10 +52,6 @@ export function EmailTemplate({
     </Html>
   )
 }
-
-EmailTemplate.PreviewProps = {
-  validationCode: 'tt226-5398x',
-} as EmailTemplateProps
 
 export default EmailTemplate
 
