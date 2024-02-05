@@ -29,21 +29,74 @@ interface MetricsResponse {
   }
 }
 
+export type Revenue = {
+  date: Date
+  revenue: number
+}
+
+interface RevenueMetricsResponse {
+  revenueMetrics: Revenue[]
+}
+
+export type RecentSale = {
+  id: string
+  total: number
+  product: string
+  quantiy: number
+  paymentMethod: string
+  status: string
+  customer: string
+}
+
+interface RecentSaleResponse {
+  sales: RecentSale[]
+}
+
 export default async function Dashboard() {
   const { getToken } = auth()
 
-  const res = await api.get<MetricsResponse>('/metrics/cards', {
-    headers: {
-      Authorization: `Bearer ${await getToken()}`,
-    },
-  })
+  const token = await getToken()
 
-  const { metrics } = res.data
+  async function getCardsMetrics() {
+    const res = await api.get<MetricsResponse>('/metrics/cards', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return res.data.metrics
+  }
+
+  async function getChartMetrics() {
+    const res = await api.get<RevenueMetricsResponse>('/metrics/revenue', {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      },
+    })
+
+    return res.data.revenueMetrics
+  }
+
+  async function getRecentSales() {
+    const res = await api.get<RecentSaleResponse>('/sales/recent', {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      },
+    })
+
+    return res.data.sales
+  }
+
+  const [cardsMetrics, chartMetrics, recentSales] = await Promise.all([
+    getCardsMetrics(),
+    getChartMetrics(),
+    getRecentSales(),
+  ])
 
   const currentMonthRevenue = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  }).format(metrics.salesCurrentMonthTotal)
+  }).format(cardsMetrics.salesCurrentMonthTotal)
 
   return (
     <section className="p-4 lg:p-6 space-y-4">
@@ -60,24 +113,24 @@ export default async function Dashboard() {
       <div className="grid-cols-4 gap-4 hidden lg:grid">
         <MonthRevenueCard
           total={currentMonthRevenue}
-          percentageIncrease={metrics.salesCurrentMonthPercentageIncrease}
+          percentageIncrease={cardsMetrics.salesCurrentMonthPercentageIncrease}
         />
         <TodaySalesAmountCard
-          count={metrics.salesTodayTotalCount}
-          percentageIncrease={metrics.salesTodayPercentageIncrease}
+          count={cardsMetrics.salesTodayTotalCount}
+          percentageIncrease={cardsMetrics.salesTodayPercentageIncrease}
         />
         <MonthCanceledSalesAmountCard
-          count={metrics.canceledSalesTotalCount}
-          percentageIncrease={metrics.canceledSalesPercentageIncrease}
+          count={cardsMetrics.canceledSalesTotalCount}
+          percentageIncrease={cardsMetrics.canceledSalesPercentageIncrease}
         />
         <NewCustomersAmountCard
-          count={metrics.customersCurrentMonthTotalCount}
-          percentageIncrease={metrics.customersPercentageIncrease}
+          count={cardsMetrics.customersCurrentMonthTotalCount}
+          percentageIncrease={cardsMetrics.customersPercentageIncrease}
         />
       </div>
 
       <div className="gap-4 grid grid-cols-1 lg:grid-cols-9">
-        <RevenueChart />
+        <RevenueChart revenueMetrics={chartMetrics} />
 
         <Card className="col-span-6 lg:col-span-3">
           <CardHeader>
@@ -86,7 +139,13 @@ export default async function Dashboard() {
           </CardHeader>
 
           <CardContent>
-            <RecentSalesCard />
+            {recentSales.length > 0 ? (
+              <RecentSalesCard sales={recentSales} />
+            ) : (
+              <div className="flex items-center justify-center">
+                <h2>No recent sales</h2>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
