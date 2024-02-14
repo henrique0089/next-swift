@@ -7,14 +7,7 @@ export class GetAllRolesController {
     const rolesRepository = new PGRolesRepository()
     const getAllRolesUseCase = new GetAllRolesUseCase(rolesRepository)
 
-    const result = await getAllRolesUseCase.execute()
-
-    const roles = result.roles.map((role) => {
-      return {
-        id: role.id,
-        name: role.name,
-      }
-    })
+    const { roles } = await getAllRolesUseCase.execute()
 
     return rep.json({ roles })
   }

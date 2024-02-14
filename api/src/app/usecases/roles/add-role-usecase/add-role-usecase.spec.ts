@@ -14,10 +14,9 @@ describe('Add Role UseCase', () => {
   it('should be to add a new role', async () => {
     await addRoleUseCase.execute({ name: 'viewer' })
 
-    const role = await inMemoryRolesRepository.findByName('viewer')
+    await inMemoryRolesRepository.findByName('viewer')
 
-    expect(inMemoryRolesRepository.roles[0].id).toEqual(role?.id)
-    expect(inMemoryRolesRepository.roles[0].name).toEqual(role?.name)
+    expect(inMemoryRolesRepository.roles[0]).toEqual('viewer')
   })
 
   it('should not be to add an role if already exists', async () => {

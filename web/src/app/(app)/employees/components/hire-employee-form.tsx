@@ -17,11 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
-import { Role } from '../hire/page'
 
 const hireEmployeeFormSchema = z.object({
   firstName: z.string(),
@@ -30,16 +33,18 @@ const hireEmployeeFormSchema = z.object({
   ddd: z.coerce.number(),
   phone: z.coerce.number(),
   gender: z.enum(['M', 'F']),
-  roleId: z.string(),
+  role: z.string(),
 })
 
 type HireEmployeeFormValues = z.infer<typeof hireEmployeeFormSchema>
 
 interface HireEmployeeFormProps {
-  roles: Role[]
+  roles: string[]
 }
 
 export function HireEmployeeForm({ roles }: HireEmployeeFormProps) {
+  const { getToken } = useAuth()
+
   const form = useForm<HireEmployeeFormValues>({
     resolver: zodResolver(hireEmployeeFormSchema),
   })
@@ -50,15 +55,40 @@ export function HireEmployeeForm({ roles }: HireEmployeeFormProps) {
   } = form
 
   async function handleHireEmployee(data: HireEmployeeFormValues) {
+    let pass: string | null = null
+
     try {
-      await fetch('/api/employees', {
-        method: 'POST',
-        body: JSON.stringify(data),
+      const res = await api.post<{ password: string }>('/employees', data, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
       })
 
-      alert('Hired')
-    } catch (error) {
-      console.log(error)
+      pass = res.data.password
+    } catch (error: any) {
+      toast('Uh oh! Something went wrong.', {
+        description: error.response.data.message,
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 1500,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    }
+
+    if (pass) {
+      await axios.post('/api/employees/send-email', { email: data.email, pass })
+
+      toast('Congratulations!', {
+        description: 'you hired a new employee.',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 1500,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
     }
   }
 
@@ -119,7 +149,7 @@ export function HireEmployeeForm({ roles }: HireEmployeeFormProps) {
 
             <FormField
               control={form.control}
-              name="roleId"
+              name="role"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
@@ -130,8 +160,8 @@ export function HireEmployeeForm({ roles }: HireEmployeeFormProps) {
                       </SelectTrigger>
                       <SelectContent>
                         {roles.map((role) => (
-                          <SelectItem key={role.id} value={role.id}>
-                            {role.name}
+                          <SelectItem key={role} value={role}>
+                            {role}
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -1,15 +1,14 @@
-import { RolesRepository } from '@app/dashboard/repositories/roles-repository'
-import { Role } from '@app/entities/role'
+import { RolesRepository } from '@app/repositories/roles-repository'
 
 export class InMemoryRolesRepository implements RolesRepository {
-  public roles: Role[] = []
+  public roles: string[] = []
 
-  async findAll(): Promise<Role[]> {
+  async findAll(): Promise<string[]> {
     return this.roles
   }
 
-  async findByName(name: string): Promise<Role | null> {
-    const role = this.roles.find((role) => role.name === name)
+  async findByName(name: string): Promise<string | null> {
+    const role = this.roles.find((role) => role === name)
 
     if (!role) {
       return null
@@ -18,7 +17,7 @@ export class InMemoryRolesRepository implements RolesRepository {
     return role
   }
 
-  async create(role: Role): Promise<void> {
+  async create(role: string): Promise<void> {
     this.roles.push(role)
   }
 }

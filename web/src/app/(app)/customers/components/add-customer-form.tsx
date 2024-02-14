@@ -10,6 +10,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -21,11 +23,19 @@ const addCustomerFormSchema = z.object({
   cpf: z.string(),
   ddd: z.coerce.number().min(2, { message: 'DDD must have 2 numbers' }),
   phone: z.coerce.number().min(9, { message: 'Phone must have 9 numbers' }),
+  street: z.string(),
+  number: z.coerce.number(),
+  complement: z.string().optional(),
+  city: z.string(),
+  state: z.string(),
+  postalCode: z.string(),
 })
 
 type AddCustomerFormValues = z.infer<typeof addCustomerFormSchema>
 
 export function AddCustomerForm() {
+  const { getToken } = useAuth()
+
   const form = useForm<AddCustomerFormValues>({
     resolver: zodResolver(addCustomerFormSchema),
     mode: 'onChange',
@@ -37,10 +47,16 @@ export function AddCustomerForm() {
     formState: { isSubmitting },
   } = form
 
-  function handleAddCustomer(data: AddCustomerFormValues) {
-    console.log({ data })
-
-    setValue('name', '')
+  async function handleAddCustomer(data: AddCustomerFormValues) {
+    try {
+      await api.post<{ password: string }>('/customers', data, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -126,6 +142,92 @@ export function AddCustomerForm() {
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="street"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Street</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="street..." />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="São paulo" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="complement"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Complement (optional)</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="complement..." />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>State</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="sp" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="postalCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cep</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="000.000-00" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Number</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="00" type="number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <Button disabled={isSubmitting} className="hidden lg:inline-flex">
               {isSubmitting && (

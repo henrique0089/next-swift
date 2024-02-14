@@ -4,7 +4,6 @@ import { useSignIn } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from './ui/button'
@@ -32,8 +31,6 @@ export function EmployeeAuthForm() {
     resolver: zodResolver(employeeAuthFormSchema),
   })
 
-  const { push } = useRouter()
-
   async function handleSignIn({ email, password }: EmployeeAuthFormValues) {
     if (!isLoaded) return
 
@@ -46,7 +43,7 @@ export function EmployeeAuthForm() {
       if (completeSignIn.status === 'complete') {
         await setActive({ session: completeSignIn.createdSessionId })
 
-        push('/dashboard')
+        window.location.href = '/dashboard'
       }
     } catch (err) {
       console.log(err)

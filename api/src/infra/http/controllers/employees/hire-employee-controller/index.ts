@@ -12,12 +12,12 @@ const bodySchema = z.object({
   ddd: z.coerce.number(),
   phone: z.coerce.number(),
   gender: z.enum(['M', 'F']),
-  roleId: z.string(),
+  role: z.enum(['admin', 'editor']),
 })
 
 export class HireEmployeeController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { firstName, lastName, email, ddd, phone, gender, roleId } =
+    const { firstName, lastName, email, ddd, phone, gender, role } =
       bodySchema.parse(req.body)
     const avatar = 'avatar.png'
 
@@ -37,7 +37,7 @@ export class HireEmployeeController {
       phone: Number(phone),
       avatar: avatar ?? null,
       gender,
-      roleId,
+      role,
     })
 
     return res.status(201).send({ password })

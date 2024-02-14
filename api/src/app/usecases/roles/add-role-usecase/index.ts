@@ -1,4 +1,3 @@
-import { Role } from '@app/entities/role'
 import { AppError } from '@app/errors/app-error'
 import { RolesRepository } from '@app/repositories/roles-repository'
 
@@ -18,10 +17,6 @@ export class AddRoleUseCase {
       throw new AppError('role already exists!')
     }
 
-    const role = new Role({
-      name,
-    })
-
-    await this.rolesRepo.create(role)
+    await this.rolesRepo.create(name)
   }
 }

@@ -1,4 +1,4 @@
-import { Employee, Gender } from '@app/entities/employee'
+import { Employee, Gender, Role } from '@app/entities/employee'
 import { AppError } from '@app/errors/app-error'
 import { AuthProvider } from '@app/providers/auth-provider'
 import { EmployeesRepository } from '@app/repositories/employees-repository'
@@ -12,7 +12,7 @@ interface Request {
   phone: number
   avatar: string | null
   gender: Gender
-  roleId: string
+  role: Role
 }
 
 interface Response {
@@ -26,7 +26,7 @@ export class HireEmployeeUseCase {
   ) {}
 
   async execute(data: Request): Promise<Response> {
-    const { firstName, lastName, email, ddd, phone, avatar, gender, roleId } =
+    const { firstName, lastName, email, ddd, phone, avatar, gender, role } =
       data
 
     const employeeAlreadyExists = await this.employeesRepo.findByEmail(email)
@@ -45,10 +45,10 @@ export class HireEmployeeUseCase {
       phone,
       avatar,
       gender,
-      role: null,
+      role,
     })
 
-    await this.employeesRepo.create(employee, roleId)
+    await this.employeesRepo.create(employee)
     await this.authProvider.createAccount({
       firstName,
       lastName,

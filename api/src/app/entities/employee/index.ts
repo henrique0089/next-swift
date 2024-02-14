@@ -1,8 +1,8 @@
 import { Replace } from '@helpers/replace'
 import { randomUUID } from 'node:crypto'
-import { Role } from '../role'
 
 export type Gender = 'M' | 'F'
+export type Role = 'admin' | 'editor'
 
 interface EmployeeProps {
   firstName: string

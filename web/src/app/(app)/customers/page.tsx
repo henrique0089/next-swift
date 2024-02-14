@@ -1,10 +1,22 @@
 import { Button } from '@/components/ui/button'
+import { api } from '@/lib/axios'
+import { auth } from '@clerk/nextjs'
 import { PlusCircle } from 'lucide-react'
 import Link from 'next/link'
 import { CustomersContent } from './components/customers-content'
 import { CustomersDatePicker } from './components/customers-date-picker'
 
-export default function Customers() {
+export default async function Customers() {
+  const { getToken } = auth()
+
+  const res = await api.get('/customers', {
+    headers: {
+      Authorization: `Bearer ${await getToken()}`,
+    },
+  })
+
+  console.log(res.data)
+
   return (
     <section className="min-h-screen max-w-6xl w-full mx-auto space-y-8 p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

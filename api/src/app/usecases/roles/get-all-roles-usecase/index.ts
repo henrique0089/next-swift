@@ -1,8 +1,7 @@
-import { RolesRepository } from '@app/dashboard/repositories/roles-repository'
-import { Role } from '@app/entities/role'
+import { RolesRepository } from '@app/repositories/roles-repository'
 
 interface Response {
-  roles: Role[]
+  roles: string[]
 }
 
 export class GetAllRolesUseCase {

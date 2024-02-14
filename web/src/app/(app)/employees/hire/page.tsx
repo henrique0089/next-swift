@@ -2,13 +2,8 @@ import { api } from '@/lib/axios'
 import { auth } from '@clerk/nextjs'
 import { HireEmployeeForm } from '../components/hire-employee-form'
 
-export type Role = {
-  id: string
-  name: string
-}
-
 interface RolesResponse {
-  roles: Role[]
+  roles: string[]
 }
 
 export default async function HireEmployee() {

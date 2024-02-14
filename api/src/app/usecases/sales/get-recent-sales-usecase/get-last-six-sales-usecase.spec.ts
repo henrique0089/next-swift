@@ -1,14 +1,14 @@
 import { PaymentMethod, PaymentStatus, Sale } from '@app/entities/sale'
 import { InMemorySalesRepository } from 'src/test/dashboard/repositories/in-memory-sales-repository'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { GetLastSixSalesUseCase } from '.'
+import { GetRecentSalesUseCase } from '.'
 
 let inMemorySalesRepository: InMemorySalesRepository
-let getLastSixSalesUseCase: GetLastSixSalesUseCase
+let sut: GetRecentSalesUseCase
 
 beforeAll(() => {
   inMemorySalesRepository = new InMemorySalesRepository()
-  getLastSixSalesUseCase = new GetLastSixSalesUseCase(inMemorySalesRepository)
+  sut = new GetRecentSalesUseCase(inMemorySalesRepository)
 })
 
 describe('Get Last Six Sales UseCase', () => {
@@ -31,7 +31,7 @@ describe('Get Last Six Sales UseCase', () => {
       await inMemorySalesRepository.create(sale)
     }
 
-    const { sales } = await getLastSixSalesUseCase.execute()
+    const { sales } = await sut.execute()
 
     expect(sales).toHaveLength(6)
     expect(sales[5].productId).toEqual('product-5')

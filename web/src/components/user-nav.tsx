@@ -1,4 +1,6 @@
-import { SignOutButton } from '@clerk/nextjs'
+'use client'
+
+import { useAuth, useUser } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
@@ -15,6 +17,15 @@ import {
 } from './ui/dropdown-menu'
 
 export function UserNav() {
+  const { user } = useUser()
+  const { signOut } = useAuth()
+
+  async function handleSignOut() {
+    await signOut()
+
+    window.location.href = '/sign-in'
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -28,7 +39,7 @@ export function UserNav() {
             />
           </AvatarFallback>
 
-          <AvatarImage />
+          <AvatarImage src={user?.imageUrl} alt={user?.firstName ?? ''} />
         </Avatar>
       </DropdownMenuTrigger>
 
@@ -36,11 +47,11 @@ export function UserNav() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-2">
             <div className="text-sm font-medium leading-none flex items-center justify-between">
-              <p>Jhon doe</p>
+              <p>{user?.firstName}</p>
               <Badge className="rounded-full">Admin</Badge>
             </div>
             <p className="text-xs leading-none text-muted-foreground">
-              jhondoe@gmail.com
+              {user?.emailAddresses[0].emailAddress}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -57,13 +68,9 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <SignOutButton>
-            <div>
-              Log out
-              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-            </div>
-          </SignOutButton>
+        <DropdownMenuItem onClick={handleSignOut}>
+          Log out
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -20,7 +20,7 @@ export function Providers({ children }: { children: ReactNode }) {
       defaultTheme="light"
       themes={['light', 'dark']}
     >
-      {children}
+      <>{children}</>
     </ThemeProvider>
   )
 }

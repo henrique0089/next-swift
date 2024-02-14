@@ -6,7 +6,6 @@ import {
   Heading,
   Hr,
   Html,
-  Img,
   Link,
   Preview,
   Section,
@@ -21,39 +20,28 @@ export function EmailTemplate({ pass }: EmailTemplateProps) {
   return (
     <Html>
       <Head />
-      <Preview>Your login code for Linear</Preview>
+      <Preview>Your password for access nextswift dashboard</Preview>
       <Body style={main}>
         <Container style={container}>
-          <Img
-            src="/dark-logo.svg"
-            width="42"
-            height="42"
-            alt="Linear"
-            style={logo}
-          />
-          <Heading style={heading}>Your login code for Linear</Heading>
+          <Heading style={heading}>Your login code for NextSwift</Heading>
           <Section style={buttonContainer}>
             <Button style={button} href="https://linear.app">
-              Login to Linear
+              Login to NextSwift
             </Button>
           </Section>
           <Text style={paragraph}>
-            This link and code will only be valid for the next 5 minutes. If the
-            link does not work, you can use the login verification code
-            directly:
+            This is your password. you will be update it later if you want.
           </Text>
           <code style={code}>{pass}</code>
           <Hr style={hr} />
           <Link href="https://linear.app" style={reportLink}>
-            Linear
+            NextSwift
           </Link>
         </Container>
       </Body>
     </Html>
   )
 }
-
-export default EmailTemplate
 
 const logo = {
   borderRadius: 21,

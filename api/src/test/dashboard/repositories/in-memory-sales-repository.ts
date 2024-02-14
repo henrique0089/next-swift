@@ -53,7 +53,7 @@ export class InMemorySalesRepository implements SalesRepository {
     return paginatedSales
   }
 
-  async getLastSix(): Promise<Sale[]> {
+  async getRecent(): Promise<Sale[]> {
     const sales = this.sales.reverse().slice(0, 6)
 
     return sales
@@ -160,9 +160,17 @@ export class InMemorySalesRepository implements SalesRepository {
     startDate,
     endDate,
   }: RevenueParams): Promise<RevenueMetrics[]> {
+    const searchStartDate = startDate
+      ? dayjs(startDate).startOf('day').toDate()
+      : dayjs().subtract(1, 'month').startOf('day').toDate()
+    const searchEndDate = endDate
+      ? dayjs(endDate).endOf('day').toDate()
+      : dayjs().endOf('day').toDate()
+
     const metrics = this.sales
       .filter(
-        (sale) => sale.createdAt >= startDate && sale.createdAt <= endDate,
+        (sale) =>
+          sale.createdAt >= searchStartDate && sale.createdAt <= searchEndDate,
       )
       .map((sale) => {
         const formattedDate = dayjs(sale.createdAt).format('DD/MM')
