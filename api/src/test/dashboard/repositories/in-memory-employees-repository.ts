@@ -1,5 +1,5 @@
-import { EmployeesRepository } from '@app/dashboard/repositories/employees-repository'
 import { Employee } from '@app/entities/employee'
+import { EmployeesRepository } from '@app/repositories/employees-repository'
 
 export class InMemoryEmployeesRepository implements EmployeesRepository {
   public employees: Employee[] = []
@@ -28,7 +28,7 @@ export class InMemoryEmployeesRepository implements EmployeesRepository {
     return employee
   }
 
-  async create(employee: Employee, roleId: string): Promise<void> {
+  async create(employee: Employee): Promise<void> {
     this.employees.push(employee)
   }
 

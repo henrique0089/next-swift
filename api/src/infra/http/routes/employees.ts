@@ -6,8 +6,10 @@ import { DismissEmployeeController } from '@infra/http/controllers/employees/dis
 import { GetAllEmployeesController } from '@infra/http/controllers/employees/get-all-employees-controller'
 import { HireEmployeeController } from '@infra/http/controllers/employees/hire-employee-controller'
 import { Router } from 'express'
+import { GetProfileInfoController } from '../controllers/employees/get-profile-info-controller'
 
 const getAllEmployeesController = new GetAllEmployeesController()
+const getProfileInfoController = new GetProfileInfoController()
 const hireEmployeeController = new HireEmployeeController()
 const dismissEmployeeController = new DismissEmployeeController()
 
@@ -28,6 +30,17 @@ employeesRouter.get(
   }),
   getAllEmployeesController.handle,
 )
+
+employeesRouter.get(
+  '/me',
+  ClerkExpressRequireAuth({
+    onError(error) {
+      console.log(error)
+    },
+  }),
+  getProfileInfoController.handle,
+)
+
 employeesRouter.post(
   '/',
   ClerkExpressRequireAuth(),
