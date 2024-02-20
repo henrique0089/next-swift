@@ -19,7 +19,6 @@ export class HireEmployeeController {
   async handle(req: Request, res: Response): Promise<Response> {
     const { firstName, lastName, email, ddd, phone, gender, role } =
       bodySchema.parse(req.body)
-    const avatar = 'avatar.png'
 
     const employeesRepository = new PGEmployeesRepository()
     const authProvider = new ClerkAuthProvider()
@@ -35,7 +34,7 @@ export class HireEmployeeController {
       email,
       ddd,
       phone: Number(phone),
-      avatar: avatar ?? null,
+      avatar: null,
       gender,
       role,
     })

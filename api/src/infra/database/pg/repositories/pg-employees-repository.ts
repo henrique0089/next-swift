@@ -12,9 +12,10 @@ interface EmployeeRecord {
   avatar: string | null
   gender: Gender
   role: Role
-  dismissedAt: Date | null
-  createdAt: Date
-  updatedAt: Date | null
+  external_id: string
+  dismissed_at: Date | null
+  created_at: Date
+  updated_at: Date | null
 }
 
 export class PGEmployeesRepository implements EmployeesRepository {
@@ -37,9 +38,10 @@ export class PGEmployeesRepository implements EmployeesRepository {
           avatar: data.avatar,
           gender: data.gender,
           role: data.role,
-          dismissedAt: data.dismissedAt,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt,
+          externalId: data.external_id,
+          dismissedAt: data.dismissed_at,
+          createdAt: data.created_at,
+          updatedAt: data.updated_at,
         },
         data.id,
       )
@@ -70,9 +72,41 @@ export class PGEmployeesRepository implements EmployeesRepository {
         avatar: data.avatar,
         gender: data.gender,
         role: data.role,
-        dismissedAt: data.dismissedAt,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
+        externalId: data.external_id,
+        dismissedAt: data.dismissed_at,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      },
+      data.id,
+    )
+
+    return employee
+  }
+
+  async findByExternalId(id: string): Promise<Employee | null> {
+    const query = `SELECT * FROM employees WHERE external_id = $1 LIMIT 1`
+    const result = await client.query<EmployeeRecord>(query, [id])
+
+    if (result.rows.length === 0) {
+      return null
+    }
+
+    const data = result.rows[0]
+
+    const employee = new Employee(
+      {
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+        ddd: data.ddd,
+        phone: data.phone,
+        avatar: data.avatar,
+        gender: data.gender,
+        role: data.role,
+        externalId: data.external_id,
+        dismissedAt: data.dismissed_at,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
       },
       data.id,
     )
@@ -100,9 +134,10 @@ export class PGEmployeesRepository implements EmployeesRepository {
         avatar: data.avatar,
         gender: data.gender,
         role: data.role,
-        dismissedAt: data.dismissedAt,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
+        externalId: data.external_id,
+        dismissedAt: data.dismissed_at,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
       },
       data.id,
     )
@@ -121,12 +156,13 @@ export class PGEmployeesRepository implements EmployeesRepository {
       avatar,
       gender,
       role,
+      externalId,
       dismissedAt,
       createdAt,
       updatedAt,
     } = employee
 
-    const query = `INSERT INTO employees (id, first_name, last_name, email, ddd, phone, avatar, gender, role, dismissed_at, created_at, updated_at) 
+    const query = `INSERT INTO employees (id, first_name, last_name, email, ddd, phone, avatar, gender, role, external_id, dismissed_at, created_at, updated_at) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `
     const values = [
@@ -139,6 +175,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       avatar,
       gender,
       role,
+      externalId,
       dismissedAt,
       createdAt,
       updatedAt,
@@ -161,7 +198,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
     } = employee
 
     const query =
-      'UPDATE employees SET first_name = $1, last_name = $2, email = $3, ddd = $4, phone = $5, avatar = $6, dismissedAt = $7, updatedAt = $8 WHERE id = $9'
+      'UPDATE employees SET first_name = $1, last_name = $2, email = $3, ddd = $4, phone = $5, avatar = $6, dismissed_at = $7, updated_at = $8 WHERE id = $9'
     const values = [
       firstName,
       lastName,

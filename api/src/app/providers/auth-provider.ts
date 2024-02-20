@@ -6,5 +6,7 @@ export type AccountData = {
 }
 
 export interface AuthProvider {
-  createAccount(data: AccountData): Promise<void>
+  createAccount(data: AccountData): Promise<{ externalId: string }>
+  updateDetails(id: string, data: Partial<AccountData>): Promise<void>
+  deleteAccount(id: string): Promise<void>
 }

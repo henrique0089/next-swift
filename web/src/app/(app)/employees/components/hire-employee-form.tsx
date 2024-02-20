@@ -84,7 +84,7 @@ export function HireEmployeeForm({ roles }: HireEmployeeFormProps) {
         description: 'you hired a new employee.',
         position: 'bottom-right',
         dismissible: true,
-        duration: 1500,
+        duration: 2000,
         cancel: {
           label: 'dismiss',
         },

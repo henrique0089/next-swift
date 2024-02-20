@@ -13,6 +13,7 @@ interface EmployeeProps {
   avatar: string | null
   gender: Gender
   role: Role | null
+  externalId: string
   createdAt: Date
   updatedAt?: Date | null
   dismissedAt?: Date | null
@@ -99,6 +100,10 @@ export class Employee {
 
   public set role(role: Role | null) {
     this.props.role = role
+  }
+
+  public get externalId(): string {
+    return this.props.externalId
   }
 
   public get createdAt(): Date {

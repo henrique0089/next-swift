@@ -1,4 +1,5 @@
 import { Employee } from '@app/entities/employee'
+import { env } from '@infra/env'
 
 export class EmployeeViewModel {
   static toHttp(employee: Employee) {
@@ -9,7 +10,9 @@ export class EmployeeViewModel {
       email: employee.email,
       ddd: employee.ddd,
       phone: employee.phone,
-      avatar: employee.avatar,
+      avatar: employee.avatar
+        ? `${env.STORAGE_BASE_URL}/avatar/${employee.avatar}`
+        : null,
       gender: employee.gender,
       role: employee.role,
     }

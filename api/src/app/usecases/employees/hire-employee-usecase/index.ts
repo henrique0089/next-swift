@@ -35,7 +35,18 @@ export class HireEmployeeUseCase {
       throw new AppError('Employee already exists!')
     }
 
-    const password = randomBytes(10).toString('hex')
+    let password = ''
+
+    while (password.length < 8) {
+      password = randomBytes(10).toString('hex')
+    }
+
+    const { externalId } = await this.authProvider.createAccount({
+      firstName,
+      lastName,
+      email,
+      pass: password,
+    })
 
     const employee = new Employee({
       firstName,
@@ -46,15 +57,10 @@ export class HireEmployeeUseCase {
       avatar,
       gender,
       role,
+      externalId,
     })
 
     await this.employeesRepo.create(employee)
-    await this.authProvider.createAccount({
-      firstName,
-      lastName,
-      email,
-      pass: password,
-    })
 
     return {
       password,

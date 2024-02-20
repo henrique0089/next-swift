@@ -1,5 +1,4 @@
-import { Employee, Gender } from '@app/entities/employee'
-import { Role } from '@app/entities/role'
+import { Employee, Gender, Role } from '@app/entities/employee'
 import { InMemoryEmployeesRepository } from 'src/test/dashboard/repositories/in-memory-employees-repository'
 import { InMemoryAuthProvider } from 'src/test/providers/in-memory-auth-provider'
 import { beforeAll, describe, expect, it } from 'vitest'
@@ -28,7 +27,7 @@ describe('Hire Employee UseCase', () => {
       phone: 99999999,
       avatar: 'avatar.png',
       gender: 'M' as Gender,
-      roleId: 'role_id',
+      role: 'admin' as Role,
     }
 
     const { password } = await hireEmployeeUseCase.execute(requestData)
@@ -49,20 +48,13 @@ describe('Hire Employee UseCase', () => {
       ddd: 82,
       phone: 99999999,
       avatar: 'https://github.com/henrique998.png',
+      externalId: 'externalId',
       updatedAt: null,
-      gender: 'M',
-      role: new Role(
-        {
-          name: 'fake-role',
-        },
-        'fake-id',
-      ),
+      gender: 'M' as Gender,
+      role: 'editor' as Role,
     })
 
-    await inMemoryEmployeesRepository.create(
-      existingEmployee,
-      'fake-employee-id',
-    )
+    await inMemoryEmployeesRepository.create(existingEmployee)
 
     const requestData = {
       firstName: 'John',
@@ -72,7 +64,7 @@ describe('Hire Employee UseCase', () => {
       phone: 99999999,
       avatar: 'avatar.png',
       gender: 'M' as Gender,
-      roleId: 'role_id',
+      role: 'editor' as Role,
     }
 
     await expect(hireEmployeeUseCase.execute(requestData)).rejects.toThrow(

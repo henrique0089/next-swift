@@ -1,20 +1,24 @@
 import { AppError } from '@app/errors/app-error'
+import { AuthProvider } from '@app/providers/auth-provider'
 import { EmployeesRepository } from '@app/repositories/employees-repository'
 
 interface Request {
-  adminId: string
+  externalAdminId: string
   employeeId: string
 }
 
 type Response = void
 
 export class DismissEmployeeUseCase {
-  constructor(private employeesRepo: EmployeesRepository) {}
+  constructor(
+    private employeesRepo: EmployeesRepository,
+    private authProvider: AuthProvider,
+  ) {}
 
-  async execute({ adminId, employeeId }: Request): Promise<Response> {
-    const admin = await this.employeesRepo.findById(adminId)
+  async execute({ externalAdminId, employeeId }: Request): Promise<Response> {
+    const admin = await this.employeesRepo.findByExternalId(externalAdminId)
 
-    if (!admin || admin.role?.name !== 'admin') {
+    if (!admin || admin.role !== 'admin') {
       throw new AppError('Unauthorized action!')
     }
 
@@ -27,5 +31,7 @@ export class DismissEmployeeUseCase {
     employee.dismiss()
 
     await this.employeesRepo.save(employee)
+
+    await this.authProvider.deleteAccount(employee.externalId)
   }
 }

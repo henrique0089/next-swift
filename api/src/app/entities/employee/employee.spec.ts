@@ -14,6 +14,7 @@ beforeAll(() => {
     updatedAt: null,
     role: 'editor',
     gender: 'M',
+    externalId: 'clerk-user',
   })
 })
 

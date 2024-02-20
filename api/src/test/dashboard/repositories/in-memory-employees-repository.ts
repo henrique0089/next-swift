@@ -18,6 +18,18 @@ export class InMemoryEmployeesRepository implements EmployeesRepository {
     return employee
   }
 
+  async findByExternalId(id: string): Promise<Employee | null> {
+    const employee = this.employees.find(
+      (employee) => employee.externalId === id,
+    )
+
+    if (!employee) {
+      return null
+    }
+
+    return employee
+  }
+
   async findByEmail(email: string): Promise<Employee | null> {
     const employee = this.employees.find((employee) => employee.email === email)
 

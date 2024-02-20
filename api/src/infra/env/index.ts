@@ -1,5 +1,8 @@
 import 'dotenv/config'
+import path from 'path'
 import { z } from 'zod'
+
+const uploadsFolderPath = path.resolve(__dirname, '..', 'uploads')
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('production'),
@@ -7,6 +10,7 @@ const envSchema = z.object({
   CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),
   CLERK_PEM_PUBLIC_KEY: z.string(),
+  STORAGE_BASE_URL: z.string().optional().default(uploadsFolderPath),
   // AWS_BUCKET: z.string(),
   // FORGOT_MAIL_URL: z.string().default('http://localhost:3000/password?reset='),
   // APP_BASE_URL: z.string().default('http://localhost:3000'),

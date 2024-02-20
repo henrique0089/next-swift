@@ -11,11 +11,14 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 interface ProfileFormProps {
@@ -27,14 +30,16 @@ interface ProfileFormProps {
 }
 
 const profileFormSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 export function UpdateProfileForm() {
-  const [avatar, setAvatar] = useState<FileList | null>(null)
+  const [images, setImages] = useState<FileList | null>(null)
+  const { getToken } = useAuth()
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     mode: 'onChange',
@@ -44,8 +49,43 @@ export function UpdateProfileForm() {
     },
   })
 
-  function handleUpdateProfileInfo(data: ProfileFormValues) {
-    console.log({ ...data, avatar })
+  async function handleUpdateProfileInfo(data: ProfileFormValues) {
+    const formData = new FormData()
+
+    formData.append('firstName', data.firstName ?? '')
+    formData.append('lastName', data.lastName ?? '')
+
+    if (images) {
+      formData.append('avatar', images[0])
+    }
+
+    try {
+      await api.put('/employees/me/update', formData, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+
+      toast('Congratulations!', {
+        description: 'you updated your profile info!',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    } catch (error: any) {
+      toast('Uh oh! Something went wrong.', {
+        description: error.response.data.message,
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 1500,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    }
   }
 
   const {
@@ -65,7 +105,7 @@ export function UpdateProfileForm() {
               <input
                 type="file"
                 className="sr-only"
-                onChange={(e) => setAvatar(e.target.files)}
+                onChange={(e) => setImages(e.target.files)}
                 id="avatar"
               />
 
@@ -73,7 +113,7 @@ export function UpdateProfileForm() {
                 htmlFor="avatar"
                 className="cursor-pointer hover:opacity-70"
               >
-                {avatar ? (
+                {images && images?.length > 0 ? (
                   <Image
                     src="/avatars/woman.png"
                     alt=""

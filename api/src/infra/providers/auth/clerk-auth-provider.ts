@@ -7,12 +7,28 @@ export class ClerkAuthProvider implements AuthProvider {
     lastName,
     email,
     pass,
-  }: AccountData): Promise<void> {
-    await clerkClient.users.createUser({
+  }: AccountData): Promise<{ externalId: string }> {
+    const { id } = await clerkClient.users.createUser({
       firstName,
       lastName,
       emailAddress: [email],
       password: pass,
     })
+
+    return {
+      externalId: id,
+    }
+  }
+
+  async updateDetails(id: string, data: Partial<AccountData>): Promise<void> {
+    await clerkClient.users.updateUser(id, {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      password: data.pass,
+    })
+  }
+
+  async deleteAccount(id: string): Promise<void> {
+    await clerkClient.users.deleteUser(id)
   }
 }
