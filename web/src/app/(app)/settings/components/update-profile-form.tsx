@@ -16,7 +16,7 @@ import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -37,7 +37,8 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 export function UpdateProfileForm() {
-  const [images, setImages] = useState<FileList | null>(null)
+  const [image, setImage] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
   const { getToken } = useAuth()
 
   const form = useForm<ProfileFormValues>({
@@ -55,8 +56,8 @@ export function UpdateProfileForm() {
     formData.append('firstName', data.firstName ?? '')
     formData.append('lastName', data.lastName ?? '')
 
-    if (images) {
-      formData.append('avatar', images[0])
+    if (image) {
+      formData.append('avatar', image)
     }
 
     try {
@@ -88,6 +89,17 @@ export function UpdateProfileForm() {
     }
   }
 
+  function handleSelectImage(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0]
+
+      const previewUrl = URL.createObjectURL(file)
+
+      setImage(file)
+      setImagePreviewUrl(previewUrl)
+    }
+  }
+
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -105,7 +117,7 @@ export function UpdateProfileForm() {
               <input
                 type="file"
                 className="sr-only"
-                onChange={(e) => setImages(e.target.files)}
+                onChange={handleSelectImage}
                 id="avatar"
               />
 
@@ -113,13 +125,13 @@ export function UpdateProfileForm() {
                 htmlFor="avatar"
                 className="cursor-pointer hover:opacity-70"
               >
-                {images && images?.length > 0 ? (
+                {imagePreviewUrl ? (
                   <Image
-                    src="/avatars/woman.png"
+                    src={imagePreviewUrl}
                     alt=""
                     width={64}
                     height={64}
-                    className="w-20 lg:h-16  lg:w-16 rounded-full bg-primary/10"
+                    className="w-20 lg:h-16 object-cover lg:w-16 rounded-full bg-primary/10"
                   />
                 ) : (
                   <Image
@@ -127,7 +139,7 @@ export function UpdateProfileForm() {
                     alt=""
                     width={64}
                     height={64}
-                    className="w-20 lg:h-16  lg:w-16 rounded-full bg-primary/10"
+                    className="w-20 lg:h-16 object-cover lg:w-16 rounded-full bg-primary/10"
                   />
                 )}
               </label>

@@ -135,7 +135,9 @@ export default async function Dashboard() {
         <Card className="col-span-6 lg:col-span-3">
           <CardHeader>
             <CardTitle>Recent Sale</CardTitle>
-            <CardDescription>You made 265 sales this month.</CardDescription>
+            <CardDescription>
+              You made {recentSales.length} sales this month.
+            </CardDescription>
           </CardHeader>
 
           <CardContent>

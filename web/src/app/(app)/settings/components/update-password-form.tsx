@@ -11,8 +11,10 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 const updatePasswordFormSchema = z.object({
@@ -29,8 +31,30 @@ export function UpdatePasswordForm() {
     mode: 'onChange',
   })
 
-  function handleUpdatePassword(data: UpdatePasswordFormValues) {
-    console.log({ ...data })
+  async function handleUpdatePassword(data: UpdatePasswordFormValues) {
+    try {
+      await axios.patch('/api/employees/update-pass', data)
+
+      toast('Congratulations!', {
+        description: 'you updated your password!',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    } catch (error: any) {
+      toast('Uh oh! Something went wrong.', {
+        description: error.response.data.message,
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 1500,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    }
   }
 
   const {
@@ -49,7 +73,11 @@ export function UpdatePasswordForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="type your current password" {...field} />
+                  <Input
+                    placeholder="type your current password"
+                    type="password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,7 +92,11 @@ export function UpdatePasswordForm() {
                 <FormItem>
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="type your new password" {...field} />
+                    <Input
+                      placeholder="type your new password"
+                      type="password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -80,6 +112,7 @@ export function UpdatePasswordForm() {
                   <FormControl>
                     <Input
                       placeholder="type your new password again"
+                      type="password"
                       {...field}
                     />
                   </FormControl>
