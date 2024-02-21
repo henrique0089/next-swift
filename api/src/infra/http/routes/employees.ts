@@ -21,11 +21,7 @@ const ClerkExpressRequireAuth = createClerkExpressRequireAuth({
 
 employeesRouter.get(
   '/',
-  ClerkExpressRequireAuth({
-    onError(error) {
-      console.log(error)
-    },
-  }),
+  ClerkExpressRequireAuth(),
   getAllEmployeesController.handle,
 )
 

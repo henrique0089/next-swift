@@ -16,11 +16,30 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
 import { Ban } from 'lucide-react'
+import { useEffect } from 'react'
 import { DismissEmployeeButton } from './dismiss-employee-button'
 import { EmployeesForm } from './employees-form'
 
 export function EmployeesContent() {
+  const { getToken } = useAuth()
+
+  useEffect(() => {
+    async function getEmp() {
+      const res = await api.get('/employees', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+
+      console.log(res.data)
+    }
+
+    getEmp()
+  }, [])
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
       <nav className="space-y-6">

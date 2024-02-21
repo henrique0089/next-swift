@@ -16,6 +16,10 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 
+function capitalizeFirstLetter(value: string) {
+  return value.charAt(0).toUpperCase().concat(value.slice(1))
+}
+
 export function UserNav() {
   const { user } = useUser()
   const { signOut } = useAuth()
@@ -48,7 +52,9 @@ export function UserNav() {
           <div className="flex flex-col space-y-2">
             <div className="text-sm font-medium leading-none flex items-center justify-between">
               <p>{user?.firstName}</p>
-              <Badge className="rounded-full">Admin</Badge>
+              <Badge className="rounded-full">
+                {capitalizeFirstLetter(String(user?.publicMetadata.role))}
+              </Badge>
             </div>
             <p className="text-xs leading-none text-muted-foreground">
               {user?.emailAddresses[0].emailAddress}

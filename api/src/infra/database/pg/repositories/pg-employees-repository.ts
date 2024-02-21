@@ -1,5 +1,8 @@
 import { Employee, Gender, Role } from '@app/entities/employee'
-import { EmployeesRepository } from '@app/repositories/employees-repository'
+import {
+  EmployeesRepository,
+  PaginateParams,
+} from '@app/repositories/employees-repository'
 import { client } from '../connection'
 
 interface EmployeeRecord {
@@ -19,39 +22,6 @@ interface EmployeeRecord {
 }
 
 export class PGEmployeesRepository implements EmployeesRepository {
-  async findAll(): Promise<Employee[]> {
-    const query = `SELECT e.id, e.first_name, e.last_name, e.email, e.ddd, e.phone, e.avatar, e.gender, e.role, e.dismissed_at, e.created_at, e.updated_at 
-      FROM employees e
-      `
-    const result = await client.query<EmployeeRecord>(query)
-
-    const employees: Employee[] = []
-
-    for (const data of result.rows) {
-      const employee = new Employee(
-        {
-          firstName: data.first_name,
-          lastName: data.last_name,
-          email: data.email,
-          ddd: data.ddd,
-          phone: data.phone,
-          avatar: data.avatar,
-          gender: data.gender,
-          role: data.role,
-          externalId: data.external_id,
-          dismissedAt: data.dismissed_at,
-          createdAt: data.created_at,
-          updatedAt: data.updated_at,
-        },
-        data.id,
-      )
-
-      employees.push(employee)
-    }
-
-    return employees
-  }
-
   async findById(id: string): Promise<Employee | null> {
     const query = `SELECT * FROM employees WHERE id = $1 LIMIT 1`
     const result = await client.query<EmployeeRecord>(query, [id])
@@ -143,6 +113,116 @@ export class PGEmployeesRepository implements EmployeesRepository {
     )
 
     return employee
+  }
+
+  async paginate({
+    employee,
+    email,
+    document,
+    startDate,
+    endDate,
+    limit = 10,
+    page = 1,
+  }: PaginateParams): Promise<Employee[]> {
+    const offset = (page - 1) * limit
+
+    let query = ''
+    const values: any[] = []
+
+    if (startDate && endDate && !employee && !email && !document) {
+      query = `SELECT * FROM employees
+          WHERE created_at BETWEEN $1 AND $2
+          ORDER BY created_at
+          LIMIT $3 OFFSET $4
+        `
+
+      values.push(startDate)
+      values.push(endDate)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && employee && !email && !document) {
+      query = `SELECT *
+        FROM employees
+        WHERE (first_name ILIKE $1 OR last_name ILIKE $1)
+        ORDER BY created_at
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(`%${employee}%`)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && !employee && email && !document) {
+      query = `SELECT * FROM employees
+        WHERE email = $1
+        ORDER BY created_at
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(email)
+      values.push(limit)
+      values.push(offset)
+    } else if (!startDate && !endDate && !employee && !email && document) {
+      query = `SELECT * FROM employees
+        WHERE document = $1
+        ORDER BY created_at
+        LIMIT $2 OFFSET $3
+      `
+
+      values.push(document)
+      values.push(limit)
+      values.push(offset)
+    } else if (startDate && endDate && employee && email && document) {
+      query = `SELECT *
+        FROM employees
+        WHERE (created_at BETWEEN $1 AND $2) AND (first_name ILIKE $3 OR last_name ILIKE $3) AND (email = $4) AND (document = $5)
+        ORDER BY created_at
+        LIMIT $6 OFFSET $7
+      `
+
+      values.push(startDate)
+      values.push(endDate)
+      values.push(`%${employee}%`)
+      values.push(email)
+      values.push(document)
+      values.push(limit)
+      values.push(offset)
+    } else {
+      query = `SELECT * FROM employees
+        ORDER BY created_at
+        LIMIT $1 OFFSET $2
+      `
+
+      values.push(limit)
+      values.push(offset)
+    }
+
+    const result = await client.query<EmployeeRecord>(query)
+
+    const employees: Employee[] = []
+
+    for (const data of result.rows) {
+      const employee = new Employee(
+        {
+          firstName: data.first_name,
+          lastName: data.last_name,
+          email: data.email,
+          ddd: data.ddd,
+          phone: data.phone,
+          avatar: data.avatar,
+          gender: data.gender,
+          role: data.role,
+          externalId: data.external_id,
+          dismissedAt: data.dismissed_at,
+          createdAt: data.created_at,
+          updatedAt: data.updated_at,
+        },
+        data.id,
+      )
+
+      employees.push(employee)
+    }
+
+    return employees
   }
 
   async create(employee: Employee): Promise<void> {
