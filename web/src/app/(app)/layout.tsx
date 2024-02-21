@@ -5,14 +5,16 @@ interface PanelLayoutProps {
   children: ReactNode
 }
 
-export default function PanelLayout({ children }: PanelLayoutProps) {
+export default async function PanelLayout({ children }: PanelLayoutProps) {
   // const { getToken } = auth()
 
-  // const res = await api.get('/employees/me', {
+  // const res = await api.get<{ employee: EmployeeData }>('/employees/me', {
   //   headers: {
   //     Authorization: `Bearer ${await getToken()}`,
   //   },
   // })
+
+  // useEmployeeStore.setState({ employee: res.data.employee })
 
   return (
     <html lang="en">

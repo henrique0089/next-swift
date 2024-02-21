@@ -11,9 +11,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { api } from '@/lib/axios'
 import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { ChangeEvent, useState } from 'react'
@@ -61,11 +61,7 @@ export function UpdateProfileForm() {
     }
 
     try {
-      await api.put('/employees/me/update', formData, {
-        headers: {
-          Authorization: `Bearer ${await getToken()}`,
-        },
-      })
+      await axios.put('/api/employees/update-profile', formData)
 
       toast('Congratulations!', {
         description: 'you updated your profile info!',

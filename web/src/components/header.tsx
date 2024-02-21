@@ -1,3 +1,4 @@
+import { currentUser } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { MobileSidebar } from './mobile-sidebar'
@@ -6,7 +7,9 @@ import { ProductsNavigationMenu } from './navigation-menu'
 import { Separator } from './ui/separator'
 import { UserNav } from './user-nav'
 
-export function Header() {
+export async function Header() {
+  const user = await currentUser()
+
   return (
     <header className="flex h-16 items-center justify-between bg-zinc-900 dark:bg-background border-b px-4 lg:px-6">
       <div className="flex items-center gap-4">
@@ -30,7 +33,9 @@ export function Header() {
       </div>
 
       <div className="items-center gap-4 hidden lg:flex">
-        <h3 className="font-medium text-zinc-100">Welcome, Jhon!</h3>
+        <h3 className="font-medium text-zinc-100">
+          Welcome, {user?.firstName}!
+        </h3>
 
         <UserNav />
       </div>

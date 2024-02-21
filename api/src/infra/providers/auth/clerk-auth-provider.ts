@@ -7,12 +7,16 @@ export class ClerkAuthProvider implements AuthProvider {
     lastName,
     email,
     pass,
+    role,
   }: AccountData): Promise<{ externalId: string }> {
     const { id } = await clerkClient.users.createUser({
       firstName,
       lastName,
       emailAddress: [email],
       password: pass,
+      publicMetadata: {
+        role,
+      },
     })
 
     return {

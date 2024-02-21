@@ -3,6 +3,7 @@ export type AccountData = {
   lastName: string
   email: string
   pass: string
+  role: string
 }
 
 export interface AuthProvider {

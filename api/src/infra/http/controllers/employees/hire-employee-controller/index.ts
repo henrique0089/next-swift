@@ -17,6 +17,7 @@ const bodySchema = z.object({
 
 export class HireEmployeeController {
   async handle(req: Request, res: Response): Promise<Response> {
+    const userId = req.auth.userId
     const { firstName, lastName, email, ddd, phone, gender, role } =
       bodySchema.parse(req.body)
 
@@ -29,6 +30,7 @@ export class HireEmployeeController {
     )
 
     const { password } = await hireEmployeeUseCase.execute({
+      adminExternalId: userId,
       firstName,
       lastName,
       email,

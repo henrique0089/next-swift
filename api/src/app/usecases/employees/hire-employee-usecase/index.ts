@@ -5,6 +5,7 @@ import { EmployeesRepository } from '@app/repositories/employees-repository'
 import { randomBytes } from 'crypto'
 
 interface Request {
+  adminExternalId: string
   firstName: string
   lastName: string
   email: string
@@ -26,8 +27,28 @@ export class HireEmployeeUseCase {
   ) {}
 
   async execute(data: Request): Promise<Response> {
-    const { firstName, lastName, email, ddd, phone, avatar, gender, role } =
-      data
+    const {
+      adminExternalId,
+      firstName,
+      lastName,
+      email,
+      ddd,
+      phone,
+      avatar,
+      gender,
+      role,
+    } = data
+
+    const adminEmployee =
+      await this.employeesRepo.findByExternalId(adminExternalId)
+
+    if (!adminEmployee) {
+      throw new AppError('Unauthorized action. admin not found!')
+    }
+
+    if (adminEmployee.role !== 'admin') {
+      throw new AppError('Unauthorized action!')
+    }
 
     const employeeAlreadyExists = await this.employeesRepo.findByEmail(email)
 
@@ -46,6 +67,7 @@ export class HireEmployeeUseCase {
       lastName,
       email,
       pass: password,
+      role,
     })
 
     const employee = new Employee({
