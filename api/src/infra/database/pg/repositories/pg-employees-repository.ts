@@ -196,7 +196,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       values.push(offset)
     }
 
-    const result = await client.query<EmployeeRecord>(query)
+    const result = await client.query<EmployeeRecord>(query, values)
 
     const employees: Employee[] = []
 

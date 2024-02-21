@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { api } from '@/lib/axios'
 import { auth } from '@clerk/nextjs'
 import { PlusCircle } from 'lucide-react'
 import Link from 'next/link'
@@ -8,13 +9,13 @@ import { EmployeesDatePicker } from './components/employees-date-picker'
 export default async function Employees() {
   const { getToken } = auth()
 
-  // const res = await api.get('/employees', {
-  //   headers: {
-  //     Authorization: `Bearer ${await getToken()}`,
-  //   },
-  // })
+  const res = await api.get('/employees', {
+    headers: {
+      Authorization: `Bearer ${await getToken()}`,
+    },
+  })
 
-  // console.log(res.data)
+  console.log(res.data)
 
   return (
     <section className="min-h-screen max-w-6xl w-full mx-auto space-y-8 p-6">

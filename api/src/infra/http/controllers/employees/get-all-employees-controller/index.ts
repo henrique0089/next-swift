@@ -8,10 +8,10 @@ const querySchema = z.object({
   employee: z.string().optional(),
   email: z.string().optional(),
   document: z.string().optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-  page: z.number().optional(),
-  limit: z.number().optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
+  page: z.coerce.number().optional(),
+  limit: z.coerce.number().optional(),
 })
 
 export class GetAllEmployeesController {
