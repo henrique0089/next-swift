@@ -16,6 +16,8 @@ const querySchema = z.object({
 
 export class GetAllEmployeesController {
   async handle(req: Request, res: Response): Promise<Response> {
+    const userId = req.auth.userId
+
     const { employee, email, document, startDate, endDate, page, limit } =
       querySchema.parse(req.query)
 
@@ -33,7 +35,9 @@ export class GetAllEmployeesController {
       page,
       limit,
     })
-    const employees = employeesData.map(EmployeeViewModel.toHttp)
+    const employees = employeesData
+      // .filter((employee) => employee.externalId !== userId)
+      .map(EmployeeViewModel.toHttp)
 
     return res.json({ employees })
   }

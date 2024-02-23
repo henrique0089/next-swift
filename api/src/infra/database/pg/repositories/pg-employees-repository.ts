@@ -171,18 +171,42 @@ export class PGEmployeesRepository implements EmployeesRepository {
       values.push(document)
       values.push(limit)
       values.push(offset)
-    } else if (startDate && endDate && employee && email && document) {
+    } else if (startDate && endDate && employee && !email && !document) {
       query = `SELECT *
         FROM employees
-        WHERE (created_at BETWEEN $1 AND $2) AND (first_name ILIKE $3 OR last_name ILIKE $3) AND (email = $4) AND (document = $5)
+        WHERE (created_at BETWEEN $1 AND $2) AND (first_name ILIKE $3 OR last_name ILIKE $3)
         ORDER BY created_at
-        LIMIT $6 OFFSET $7
+        LIMIT $4 OFFSET $5
       `
 
       values.push(startDate)
       values.push(endDate)
       values.push(`%${employee}%`)
+      values.push(limit)
+      values.push(offset)
+    } else if (startDate && endDate && !employee && email && !document) {
+      query = `SELECT *
+        FROM employees
+        WHERE (created_at BETWEEN $1 AND $2) AND (email = $3)
+        ORDER BY created_at
+        LIMIT $4 OFFSET $5
+      `
+
+      values.push(startDate)
+      values.push(endDate)
       values.push(email)
+      values.push(limit)
+      values.push(offset)
+    } else if (startDate && endDate && !employee && !email && document) {
+      query = `SELECT *
+        FROM employees
+        WHERE (created_at BETWEEN $1 AND $2) AND (document = $3)
+        ORDER BY created_at
+        LIMIT $4 OFFSET $5
+      `
+
+      values.push(startDate)
+      values.push(endDate)
       values.push(document)
       values.push(limit)
       values.push(offset)

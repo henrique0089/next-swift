@@ -1,21 +1,25 @@
+import { EmployeeData } from '@/app/(app)/employees/page'
 import { create } from 'zustand'
 
-export type EmployeeData = {
-  name: string
-  email: string
-  avatar: string | null
-  gender: string
-  role: string
+export type DatesInfo = {
+  from?: Date
+  to?: Date
 }
 
 interface EmployeesStore {
-  employee: EmployeeData | null
-  setEmployee: (data: EmployeeData) => void
+  employees: EmployeeData[]
+  setEmployees: (employees: EmployeeData[]) => void
+  dates: DatesInfo | null
+  setDates: (dates: DatesInfo) => void
 }
 
-export const useEmployeeStore = create<EmployeesStore>((set) => ({
-  employee: null,
-  setEmployee(data) {
-    set(() => ({ employee: data }))
+export const useEmployeesStore = create<EmployeesStore>((set) => ({
+  employees: [],
+  setEmployees: (employees: EmployeeData[]) => {
+    set(() => ({ employees }))
+  },
+  dates: null,
+  setDates: (dates: DatesInfo) => {
+    set(() => ({ dates }))
   },
 }))

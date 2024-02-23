@@ -16,11 +16,26 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useEmployeesStore } from '@/store/employees-store'
 import { Ban } from 'lucide-react'
+import { useEffect } from 'react'
+import { EmployeeData } from '../page'
 import { DismissEmployeeButton } from './dismiss-employee-button'
-import { EmployeesForm } from './employees-form'
+import { SearchByDocumentForm } from './search-by-document-form'
+import { SearchByEmailForm } from './search-by-email-form'
+import { SearchByEmployeeForm } from './search-by-employee-form'
 
-export function EmployeesContent() {
+interface EmployeesContentProps {
+  employees: EmployeeData[]
+}
+
+export function EmployeesContent({ employees }: EmployeesContentProps) {
+  const { setEmployees } = useEmployeesStore()
+
+  useEffect(() => {
+    setEmployees(employees)
+  }, [employees, setEmployees])
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
       <nav className="space-y-6">
@@ -28,7 +43,7 @@ export function EmployeesContent() {
           <span className="block text-sm font-semibold">
             Search by any customer
           </span>
-          <EmployeesForm placeholder="Jhon doe" />
+          <SearchByEmployeeForm />
         </div>
 
         <Separator />
@@ -37,14 +52,14 @@ export function EmployeesContent() {
           <span className="block text-sm font-semibold">
             Search by any e-mail
           </span>
-          <EmployeesForm placeholder="jhondoe@gmail.com" />
+          <SearchByEmailForm />
         </div>
 
         <Separator />
 
         <div className="space-y-2">
           <span className="block text-sm font-semibold">Search by any cpf</span>
-          <EmployeesForm placeholder="000.000.000-00" />
+          <SearchByDocumentForm />
         </div>
 
         <Separator />

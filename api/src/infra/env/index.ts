@@ -10,7 +10,11 @@ const envSchema = z.object({
   CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),
   CLERK_PEM_PUBLIC_KEY: z.string(),
-  STORAGE_BASE_URL: z.string().optional().default(uploadsFolderPath),
+  UPLOADS_FOLDER_URL: z
+    .string()
+    .default(
+      'https://3333-henrique0089-nextswift-l7jc5jg033c.ws-us108.gitpod.io/images',
+    ),
   // AWS_BUCKET: z.string(),
   // FORGOT_MAIL_URL: z.string().default('http://localhost:3000/password?reset='),
   // APP_BASE_URL: z.string().default('http://localhost:3000'),

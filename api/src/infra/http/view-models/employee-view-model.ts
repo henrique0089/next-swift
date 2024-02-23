@@ -11,10 +11,10 @@ export class EmployeeViewModel {
       ddd: employee.ddd,
       phone: employee.phone,
       avatar: employee.avatar
-        ? `${env.STORAGE_BASE_URL}/avatar/${employee.avatar}`
+        ? `${env.UPLOADS_FOLDER_URL}/avatar/${employee.avatar}`
         : null,
-      gender: employee.gender,
-      role: employee.role,
+      createdAt: employee.createdAt,
+      updatedAt: employee.updatedAt ?? null,
     }
   }
 }
