@@ -5,7 +5,7 @@ import { Address } from './address'
 interface CustomerProps {
   name: string
   email: string
-  cpf: string
+  document: string
   ddd: number
   phone: number
   address: Address
@@ -48,12 +48,12 @@ export class Customer {
     this.props.email = email
   }
 
-  public get cpf(): string {
-    return this.props.cpf
+  public get document(): string {
+    return this.props.document
   }
 
-  public set cpf(cpf: string) {
-    this.props.cpf = cpf
+  public set document(document: string) {
+    this.props.document = document
   }
 
   public get ddd(): number {

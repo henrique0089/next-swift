@@ -6,7 +6,7 @@ import { z } from 'zod'
 const bodySchema = z.object({
   name: z.string(),
   email: z.string(),
-  cpf: z.string(),
+  document: z.string(),
   ddd: z.number(),
   phone: z.number(),
   address: z.object({
@@ -21,7 +21,9 @@ const bodySchema = z.object({
 
 export class AddCustomerController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { name, email, cpf, ddd, phone, address } = bodySchema.parse(req.body)
+    const { name, email, document, ddd, phone, address } = bodySchema.parse(
+      req.body,
+    )
 
     const customersRepo = new PGCustomersRepository()
     const addCustomerUseCase = new AddCustomerUseCase(customersRepo)
@@ -29,7 +31,7 @@ export class AddCustomerController {
     await addCustomerUseCase.execute({
       name,
       email,
-      cpf,
+      document,
       ddd,
       phone,
       address,

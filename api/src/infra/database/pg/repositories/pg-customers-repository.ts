@@ -44,7 +44,7 @@ export class PGCustomersRepository implements CustomersRepository {
       {
         name: data.name,
         email: data.email,
-        cpf: data.document,
+        document: data.document,
         ddd: data.ddd,
         phone: data.phone,
         address: new Address(
@@ -86,7 +86,7 @@ export class PGCustomersRepository implements CustomersRepository {
       {
         name: data.name,
         email: data.email,
-        cpf: data.document,
+        document: data.document,
         ddd: data.ddd,
         phone: data.phone,
         address: new Address(
@@ -209,7 +209,7 @@ export class PGCustomersRepository implements CustomersRepository {
       const customer = new Customer({
         name: data.name,
         email: data.email,
-        cpf: data.document,
+        document: data.document,
         ddd: data.ddd,
         phone: data.phone,
         address: new Address(
@@ -235,7 +235,8 @@ export class PGCustomersRepository implements CustomersRepository {
   }
 
   async create(customer: Customer): Promise<void> {
-    const { id, name, email, cpf, ddd, phone, createdAt, updatedAt } = customer
+    const { id, name, email, document, ddd, phone, createdAt, updatedAt } =
+      customer
 
     const customerQuery = `INSERT INTO customers (id, name, email, document, ddd, phone, address_id, created_at, updated_at)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`
@@ -258,7 +259,7 @@ export class PGCustomersRepository implements CustomersRepository {
       id,
       name,
       email,
-      cpf,
+      document,
       ddd,
       phone,
       customer.address.id,
@@ -269,14 +270,22 @@ export class PGCustomersRepository implements CustomersRepository {
   }
 
   async save(customer: Customer): Promise<void> {
-    const { id, name, email, cpf, ddd, phone, updatedAt } = customer
+    const { id, name, email, document, ddd, phone, updatedAt } = customer
 
     const query = `UPDATE customers
       SET name = $1, email = $2, document = $3, ddd = $4, phone = $5, updated_at = $6
       WHERE id = $7
       `
 
-    await client.query(query, [name, email, cpf, ddd, phone, updatedAt, id])
+    await client.query(query, [
+      name,
+      email,
+      document,
+      ddd,
+      phone,
+      updatedAt,
+      id,
+    ])
   }
 
   async delete(customerId: string): Promise<void> {

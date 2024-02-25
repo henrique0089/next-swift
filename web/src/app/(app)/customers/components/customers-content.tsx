@@ -24,8 +24,10 @@ import { Pen, Trash } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { CustomerData } from '../page'
-import { CustomersForm } from './customers-form'
 import { DeleteCustomerButton } from './delete-customer-button'
+import { SearchByCustomerForm } from './search-by-customers-form'
+import { SearchByDocumentForm } from './search-by-document-form'
+import { SearchByEmailForm } from './search-by-email-form'
 
 interface CustomersContentProps {
   customers: CustomerData[]
@@ -64,34 +66,21 @@ export function CustomersContent({ customers }: CustomersContentProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
       <nav className="space-y-6">
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Search by any customer
-          </span>
-          <CustomersForm placeholder="Jhon doe" />
-        </div>
+        <SearchByCustomerForm />
 
         <Separator />
 
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Search by any e-mail
-          </span>
-          <CustomersForm placeholder="jhondoe@gmail.com" />
-        </div>
+        <SearchByEmailForm />
 
         <Separator />
 
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">Search by any cpf</span>
-          <CustomersForm placeholder="000.000.000-00" />
-        </div>
+        <SearchByDocumentForm />
 
         <Separator />
 
         <div className="space-y-2">
           <span className="block text-sm font-semibold">Select a quantity</span>
-          <Select>
+          <Select onValueChange={setQuantityInString}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Nothing selected" />
             </SelectTrigger>
@@ -132,7 +121,7 @@ export function CustomersContent({ customers }: CustomersContentProps) {
               <TableCell>
                 {customer.updatedAt
                   ? formatDate(customer.updatedAt)
-                  : 'Not updated'}
+                  : 'Not updated yet.'}
               </TableCell>
               <TableCell>
                 <Link

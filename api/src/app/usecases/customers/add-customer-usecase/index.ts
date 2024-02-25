@@ -6,7 +6,7 @@ import { CustomersRepository } from '@app/repositories/customer-repository'
 interface Request {
   name: string
   email: string
-  cpf: string
+  document: string
   ddd: number
   phone: number
   address: {
@@ -25,7 +25,7 @@ export class AddCustomerUseCase {
   constructor(private customersRepo: CustomersRepository) {}
 
   async execute(data: Request): Promise<Response> {
-    const { name, email, cpf, ddd, phone, address } = data
+    const { name, email, document, ddd, phone, address } = data
 
     const customerAlreadyExists = await this.customersRepo.findByEmail(email)
 
@@ -36,7 +36,7 @@ export class AddCustomerUseCase {
     const customer = new Customer({
       name,
       email,
-      cpf,
+      document,
       ddd,
       phone,
       address: new Address({
