@@ -6,16 +6,25 @@ import Link from 'next/link'
 import { CustomersContent } from './components/customers-content'
 import { CustomersDatePicker } from './components/customers-date-picker'
 
+export type CustomerData = {
+  id: string
+  name: string
+  email: string
+  document: string
+  ddd: number
+  phone: number
+  createdAt: Date
+  updatedAt: Date | null
+}
+
 export default async function Customers() {
   const { getToken } = auth()
 
-  const res = await api.get('/customers', {
+  const res = await api.get<{ customers: CustomerData[] }>('/customers', {
     headers: {
       Authorization: `Bearer ${await getToken()}`,
     },
   })
-
-  console.log(res.data)
 
   return (
     <section className="min-h-screen max-w-6xl w-full mx-auto space-y-8 p-6">
@@ -39,7 +48,7 @@ export default async function Customers() {
         </div>
       </div>
 
-      <CustomersContent />
+      <CustomersContent customers={res.data.customers} />
     </section>
   )
 }

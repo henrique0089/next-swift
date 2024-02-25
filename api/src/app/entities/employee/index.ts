@@ -1,7 +1,6 @@
 import { Replace } from '@helpers/replace'
 import { randomUUID } from 'node:crypto'
 
-export type Gender = 'M' | 'F'
 export type Role = 'admin' | 'editor'
 
 interface EmployeeProps {
@@ -11,7 +10,6 @@ interface EmployeeProps {
   ddd: number
   phone: number
   avatar: string | null
-  gender: Gender
   role: Role | null
   externalId: string
   createdAt: Date
@@ -84,14 +82,6 @@ export class Employee {
 
   public set avatar(avatar: string | null) {
     this.props.avatar = avatar
-  }
-
-  public get gender(): Gender {
-    return this.props.gender
-  }
-
-  public set gender(gender: Gender) {
-    this.props.gender = gender
   }
 
   public get role(): Role | null {

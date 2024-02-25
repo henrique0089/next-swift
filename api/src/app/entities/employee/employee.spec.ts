@@ -13,7 +13,6 @@ beforeAll(() => {
     avatar: 'https://github.com/henrique998.png',
     updatedAt: null,
     role: 'editor',
-    gender: 'M',
     externalId: 'clerk-user',
   })
 })

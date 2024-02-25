@@ -1,4 +1,4 @@
-import { Employee, Gender, Role } from '@app/entities/employee'
+import { Employee, Role } from '@app/entities/employee'
 import { AppError } from '@app/errors/app-error'
 import { AuthProvider } from '@app/providers/auth-provider'
 import { EmployeesRepository } from '@app/repositories/employees-repository'
@@ -12,7 +12,6 @@ interface Request {
   ddd: number
   phone: number
   avatar: string | null
-  gender: Gender
   role: Role
 }
 
@@ -35,7 +34,6 @@ export class HireEmployeeUseCase {
       ddd,
       phone,
       avatar,
-      gender,
       role,
     } = data
 
@@ -77,7 +75,6 @@ export class HireEmployeeUseCase {
       ddd,
       phone,
       avatar,
-      gender,
       role,
       externalId,
     })

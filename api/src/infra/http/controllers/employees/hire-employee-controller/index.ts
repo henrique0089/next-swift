@@ -11,15 +11,15 @@ const bodySchema = z.object({
   email: z.string().email(),
   ddd: z.coerce.number(),
   phone: z.coerce.number(),
-  gender: z.enum(['M', 'F']),
   role: z.enum(['admin', 'editor']),
 })
 
 export class HireEmployeeController {
   async handle(req: Request, res: Response): Promise<Response> {
     const userId = req.auth.userId
-    const { firstName, lastName, email, ddd, phone, gender, role } =
-      bodySchema.parse(req.body)
+    const { firstName, lastName, email, ddd, phone, role } = bodySchema.parse(
+      req.body,
+    )
 
     const employeesRepository = new PGEmployeesRepository()
     const authProvider = new ClerkAuthProvider()
@@ -37,7 +37,6 @@ export class HireEmployeeController {
       ddd,
       phone: Number(phone),
       avatar: null,
-      gender,
       role,
     })
 
