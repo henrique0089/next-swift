@@ -8,6 +8,7 @@ export class EmployeeViewModel {
       firstName: employee.firstName,
       lastName: employee.lastName,
       email: employee.email,
+      externalId: employee.externalId,
       ddd: employee.ddd,
       phone: employee.phone,
       avatar: employee.avatar

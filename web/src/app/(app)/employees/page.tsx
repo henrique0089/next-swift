@@ -11,6 +11,7 @@ export type EmployeeData = {
   firstName: string
   lastName: string
   email: string
+  externalId: string
   ddd: number
   phone: number
   avatar: string
