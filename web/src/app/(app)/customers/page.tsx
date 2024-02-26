@@ -17,10 +17,15 @@ export type CustomerData = {
   updatedAt: Date | null
 }
 
+export type CustomersResponse = {
+  customers: CustomerData[]
+  totalCount: number
+}
+
 export default async function Customers() {
   const { getToken } = auth()
 
-  const res = await api.get<{ customers: CustomerData[] }>('/customers', {
+  const res = await api.get<CustomersResponse>('/customers', {
     headers: {
       Authorization: `Bearer ${await getToken()}`,
     },
@@ -48,7 +53,10 @@ export default async function Customers() {
         </div>
       </div>
 
-      <CustomersContent customers={res.data.customers} />
+      <CustomersContent
+        customers={res.data.customers}
+        totalCount={res.data.totalCount}
+      />
     </section>
   )
 }

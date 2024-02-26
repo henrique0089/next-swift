@@ -13,6 +13,7 @@ interface Request {
 
 interface Response {
   customers: Customer[]
+  totalCount: number
 }
 
 export class GetPaginatedCustomersUseCase {
@@ -27,7 +28,7 @@ export class GetPaginatedCustomersUseCase {
     page,
     limit,
   }: Request): Promise<Response> {
-    const customers = await this.customersRepo.paginate({
+    const { customers, totalCount } = await this.customersRepo.paginate({
       customer,
       email,
       document,
@@ -39,6 +40,7 @@ export class GetPaginatedCustomersUseCase {
 
     return {
       customers,
+      totalCount,
     }
   }
 }

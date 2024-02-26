@@ -14,7 +14,13 @@ const SearchByCustomerFormSchema = z.object({
 
 type SearchByCustomerFormValues = z.infer<typeof SearchByCustomerFormSchema>
 
-export function SearchByCustomerForm() {
+interface SearchByCustomerFormProps {
+  disabled?: boolean
+}
+
+export function SearchByCustomerForm({
+  disabled = false,
+}: SearchByCustomerFormProps) {
   const { getToken } = useAuth()
   const { setCustomers, dates } = useCustomersStore()
   const { handleSubmit, register, reset } = useForm<SearchByCustomerFormValues>(
@@ -45,7 +51,8 @@ export function SearchByCustomerForm() {
       <Label htmlFor="customer">Search by any customer</Label>
       <Input
         id="customer"
-        placeholder="000.000.000-00"
+        placeholder="jhon doe"
+        disabled={disabled}
         {...register('customer')}
       />
     </form>

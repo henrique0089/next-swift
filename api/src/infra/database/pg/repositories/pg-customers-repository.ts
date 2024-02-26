@@ -3,6 +3,7 @@ import { Address } from '@app/entities/customer/address'
 import {
   CustomersRepository,
   PaginateParams,
+  PaginateResponse,
 } from '@app/repositories/customer-repository'
 import { client } from '../connection'
 
@@ -118,7 +119,7 @@ export class PGCustomersRepository implements CustomersRepository {
     endDate,
     limit = 10,
     page = 1,
-  }: PaginateParams): Promise<Customer[]> {
+  }: PaginateParams): Promise<PaginateResponse> {
     const offset = (page - 1) * limit
 
     let query = ''
@@ -202,36 +203,40 @@ export class PGCustomersRepository implements CustomersRepository {
     }
 
     const { rows } = await client.query<CustomerRecord>(query, values)
+    const res = await client.query(`SELECT COUNT(*) FROM customers;`)
 
     const customers: Customer[] = []
 
     for (const data of rows) {
-      const customer = new Customer({
-        name: data.name,
-        email: data.email,
-        document: data.document,
-        ddd: data.ddd,
-        phone: data.phone,
-        address: new Address(
-          {
-            street: data.street,
-            number: data.number,
-            complement: data.complement,
-            state: data.state,
-            city: data.city,
-            postalCode: data.postal_code,
-            createdAt: data.address_created_at,
-          },
-          data.address_id,
-        ),
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
-      })
+      const customer = new Customer(
+        {
+          name: data.name,
+          email: data.email,
+          document: data.document,
+          ddd: data.ddd,
+          phone: data.phone,
+          address: new Address(
+            {
+              street: data.street,
+              number: data.number,
+              complement: data.complement,
+              state: data.state,
+              city: data.city,
+              postalCode: data.postal_code,
+              createdAt: data.address_created_at,
+            },
+            data.address_id,
+          ),
+          createdAt: data.created_at,
+          updatedAt: data.updated_at,
+        },
+        data.id,
+      )
 
       customers.push(customer)
     }
 
-    return customers
+    return { customers, totalCount: Number(res.rows[0].count) }
   }
 
   async create(customer: Customer): Promise<void> {
@@ -255,6 +260,7 @@ export class PGCustomersRepository implements CustomersRepository {
       customer.address.createdAt,
     ]
 
+    await client.query(addrsQuery, addrsVals)
     await client.query(customerQuery, [
       id,
       name,
@@ -266,7 +272,6 @@ export class PGCustomersRepository implements CustomersRepository {
       createdAt,
       updatedAt,
     ])
-    await client.query(addrsQuery, addrsVals)
   }
 
   async save(customer: Customer): Promise<void> {
@@ -289,7 +294,7 @@ export class PGCustomersRepository implements CustomersRepository {
   }
 
   async delete(customerId: string): Promise<void> {
-    const query = `DELETE customers WHERE id = $1`
+    const query = `DELETE FROM customers WHERE id = $1`
 
     await client.query(query, [customerId])
   }

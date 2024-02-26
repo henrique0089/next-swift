@@ -31,9 +31,13 @@ import { SearchByEmailForm } from './search-by-email-form'
 
 interface CustomersContentProps {
   customers: CustomerData[]
+  totalCount: number
 }
 
-export function CustomersContent({ customers }: CustomersContentProps) {
+export function CustomersContent({
+  customers,
+  totalCount,
+}: CustomersContentProps) {
   const { getToken } = useAuth()
   const { customers: customersData, dates, setCustomers } = useCustomersStore()
   const [quantityInString, setQuantityInString] = useState('')
@@ -66,21 +70,24 @@ export function CustomersContent({ customers }: CustomersContentProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
       <nav className="space-y-6">
-        <SearchByCustomerForm />
+        <SearchByCustomerForm disabled={totalCount === 0} />
 
         <Separator />
 
-        <SearchByEmailForm />
+        <SearchByEmailForm disabled={totalCount === 0} />
 
         <Separator />
 
-        <SearchByDocumentForm />
+        <SearchByDocumentForm disabled={totalCount === 0} />
 
         <Separator />
 
         <div className="space-y-2">
           <span className="block text-sm font-semibold">Select a quantity</span>
-          <Select onValueChange={setQuantityInString}>
+          <Select
+            onValueChange={setQuantityInString}
+            disabled={totalCount === 0}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Nothing selected" />
             </SelectTrigger>
@@ -112,8 +119,14 @@ export function CustomersContent({ customers }: CustomersContentProps) {
         <TableBody>
           {customersData.map((customer) => (
             <TableRow key={customer.id}>
-              <TableCell>{customer.name}</TableCell>
-              <TableCell>{customer.email}</TableCell>
+              <TableCell>
+                <span className="block w-28 truncate">{customer.name}</span>
+              </TableCell>
+              <TableCell>
+                <span title={customer.email} className="block w-28 truncate">
+                  {customer.email}
+                </span>
+              </TableCell>
               <TableCell>{customer.document}</TableCell>
               <TableCell>{customer.ddd}</TableCell>
               <TableCell>{customer.phone}</TableCell>
@@ -132,7 +145,10 @@ export function CustomersContent({ customers }: CustomersContentProps) {
                 </Link>
               </TableCell>
               <TableCell>
-                <DeleteCustomerButton customerName={customer.name}>
+                <DeleteCustomerButton
+                  customerId={customer.id}
+                  customerName={customer.name}
+                >
                   <button className="flex items-center gap-2">
                     <Trash className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />
                   </button>

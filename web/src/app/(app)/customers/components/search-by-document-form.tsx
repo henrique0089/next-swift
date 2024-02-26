@@ -14,7 +14,13 @@ const SearchByDocumentFormSchema = z.object({
 
 type SearchByDocumentFormValues = z.infer<typeof SearchByDocumentFormSchema>
 
-export function SearchByDocumentForm() {
+interface SearchByDocumentFormProps {
+  disabled?: boolean
+}
+
+export function SearchByDocumentForm({
+  disabled = false,
+}: SearchByDocumentFormProps) {
   const { getToken } = useAuth()
   const { setCustomers, dates } = useCustomersStore()
   const { handleSubmit, register, reset } = useForm<SearchByDocumentFormValues>(
@@ -46,6 +52,7 @@ export function SearchByDocumentForm() {
       <Input
         id="document"
         placeholder="000.000.000-00"
+        disabled={disabled}
         {...register('document')}
       />
     </form>

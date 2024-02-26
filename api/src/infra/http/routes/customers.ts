@@ -13,7 +13,7 @@ const customersRouter = Router()
 
 customersRouter.get('/', getPaginatedCustomersController.handle)
 customersRouter.post('/', addCustomerController.handle)
-customersRouter.delete('/:customerId/delete', removeCustomerController.handle)
+customersRouter.delete('/:customerId/remove', removeCustomerController.handle)
 customersRouter.put(
   '/:customerId/update',
   updateCustomerDetailsController.handle,

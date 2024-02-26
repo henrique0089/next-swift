@@ -14,7 +14,13 @@ const SearchByEmailFormSchema = z.object({
 
 type SearchByEmailFormValues = z.infer<typeof SearchByEmailFormSchema>
 
-export function SearchByEmailForm() {
+interface SearchByEmailFormProps {
+  disabled?: boolean
+}
+
+export function SearchByEmailForm({
+  disabled = false,
+}: SearchByEmailFormProps) {
   const { getToken } = useAuth()
   const { setCustomers, dates } = useCustomersStore()
   const { handleSubmit, register, reset } = useForm<SearchByEmailFormValues>({
@@ -41,7 +47,12 @@ export function SearchByEmailForm() {
   return (
     <form onSubmit={handleSubmit(handleSearch)} className="w-full space-y-2">
       <Label htmlFor="email">Search by any email</Label>
-      <Input id="email" placeholder="000.000.000-00" {...register('email')} />
+      <Input
+        id="email"
+        placeholder="jhondoe@gmail.com"
+        disabled={disabled}
+        {...register('email')}
+      />
     </form>
   )
 }

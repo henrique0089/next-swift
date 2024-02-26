@@ -6,7 +6,7 @@ export class CustomerViewModel {
       id: customer.id,
       name: customer.name,
       email: customer.email,
-      document: customer.cpf,
+      document: customer.document,
       ddd: customer.ddd,
       phone: customer.phone,
       createdAt: customer.createdAt,

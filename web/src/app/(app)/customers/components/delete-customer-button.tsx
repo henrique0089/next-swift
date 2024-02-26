@@ -11,19 +11,42 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { ReactNode } from 'react'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
+import { ReactNode, useState } from 'react'
 
 interface DeleteCustomerButtonProps {
+  customerId: string
   customerName: string
   children: ReactNode
 }
 
 export function DeleteCustomerButton({
+  customerId,
   customerName,
   children,
 }: DeleteCustomerButtonProps) {
+  const { getToken } = useAuth()
+  const [isOpen, setIsOpen] = useState(false)
+
+  async function handleRemoveCustomer() {
+    try {
+      await api.delete(`/customers/${customerId}/remove`, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+
+      console.log(customerId)
+
+      setIsOpen(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
-    <AlertDialog>
+    <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -35,7 +58,9 @@ export function DeleteCustomerButton({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Confirm</AlertDialogAction>
+          <AlertDialogAction onClick={handleRemoveCustomer}>
+            Confirm
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

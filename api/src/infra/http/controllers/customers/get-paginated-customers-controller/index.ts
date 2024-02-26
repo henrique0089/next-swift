@@ -36,6 +36,6 @@ export class GetPaginatedCustomersController {
 
     const customers = result.customers.map(CustomerViewModel.toHttp)
 
-    return res.json({ customers })
+    return res.json({ customers, totalCount: result.totalCount })
   }
 }
