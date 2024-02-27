@@ -1,19 +1,17 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
+import { CustomerDetails } from '../[id]/edit/page'
 
 const updateCustomerFormSchema = z.object({
   name: z.string().min(3, { message: 'Name must have at least 3 words' }),
@@ -25,124 +23,115 @@ const updateCustomerFormSchema = z.object({
 
 type UpdateCustomerFormValues = z.infer<typeof updateCustomerFormSchema>
 
-export function UpdateCustomerForm() {
-  const form = useForm<UpdateCustomerFormValues>({
+interface UpdateCustomerFormProps {
+  customerId: string
+  customer: CustomerDetails
+}
+
+export function UpdateCustomerForm({
+  customerId,
+  customer,
+}: UpdateCustomerFormProps) {
+  const { getToken } = useAuth()
+  const {
+    handleSubmit,
+    register,
+    formState: { isSubmitting },
+  } = useForm<UpdateCustomerFormValues>({
     resolver: zodResolver(updateCustomerFormSchema),
     mode: 'onChange',
     defaultValues: {
-      name: 'Jhon Doe',
-      email: 'jhondoe@gmail.com',
-      cpf: '134.607.374-09',
-      ddd: 82,
-      phone: 999999999,
+      name: customer.name,
+      email: customer.email,
+      cpf: customer.document,
+      ddd: customer.ddd,
+      phone: customer.phone,
     },
   })
 
-  const {
-    handleSubmit,
-    setValue,
-    formState: { isSubmitting },
-  } = form
+  async function handleupdateCustomer(data: UpdateCustomerFormValues) {
+    try {
+      await api.put(`/customers/${customerId}/update`, data, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
 
-  function handleupdateCustomer(data: UpdateCustomerFormValues) {
-    console.log({ data })
-
-    setValue('name', '')
+      toast('Congratulations!', {
+        description: 'you updated data of this customer!',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
+    }
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(handleupdateCustomer)}>
-        <div className="flex flex-col gap-4 lg:items-start lg:flex-row">
-          <div className="space-y-4 lg:w-[16rem] order-1 lg:order-none">
-            <FormField
-              control={form.control}
-              name="cpf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>CPF</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="000.000.000-00" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+    <form onSubmit={handleSubmit(handleupdateCustomer)}>
+      <div className="flex flex-col gap-4 lg:items-start lg:flex-row">
+        <div className="space-y-4 lg:w-[16rem] order-1 lg:order-none">
+          <div className="space-y-2">
+            <Label htmlFor="cpf">Cpf</Label>
+            <Input
+              id="cpf"
+              placeholder="000.000.000-00"
+              disabled
+              {...register('cpf')}
             />
-
-            <FormField
-              control={form.control}
-              name="ddd"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>DDD</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="82" type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="999999999" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button disabled={isSubmitting} className="lg:hidden">
-              {isSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Update customer
-            </Button>
           </div>
 
-          <div className="space-y-4 lg:flex-1">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Jhon doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>E-mail</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="jhondoe@gmail.com" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button disabled={isSubmitting} className="hidden lg:inline-flex">
-              {isSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Update customer
-            </Button>
+          <div className="space-y-2">
+            <Label htmlFor="ddd">DDD</Label>
+            <Input id="ddd" placeholder="82" {...register('ddd')} />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input id="phone" placeholder="999999999" {...register('phone')} />
+          </div>
+
+          <Button disabled={isSubmitting} className="lg:hidden">
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Update customer
+          </Button>
         </div>
-      </form>
-    </Form>
+
+        <div className="space-y-4 lg:flex-1">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" placeholder="Jhon doe" {...register('name')} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              placeholder="jhondoe@gmail.com"
+              {...register('email')}
+            />
+          </div>
+
+          <Button disabled={isSubmitting} className="hidden lg:inline-flex">
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Update customer
+          </Button>
+        </div>
+      </div>
+    </form>
   )
 }
