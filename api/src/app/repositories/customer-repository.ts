@@ -21,7 +21,7 @@ export interface CustomersRepository {
   paginate(params: PaginateParams): Promise<PaginateResponse>
   create(customer: Customer): Promise<void>
   save(customer: Customer): Promise<void>
-  delete(customerId: string): Promise<void>
+  delete(customer: Customer): Promise<void>
   getCurrentMonthTotalCount(): Promise<number>
   getLastMonthTotalCount(): Promise<number>
 }

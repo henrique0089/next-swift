@@ -1,7 +1,10 @@
 import { Separator } from '@/components/ui/separator'
+import { currentUser } from '@clerk/nextjs'
 import { UpdateProfileForm } from '../components/update-profile-form'
 
-export default function Profile() {
+export default async function Profile() {
+  const user = await currentUser()
+
   return (
     <section className="space-y-6">
       <div>
@@ -13,7 +16,13 @@ export default function Profile() {
 
       <Separator />
 
-      <UpdateProfileForm />
+      <UpdateProfileForm
+        user={{
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          avatar: user?.imageUrl,
+        }}
+      />
     </section>
   )
 }

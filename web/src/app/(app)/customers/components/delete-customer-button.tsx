@@ -12,8 +12,11 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { api } from '@/lib/axios'
+import { useCustomersStore } from '@/store/customers-store'
 import { useAuth } from '@clerk/nextjs'
+import { AxiosError } from 'axios'
 import { ReactNode, useState } from 'react'
+import { toast } from 'sonner'
 
 interface DeleteCustomerButtonProps {
   customerId: string
@@ -27,6 +30,7 @@ export function DeleteCustomerButton({
   children,
 }: DeleteCustomerButtonProps) {
   const { getToken } = useAuth()
+  const { customers, setCustomers } = useCustomersStore()
   const [isOpen, setIsOpen] = useState(false)
 
   async function handleRemoveCustomer() {
@@ -37,11 +41,34 @@ export function DeleteCustomerButton({
         },
       })
 
-      console.log(customerId)
+      const filteredCustomers = customers.filter(
+        (customer) => customer.id !== customerId,
+      )
+      setCustomers(filteredCustomers)
 
       setIsOpen(false)
+
+      toast('Success!', {
+        description: 'customer deleted succesfuly.',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
     } catch (error) {
-      console.log(error)
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
     }
   }
 

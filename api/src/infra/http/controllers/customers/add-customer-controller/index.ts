@@ -1,4 +1,5 @@
 import { AddCustomerUseCase } from '@app/usecases/customers/add-customer-usecase'
+import { PGCustomerAddressRepository } from '@infra/database/pg/repositories/pg-customer-address-repository'
 import { PGCustomersRepository } from '@infra/database/pg/repositories/pg-customers-repository'
 import { Request, Response } from 'express'
 import { z } from 'zod'
@@ -26,7 +27,11 @@ export class AddCustomerController {
     )
 
     const customersRepo = new PGCustomersRepository()
-    const addCustomerUseCase = new AddCustomerUseCase(customersRepo)
+    const customerAddressRepo = new PGCustomerAddressRepository()
+    const addCustomerUseCase = new AddCustomerUseCase(
+      customersRepo,
+      customerAddressRepo,
+    )
 
     await addCustomerUseCase.execute({
       name,

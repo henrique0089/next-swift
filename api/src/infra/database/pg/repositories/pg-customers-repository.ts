@@ -293,10 +293,14 @@ export class PGCustomersRepository implements CustomersRepository {
     ])
   }
 
-  async delete(customerId: string): Promise<void> {
-    const query = `DELETE FROM customers WHERE id = $1`
+  async delete(customer: Customer): Promise<void> {
+    const customerQuery = `DELETE FROM customers WHERE id = $1`
+    const addressQuery = `DELETE FROM addresses WHERE id = $1`
 
-    await client.query(query, [customerId])
+    await Promise.all([
+      client.query(customerQuery, [customer.id]),
+      client.query(addressQuery, [customer.address.id]),
+    ])
   }
 
   async getCurrentMonthTotalCount(): Promise<number> {

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -44,16 +44,18 @@ export function UpdatePasswordForm() {
           label: 'dismiss',
         },
       })
-    } catch (error: any) {
-      toast('Uh oh! Something went wrong.', {
-        description: error.response.data.message,
-        position: 'bottom-right',
-        dismissible: true,
-        duration: 1500,
-        cancel: {
-          label: 'dismiss',
-        },
-      })
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
     }
   }
 
