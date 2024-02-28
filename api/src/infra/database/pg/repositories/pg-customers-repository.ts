@@ -130,7 +130,7 @@ export class PGCustomersRepository implements CustomersRepository {
         FROM customers c
         JOIN addresses a ON a.id = c.address_id
         WHERE c.created_at BETWEEN $1 AND $2
-        ORDER BY c.created_at
+        ORDER BY c.created_at DESC
         LIMIT $3 OFFSET $4
       `
 
@@ -143,7 +143,7 @@ export class PGCustomersRepository implements CustomersRepository {
         FROM customers c
         JOIN addresses a ON a.id = c.address_id
         WHERE c.name ILIKE $1
-        ORDER BY c.created_at
+        ORDER BY c.created_at DESC
         LIMIT $2 OFFSET $3
       `
 
@@ -155,7 +155,7 @@ export class PGCustomersRepository implements CustomersRepository {
         FROM customers c
         JOIN addresses a ON a.id = c.address_id
         WHERE c.email = $1
-        ORDER BY c.created_at
+        ORDER BY c.created_at DESC
         LIMIT $2 OFFSET $3
       `
 
@@ -167,7 +167,7 @@ export class PGCustomersRepository implements CustomersRepository {
         FROM customers c
         JOIN addresses a ON a.id = c.address_id
         WHERE c.document = $1
-        ORDER BY c.created_at
+        ORDER BY c.created_at DESC
         LIMIT $2 OFFSET $3
       `
 
@@ -194,7 +194,7 @@ export class PGCustomersRepository implements CustomersRepository {
       query = `SELECT c.id, c.name, c.email, c.document, c.ddd, c.phone, c.created_at, c.updated_at, a.id As address_id, a.street, a.number, a.complement, a.city, a.state, a.postal_code, a.created_at AS address_created_at
         FROM customers c
         JOIN addresses a ON a.id = c.address_id
-        ORDER BY c.created_at
+        ORDER BY c.created_at DESC
         LIMIT $1 OFFSET $2
       `
 
