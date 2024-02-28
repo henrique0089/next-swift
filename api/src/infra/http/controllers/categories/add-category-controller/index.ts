@@ -19,6 +19,7 @@ export class AddCategoryController {
     const category = {
       id: result.category.id,
       name: result.category.name,
+      products: 0,
       createdAt: result.category.createdAt,
     }
 

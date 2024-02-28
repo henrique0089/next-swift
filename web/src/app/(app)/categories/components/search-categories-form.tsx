@@ -25,7 +25,7 @@ export function SearchCategoryForm() {
 
   async function handleSearchCategory({ search }: SearchCategoryFormValues) {
     const { data } = await api.get<{ categories: CategoryData[] }>(
-      '/categories',
+      '/categories/search',
       {
         params: {
           search,

@@ -26,7 +26,7 @@ export class PGCategoriesRepository implements CategoriesRepository {
       query = `SELECT c.id, c.name, c.created_at, COUNT(pc.product_id) AS products_count
       FROM categories c 
       LEFT JOIN products_categories pc ON c.id = pc.category_id
-      WHERE c.name ILIKE %1
+      WHERE c.name ILIKE $1
       GROUP BY c.id, c.name, c.created_at
       ORDER BY created_at DESC
       LIMIT $2 OFFSET $3`
@@ -47,6 +47,8 @@ export class PGCategoriesRepository implements CategoriesRepository {
     }
 
     const { rows } = await client.query<CategoryRecord>(query, values)
+
+    if (rows.length === 0) return []
 
     const categories: Category[] = []
 

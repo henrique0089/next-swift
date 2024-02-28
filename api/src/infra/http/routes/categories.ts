@@ -2,9 +2,11 @@ import { AddCategoryController } from '@infra/http/controllers/categories/add-ca
 import { DeleteCategoryController } from '@infra/http/controllers/categories/delete-category-controller'
 import { GetAllCategoriesController } from '@infra/http/controllers/categories/get-all-categories-controller'
 import { Router } from 'express'
+import { SearchCategoriesController } from '../controllers/categories/search-categories-controller'
 import { ClerkExpressRequireAuth } from '../middlewares/clerk-require-auth'
 
 const getAllCategoriesController = new GetAllCategoriesController()
+const searchCategoriesController = new SearchCategoriesController()
 const addCategoryController = new AddCategoryController()
 const deleteCategoryController = new DeleteCategoryController()
 
@@ -15,6 +17,13 @@ categoriesRouter.get(
   ClerkExpressRequireAuth(),
   getAllCategoriesController.handle,
 )
+
+categoriesRouter.get(
+  '/search',
+  ClerkExpressRequireAuth(),
+  searchCategoriesController.handle,
+)
+
 categoriesRouter.post(
   '/',
   ClerkExpressRequireAuth(),
