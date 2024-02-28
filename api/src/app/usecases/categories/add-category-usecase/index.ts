@@ -6,7 +6,9 @@ interface Request {
   name: string
 }
 
-type Response = void
+interface Response {
+  category: Category
+}
 
 export class AddCategoryUseCase {
   constructor(private categoriesRepo: CategoriesRepository) {}
@@ -23,5 +25,9 @@ export class AddCategoryUseCase {
     })
 
     await this.categoriesRepo.create(category)
+
+    return {
+      category,
+    }
   }
 }

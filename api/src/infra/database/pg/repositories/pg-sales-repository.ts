@@ -290,10 +290,10 @@ export class PGSalesRepository implements SalesRepository {
   }: RevenueParams): Promise<RevenueMetrics[]> {
     const searchStartDate = startDate
       ? dayjs(startDate).startOf('day').toDate()
-      : dayjs().subtract(1, 'month').startOf('day').toDate()
+      : dayjs().subtract(1, 'month').startOf('month').toDate()
     const searchEndDate = endDate
       ? dayjs(endDate).endOf('day').toDate()
-      : dayjs().endOf('day').toDate()
+      : dayjs().subtract(1, 'month').endOf('month').toDate()
 
     const sql = `SELECT TO_CHAR(created_at, 'DD/MM') AS date,
       total / 100.0 AS revenue
@@ -307,7 +307,7 @@ export class PGSalesRepository implements SalesRepository {
       searchEndDate,
     ])
 
-    const metrics = rows.map((row) => {
+    const metrics: RevenueMetrics[] = rows.map((row) => {
       const revenue = Number(row.revenue).toFixed(2)
 
       return {

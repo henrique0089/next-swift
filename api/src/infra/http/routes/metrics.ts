@@ -1,8 +1,8 @@
-import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node'
 import { Router } from 'express'
 import { GenerateRevenueReportController } from '../controllers/metrics/generate-revenue-report-controllers'
 import { GetMetricsController } from '../controllers/metrics/get-metrics-controllers'
 import { GetRevenueInPeriodMetricsController } from '../controllers/metrics/get-revenue-in-period-metrics-controller'
+import { ClerkExpressRequireAuth } from '../middlewares/clerk-require-auth'
 
 const getMetricsController = new GetMetricsController()
 const getRevenueInPeriodMetricsController =

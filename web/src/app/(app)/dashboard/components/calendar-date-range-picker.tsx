@@ -7,14 +7,41 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { api } from '@/lib/axios'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@clerk/nextjs'
+import { AxiosError } from 'axios'
 import { format } from 'date-fns'
 import { CalendarIcon, DownloadIcon } from 'lucide-react'
 import { useState } from 'react'
 import { DateRange } from 'react-day-picker'
+import { toast } from 'sonner'
 
 export function CalendarDateRangePicker() {
+  const { getToken } = useAuth()
   const [date, setDate] = useState<DateRange | undefined>()
+
+  async function generateReport() {
+    try {
+      await api.get('/metrics/revenue/report', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
+    }
+  }
 
   return (
     <div className="flex items-center gap-2">
@@ -58,7 +85,7 @@ export function CalendarDateRangePicker() {
         </PopoverContent>
       </Popover>
 
-      <Button className="flex items-center gap-2">
+      <Button onClick={generateReport} className="flex items-center gap-2">
         <span>Download</span> <DownloadIcon className="h-5 w-5" />
       </Button>
     </div>

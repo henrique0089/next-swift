@@ -7,8 +7,8 @@ import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const querySchema = z.object({
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
 })
 
 export class GenerateRevenueReportController {

@@ -9,7 +9,7 @@ export class GetAllCategoriesUseCase {
   constructor(private categoriesRepo: CategoriesRepository) {}
 
   async execute(): Promise<Response> {
-    const categories = await this.categoriesRepo.findAll()
+    const categories = await this.categoriesRepo.paginate({})
 
     return {
       categories,

@@ -1,30 +1,66 @@
 import { Category } from '@app/entities/category'
-import { CategoriesRepository } from '@app/repositories/categories-repository'
+import {
+  CategoriesRepository,
+  PaginateParams,
+} from '@app/repositories/categories-repository'
 import { client } from '../connection'
 
 interface CategoryRecord {
   id: string
   name: string
+  products_count: string
   created_at: Date
 }
 
 export class PGCategoriesRepository implements CategoriesRepository {
-  async findAll(): Promise<Category[]> {
-    const query = `SELECT * FROM categories`
-    const { rows } = await client.query<CategoryRecord>(query)
+  async paginate({
+    search,
+    limit = 10,
+    page = 1,
+  }: PaginateParams): Promise<Category[]> {
+    const offset = (page - 1) * limit
+    let query = ''
+    const values: any[] = []
+
+    if (search) {
+      query = `SELECT c.id, c.name, c.created_at, COUNT(pc.product_id) AS products_count
+      FROM categories c 
+      LEFT JOIN products_categories pc ON c.id = pc.category_id
+      WHERE c.name ILIKE %1
+      GROUP BY c.id, c.name, c.created_at
+      ORDER BY created_at DESC
+      LIMIT $2 OFFSET $3`
+
+      values.push(`%${search}%`)
+      values.push(limit)
+      values.push(offset)
+    } else {
+      query = `SELECT c.id, c.name, c.created_at, COUNT(pc.product_id) AS products_count
+      FROM categories c 
+      LEFT JOIN products_categories pc ON c.id = pc.category_id
+      GROUP BY c.id, c.name, c.created_at
+      ORDER BY created_at DESC
+      LIMIT $1 OFFSET $2`
+
+      values.push(limit)
+      values.push(offset)
+    }
+
+    const { rows } = await client.query<CategoryRecord>(query, values)
 
     const categories: Category[] = []
 
     for (const data of rows) {
-      const role = new Category(
+      const category = new Category(
         {
           name: data.name,
+          productsCount: parseInt(data.products_count),
           createdAt: data.created_at,
         },
         data.id,
       )
 
-      categories.push(role)
+      categories.push(category)
     }
 
     return categories

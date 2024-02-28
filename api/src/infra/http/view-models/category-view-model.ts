@@ -5,6 +5,7 @@ export class CategoryViewModel {
     return {
       id: category.id,
       name: category.name,
+      products: category.productsCount,
       createdAt: category.createdAt,
     }
   }

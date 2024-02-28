@@ -3,9 +3,10 @@ import { useDropzone } from 'react-dropzone'
 
 interface DropzoneProps {
   onChange: (files: File[]) => void
+  id?: string
 }
 
-export function Dropzone({ onChange }: DropzoneProps) {
+export function Dropzone({ onChange, id }: DropzoneProps) {
   const { getRootProps, getInputProps, isDragAccept, isDragReject } =
     useDropzone({
       accept: {
@@ -23,7 +24,7 @@ export function Dropzone({ onChange }: DropzoneProps) {
       data-rejected={isDragReject}
       className="h-32 rounded-md data-[accepted=true]:border-emerald-500 data-[rejected=true]:border-red-500 w-full cursor-pointer border shadow-sm flex flex-col items-center justify-center gap-2 text-muted-foreground"
     >
-      <input {...getInputProps()} />
+      <input id={id} {...getInputProps()} />
 
       <UploadCloud />
 

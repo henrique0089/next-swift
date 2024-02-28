@@ -3,8 +3,8 @@ import { ExcelSalesReportProvider } from '@app/providers/excel-sales-report-prov
 import { SalesRepository } from '@app/repositories/sales-repository'
 
 interface Request {
-  startDate: Date
-  endDate: Date
+  startDate?: Date
+  endDate?: Date
 }
 
 export class GenerateRevenueReportUseCase {
@@ -22,6 +22,8 @@ export class GenerateRevenueReportUseCase {
     if (sales.length === 0) {
       throw new AppError('report generation is not possible. not enough sales!')
     }
+
+    console.log(sales)
 
     const { filename, fullFilePath } =
       await this.excelSalesReportProvider.generateRevenue(sales)

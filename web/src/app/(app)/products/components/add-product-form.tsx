@@ -1,15 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -20,7 +13,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Dropzone } from './dropzone'
 
@@ -62,185 +55,118 @@ const categories = [
 ]
 
 export function AddProductForm() {
-  const form = useForm<AddProductFormValues>({
+  const {
+    handleSubmit,
+    register,
+    control,
+    reset,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm<AddProductFormValues>({
     resolver: zodResolver(addProductFormSchema),
     mode: 'onChange',
   })
 
-  const {
-    handleSubmit,
-    setValue,
-    formState: { isSubmitting },
-  } = form
-
   function handleAddProduct(data: AddProductFormValues) {
     console.log({ data })
 
-    setValue('name', '')
+    reset()
+    setValue('category', '')
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(handleAddProduct)} className="space-y-4">
-        <div className="grid grid-cols-1 space-y-6 lg:grid-cols-[16rem_1fr] lg:space-x-4">
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="width"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Width (cm)</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="180" type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="height"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Height (cm)</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="362" type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="weight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Weight (cm)</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="55" type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price (US$)</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="72.90" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="63" type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem
-                            key={category.value}
-                            value={category.value}
-                          >
-                            {category.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <form onSubmit={handleSubmit(handleAddProduct)} className="space-y-4">
+      <div className="grid grid-cols-1 space-y-6 lg:grid-cols-[16rem_1fr] lg:space-x-4">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="width">Width (cm)</Label>
+            <Input id="width" placeholder="180" {...register('width')} />
           </div>
 
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="White t-shirt..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+          <div className="space-y-2">
+            <Label htmlFor="height">Height (cm)</Label>
+            <Input id="height" placeholder="362" {...register('height')} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="weight">Weight (cm)</Label>
+            <Input id="weight" placeholder="55" {...register('weight')} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="price">Price (US$)</Label>
+            <Input id="price" placeholder="72.90" {...register('price')} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="quantity">Quantity</Label>
+            <Input id="quantity" placeholder="63" {...register('quantity')} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <Controller
+              control={control}
+              name="category"
+              render={({ field: { onChange } }) => (
+                <Select onValueChange={onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Lorem ipsum dolor sit amet..."
-                      className="h-32 resize-none"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Images ({field.value?.length ?? '0'})</FormLabel>
-                    <FormControl>
-                      <Dropzone onChange={field.onChange} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )
-              }}
-            />
-
-            <Button disabled={isSubmitting}>
-              {isSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Add Product
-            </Button>
           </div>
         </div>
-      </form>
-    </Form>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              placeholder="White t-shirt..."
+              {...register('name')}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              {...register('description')}
+              placeholder="Lorem ipsum dolor sit amet..."
+              className="h-32 resize-none"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Controller
+              control={control}
+              name="images"
+              render={({ field: { onChange, value } }) => (
+                <>
+                  <Label htmlFor="images">
+                    Images ({value?.length ?? '0'})
+                  </Label>
+                  <Dropzone id="images" onChange={onChange} />
+                </>
+              )}
+            />
+          </div>
+
+          <Button disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Add Product
+          </Button>
+        </div>
+      </div>
+    </form>
   )
 }

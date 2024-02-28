@@ -14,8 +14,14 @@ export class AddCategoryController {
     const categoriesRepo = new PGCategoriesRepository()
     const addCategoryUseCase = new AddCategoryUseCase(categoriesRepo)
 
-    await addCategoryUseCase.execute({ name })
+    const result = await addCategoryUseCase.execute({ name })
 
-    return res.send()
+    const category = {
+      id: result.category.id,
+      name: result.category.name,
+      createdAt: result.category.createdAt,
+    }
+
+    return res.json({ category })
   }
 }

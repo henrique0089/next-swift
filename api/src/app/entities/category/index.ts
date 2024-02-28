@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 
 interface CategoryProps {
   name: string
+  productsCount?: number
   createdAt: Date
 }
 
@@ -31,6 +32,14 @@ export class Category {
 
   public set name(name: string) {
     this.props.name = name
+  }
+
+  public get productsCount(): number | undefined {
+    return this.props.productsCount
+  }
+
+  public set productsCount(productsCount: number | undefined) {
+    this.props.productsCount = productsCount
   }
 
   public get createdAt(): Date {
