@@ -6,16 +6,22 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { formatPrice } from '@/utils/format-price'
 import { Pen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ProductData } from '../page'
 import { DeleteProductButton } from './delete-product-button'
 
-export function ProductCard() {
+interface ProductCardProps {
+  data: ProductData
+}
+
+export function ProductCard({ data }: ProductCardProps) {
   return (
     <Card className="w-full max-w-[298px] overflow-hidden">
       <Image
-        src={`/shirt.png`}
+        src={data.coverImage}
         alt=""
         width={298}
         height={456}
@@ -23,10 +29,9 @@ export function ProductCard() {
       />
 
       <CardHeader>
-        <CardTitle className="dark:text-zinc-100">Camiseta preta</CardTitle>
+        <CardTitle className="dark:text-zinc-100">{data.name}</CardTitle>
         <CardDescription className="ellipsis-text">
-          Lorem ipsum dolor sit amet consectetur. Tortor mauris imperdiet
-          ultrices aliquet. Netus varius sit lorem consectetur consequat.
+          {data.desciption}
         </CardDescription>
       </CardHeader>
 
@@ -36,16 +41,18 @@ export function ProductCard() {
 
       <CardFooter className="flex items-center justify-between p-4">
         <strong className="text-muted-foreground font-normal">
-          <span className="font-medium text-lg text-zinc-900">US$ 26,90</span> /
-          3pcs
+          <span className="font-medium text-lg text-zinc-900">
+            {formatPrice(data.price)}
+          </span>{' '}
+          / {data.quantity}pcs
         </strong>
 
         <div className="flex items-center gap-2">
-          <Link href={`/products/25/edit`}>
+          <Link href={`/products/${data.id}/edit`}>
             <Pen className="h-5 w-5" />
           </Link>
 
-          <DeleteProductButton />
+          <DeleteProductButton productId={data.id} />
         </div>
       </CardFooter>
     </Card>

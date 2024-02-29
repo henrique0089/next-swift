@@ -302,7 +302,7 @@ export class PGProductsRepository implements ProductsRepository {
       JOIN categories c ON c.id = pc.category_id
       JOIN product_images pi ON c.id = pi.product_id
       GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
-      WHERE c.id = $1
+      WHERE (c.id = $1) AND (p.removed_at IS NULL)
       ORDER BY p.created_at
       LIMIT $2 OFFSET $3
       `
@@ -383,7 +383,7 @@ export class PGProductsRepository implements ProductsRepository {
           products p
           LEFT JOIN products_categories pc ON p.id = pc.product_id
           LEFT JOIN product_images pi ON p.id = pi.product_id
-        WHERE p.created_at BETWEEN $1 AND $2
+        WHERE (p.created_at BETWEEN $1 AND $2) AND (p.removed_at IS NULL)
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
         LIMIT 10 OFFSET $3
       `
@@ -405,7 +405,7 @@ export class PGProductsRepository implements ProductsRepository {
           products p
           LEFT JOIN products_categories pc ON p.id = pc.product_id
           LEFT JOIN product_images pi ON p.id = pi.product_id
-        WHERE p.name ILIKE $1 OR p.description ILIKE $1
+        WHERE (p.name ILIKE $1 OR p.description ILIKE $1) AND (p.removed_at IS NULL)
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
         LIMIT 10 OFFSET $4
       `
@@ -426,7 +426,7 @@ export class PGProductsRepository implements ProductsRepository {
           products p
           LEFT JOIN products_categories pc ON p.id = pc.product_id
           LEFT JOIN product_images pi ON p.id = pi.product_id
-        WHERE pc.category_id = ANY($1)
+        WHERE (pc.category_id = ANY($1)) AND (p.removed_at IS NULL)
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
         LIMIT 10 OFFSET $2
       `
@@ -447,7 +447,7 @@ export class PGProductsRepository implements ProductsRepository {
           products p
           JOIN products_categories pc ON p.id = pc.product_id
           JOIN product_images pi ON p.id = pi.product_id
-        WHERE (p.created_at BETWEEN $1 AND $2) AND (p.name ILIKE $3 OR p.description ILIKE $3) AND (pc.category_id = ANY($4))
+        WHERE (p.created_at BETWEEN $1 AND $2) AND (p.name ILIKE $3 OR p.description ILIKE $3) AND (pc.category_id = ANY($4)) AND (p.removed_at IS NULL)
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
         LIMIT 10 OFFSET $5
       `
@@ -469,6 +469,7 @@ export class PGProductsRepository implements ProductsRepository {
           products p
           JOIN products_categories pc ON p.id = pc.product_id
           JOIN product_images pi ON p.id = pi.product_id
+        WHERE p.removed_at IS NULL
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
         LIMIT 10 OFFSET $1
       `

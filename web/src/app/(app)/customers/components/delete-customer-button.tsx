@@ -15,7 +15,7 @@ import { api } from '@/lib/axios'
 import { useCustomersStore } from '@/store/customers-store'
 import { useAuth } from '@clerk/nextjs'
 import { AxiosError } from 'axios'
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 import { toast } from 'sonner'
 
 interface DeleteCustomerButtonProps {
@@ -31,7 +31,6 @@ export function DeleteCustomerButton({
 }: DeleteCustomerButtonProps) {
   const { getToken } = useAuth()
   const { customers, setCustomers } = useCustomersStore()
-  const [isOpen, setIsOpen] = useState(false)
 
   async function handleRemoveCustomer() {
     try {
@@ -45,8 +44,6 @@ export function DeleteCustomerButton({
         (customer) => customer.id !== customerId,
       )
       setCustomers(filteredCustomers)
-
-      setIsOpen(false)
 
       toast('Success!', {
         description: 'customer deleted succesfuly.',
@@ -73,7 +70,7 @@ export function DeleteCustomerButton({
   }
 
   return (
-    <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
+    <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

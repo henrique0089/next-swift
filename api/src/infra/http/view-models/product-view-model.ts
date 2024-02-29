@@ -1,4 +1,5 @@
 import { Product } from '@app/entities/product'
+import { env } from '@infra/env'
 
 export class ProductViewModel {
   static toHttp(product: Product) {
@@ -6,7 +7,7 @@ export class ProductViewModel {
       id: product.id,
       name: product.name,
       desciption: product.description,
-      coverImage: product.images[0].url,
+      coverImage: `${env.UPLOADS_FOLDER_URL}/products/${product.images[0].url}`,
       price: product.price,
       quantity: product.quantity,
     }

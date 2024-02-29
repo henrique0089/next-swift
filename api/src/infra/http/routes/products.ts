@@ -24,7 +24,7 @@ const upload = multer(UploaderConfig.execute('products'))
 const productsRouter = Router()
 
 productsRouter.get(
-  '/search',
+  '/',
   ClerkExpressRequireAuth(),
   getPaginatedProductsBySearchController.handle,
 )
@@ -44,7 +44,7 @@ productsRouter.put(
   ClerkExpressRequireAuth(),
   updateProductDetailsController.handle,
 )
-productsRouter.patch(
+productsRouter.delete(
   '/:productId/remove',
   ClerkExpressRequireAuth(),
   removeProductController.handle,
