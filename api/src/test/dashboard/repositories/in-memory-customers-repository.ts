@@ -2,6 +2,7 @@ import { Customer } from '@app/entities/customer'
 import {
   CustomersRepository,
   PaginateParams,
+  PaginateResponse,
 } from '@app/repositories/customer-repository'
 import dayjs from 'dayjs'
 
@@ -33,15 +34,68 @@ export class InMemoryCustomersRepository implements CustomersRepository {
   }
 
   async paginate({
+    customer,
+    document,
+    email,
+    startDate,
+    endDate,
     page = 1,
     limit = 10,
-  }: PaginateParams): Promise<Customer[]> {
+  }: PaginateParams): Promise<PaginateResponse> {
     const start = (page - 1) * limit
     const end = page * limit
 
-    const paginatedCustomers = this.customers.slice(start, end)
+    let customers: Customer[] = []
 
-    return paginatedCustomers
+    if (startDate && endDate && !customer && !email && !document) {
+      customers = this.customers
+        .filter((customer) => {
+          return (
+            customer.createdAt >= startDate && customer.createdAt <= endDate
+          )
+        })
+        .slice(start, end)
+    } else if (!startDate && !endDate && customer && !email && !document) {
+      customers = this.customers
+        .filter((customerData) => {
+          return customerData.name
+            .toLocaleLowerCase()
+            .includes(customer.toLocaleLowerCase())
+        })
+        .slice(start, end)
+    } else if (!startDate && !endDate && !customer && email && !document) {
+      customers = this.customers
+        .filter((customerData) => {
+          return customerData.email === email
+        })
+        .slice(start, end)
+    } else if (!startDate && !endDate && !customer && !email && document) {
+      customers = this.customers
+        .filter((customerData) => {
+          return customerData.document === document
+        })
+        .slice(start, end)
+    } else if (startDate && endDate && customer && email && document) {
+      customers = this.customers
+        .filter(
+          (customerData) =>
+            customerData.createdAt >= startDate &&
+            customerData.createdAt <= endDate &&
+            customerData.name
+              .toLocaleLowerCase()
+              .includes(customer.toLocaleLowerCase()) &&
+            customerData.email === email &&
+            customerData.document === document,
+        )
+        .slice(start, end)
+    } else {
+      customers = this.customers.slice(start, end)
+    }
+
+    return {
+      customers,
+      totalCount: this.customers.length,
+    }
   }
 
   async create(customer: Customer): Promise<void> {
@@ -56,9 +110,9 @@ export class InMemoryCustomersRepository implements CustomersRepository {
     }
   }
 
-  async delete(customerId: string): Promise<void> {
+  async delete(customer: Customer): Promise<void> {
     const customerIndex = this.customers.findIndex(
-      (customer) => customer.id === customerId,
+      (customerData) => customerData.id === customer.id,
     )
 
     if (customerIndex > -1) {

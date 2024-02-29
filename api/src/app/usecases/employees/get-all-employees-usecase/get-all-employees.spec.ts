@@ -16,20 +16,20 @@ beforeAll(() => {
 describe('Get All Employees UseCase', () => {
   it('should be able to get all employees', async () => {
     const employee = new Employee({
+      externalId: 'clerk-external-id',
       firstName: 'Jhon',
       lastName: 'doe',
       email: 'jhondoe@email.com',
       ddd: 99,
       phone: 99999999,
-      gender: 'M',
       avatar: 'https://github.com/henrique998.png',
       updatedAt: null,
       role: null,
     })
 
-    await inMemoryEmployeesRepository.create(employee, 'fake-role-id')
+    await inMemoryEmployeesRepository.create(employee)
 
-    const employees = await getAllEmployeesUseCase.execute()
+    const { employees } = await getAllEmployeesUseCase.execute({})
 
     expect(employees.length).toEqual(1)
   })

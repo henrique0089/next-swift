@@ -1,11 +1,31 @@
-import { CategoriesRepository } from '@app/dashboard/repositories/categories-repository'
 import { Category } from '@app/entities/category'
+import {
+  CategoriesRepository,
+  PaginateParams,
+} from '@app/repositories/categories-repository'
 
 export class InMemoryCategoriesRepository implements CategoriesRepository {
   public categories: Category[] = []
 
-  async findAll(): Promise<Category[]> {
-    return this.categories
+  async paginate({
+    search,
+    limit = 10,
+    page = 1,
+  }: PaginateParams): Promise<Category[]> {
+    const start = (page - 1) * limit
+    const end = page * limit
+
+    let categories: Category[] = []
+
+    if (search) {
+      categories = this.categories
+        .filter((category) => category.name.toLowerCase().includes(search))
+        .slice(start, end)
+    } else {
+      categories = this.categories.slice(start, end)
+    }
+
+    return categories
   }
 
   async findByName(name: string): Promise<Category | null> {

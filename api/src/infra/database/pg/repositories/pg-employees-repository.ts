@@ -1,4 +1,4 @@
-import { Employee, Gender, Role } from '@app/entities/employee'
+import { Employee, Role } from '@app/entities/employee'
 import {
   EmployeesRepository,
   PaginateParams,
@@ -13,7 +13,6 @@ interface EmployeeRecord {
   ddd: number
   phone: number
   avatar: string | null
-  gender: Gender
   role: Role
   external_id: string
   dismissed_at: Date | null
@@ -40,7 +39,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
         ddd: data.ddd,
         phone: data.phone,
         avatar: data.avatar,
-        gender: data.gender,
         role: data.role,
         externalId: data.external_id,
         dismissedAt: data.dismissed_at,
@@ -71,7 +69,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
         ddd: data.ddd,
         phone: data.phone,
         avatar: data.avatar,
-        gender: data.gender,
         role: data.role,
         externalId: data.external_id,
         dismissedAt: data.dismissed_at,
@@ -102,7 +99,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
         ddd: data.ddd,
         phone: data.phone,
         avatar: data.avatar,
-        gender: data.gender,
         role: data.role,
         externalId: data.external_id,
         dismissedAt: data.dismissed_at,
@@ -118,7 +114,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
   async paginate({
     employee,
     email,
-    document,
     startDate,
     endDate,
     limit = 10,
@@ -129,7 +124,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
     let query = ''
     const values: any[] = []
 
-    if (startDate && endDate && !employee && !email && !document) {
+    if (startDate && endDate && !employee && !email) {
       query = `SELECT * FROM employees
           WHERE created_at BETWEEN $1 AND $2
           ORDER BY created_at
@@ -140,7 +135,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       values.push(endDate)
       values.push(limit)
       values.push(offset)
-    } else if (!startDate && !endDate && employee && !email && !document) {
+    } else if (!startDate && !endDate && employee && !email) {
       query = `SELECT *
         FROM employees
         WHERE (first_name ILIKE $1 OR last_name ILIKE $1)
@@ -151,7 +146,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       values.push(`%${employee}%`)
       values.push(limit)
       values.push(offset)
-    } else if (!startDate && !endDate && !employee && email && !document) {
+    } else if (!startDate && !endDate && !employee && email) {
       query = `SELECT * FROM employees
         WHERE email = $1
         ORDER BY created_at
@@ -161,17 +156,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       values.push(email)
       values.push(limit)
       values.push(offset)
-    } else if (!startDate && !endDate && !employee && !email && document) {
-      query = `SELECT * FROM employees
-        WHERE document = $1
-        ORDER BY created_at
-        LIMIT $2 OFFSET $3
-      `
-
-      values.push(document)
-      values.push(limit)
-      values.push(offset)
-    } else if (startDate && endDate && employee && !email && !document) {
+    } else if (startDate && endDate && employee && !email) {
       query = `SELECT *
         FROM employees
         WHERE (created_at BETWEEN $1 AND $2) AND (first_name ILIKE $3 OR last_name ILIKE $3)
@@ -184,7 +169,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       values.push(`%${employee}%`)
       values.push(limit)
       values.push(offset)
-    } else if (startDate && endDate && !employee && email && !document) {
+    } else if (startDate && endDate && !employee && email) {
       query = `SELECT *
         FROM employees
         WHERE (created_at BETWEEN $1 AND $2) AND (email = $3)
@@ -197,17 +182,16 @@ export class PGEmployeesRepository implements EmployeesRepository {
       values.push(email)
       values.push(limit)
       values.push(offset)
-    } else if (startDate && endDate && !employee && !email && document) {
+    } else if (startDate && endDate && !employee && !email) {
       query = `SELECT *
         FROM employees
-        WHERE (created_at BETWEEN $1 AND $2) AND (document = $3)
+        WHERE (created_at BETWEEN $1 AND $2)
         ORDER BY created_at
-        LIMIT $4 OFFSET $5
+        LIMIT $3 OFFSET $4
       `
 
       values.push(startDate)
       values.push(endDate)
-      values.push(document)
       values.push(limit)
       values.push(offset)
     } else {
@@ -233,7 +217,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
           ddd: data.ddd,
           phone: data.phone,
           avatar: data.avatar,
-          gender: data.gender,
           role: data.role,
           externalId: data.external_id,
           dismissedAt: data.dismissed_at,
@@ -258,7 +241,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
       ddd,
       phone,
       avatar,
-      gender,
       role,
       externalId,
       dismissedAt,
@@ -266,7 +248,7 @@ export class PGEmployeesRepository implements EmployeesRepository {
       updatedAt,
     } = employee
 
-    const query = `INSERT INTO employees (id, first_name, last_name, email, ddd, phone, avatar, gender, role, external_id, dismissed_at, created_at, updated_at) 
+    const query = `INSERT INTO employees (id, first_name, last_name, email, ddd, phone, avatar, role, external_id, dismissed_at, created_at, updated_at) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `
     const values = [
@@ -277,7 +259,6 @@ export class PGEmployeesRepository implements EmployeesRepository {
       ddd,
       phone,
       avatar,
-      gender,
       role,
       externalId,
       dismissedAt,

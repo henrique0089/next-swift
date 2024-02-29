@@ -81,6 +81,6 @@ export class InMemoryProductsRepository implements ProductsRepository {
         .slice(offset, offset + 10)
     }
 
-    return []
+    return result
   }
 }

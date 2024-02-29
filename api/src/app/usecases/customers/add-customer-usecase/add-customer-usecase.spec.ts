@@ -1,15 +1,22 @@
 import { Customer } from '@app/entities/customer'
 import { Address } from '@app/entities/customer/address'
+import { InMemoryCustomerAddressesRepository } from 'src/test/dashboard/repositories/in-memory-customer-addresses-repository'
 import { InMemoryCustomersRepository } from 'src/test/dashboard/repositories/in-memory-customers-repository'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { AddCustomerUseCase } from '.'
 
 let inMemoryCustomersRepository: InMemoryCustomersRepository
+let inMemoryCustomerAddressesRepository: InMemoryCustomerAddressesRepository
 let addCustomerUseCase: AddCustomerUseCase
 
 beforeAll(() => {
   inMemoryCustomersRepository = new InMemoryCustomersRepository()
-  addCustomerUseCase = new AddCustomerUseCase(inMemoryCustomersRepository)
+  inMemoryCustomerAddressesRepository =
+    new InMemoryCustomerAddressesRepository()
+  addCustomerUseCase = new AddCustomerUseCase(
+    inMemoryCustomersRepository,
+    inMemoryCustomerAddressesRepository,
+  )
 })
 
 describe('Add Customer Repository', () => {

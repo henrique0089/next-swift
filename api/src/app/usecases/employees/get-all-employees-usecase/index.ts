@@ -19,7 +19,6 @@ export class GetAllEmployeesUseCase {
   constructor(private employeesRepo: EmployeesRepository) {}
 
   async execute(data: Request): Promise<Response> {
-    console.log(data)
     const employees = await this.employeesRepo.paginate(data)
 
     return {

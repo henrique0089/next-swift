@@ -7,7 +7,7 @@ describe('Customer entity', () => {
     const customer = new Customer({
       name: 'jhon doe',
       email: 'jhondoe@gmail.com',
-      cpf: '000.000.000-00',
+      document: '000.000.000-00',
       ddd: 88,
       phone: 999999999,
       address: new Address({
@@ -25,7 +25,7 @@ describe('Customer entity', () => {
     expect(customer.id).toBeDefined()
     expect(customer.name).toBe('jhon doe')
     expect(customer.email).toBe('jhondoe@gmail.com')
-    expect(customer.cpf).toBe('000.000.000-00')
+    expect(customer.document).toBe('000.000.000-00')
     expect(customer.ddd).toBe(88)
     expect(customer.phone).toBe(999999999)
   })

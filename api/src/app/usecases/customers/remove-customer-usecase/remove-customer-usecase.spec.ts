@@ -19,7 +19,7 @@ describe('Remove Customer UseCase', () => {
     const customer = new Customer({
       name: 'jhon doe',
       email: 'jhondoe@gmail.com',
-      cpf: '000.000.000-00',
+      document: '000.000.000-00',
       ddd: 88,
       phone: 999999999,
       address: new Address({
@@ -36,7 +36,11 @@ describe('Remove Customer UseCase', () => {
 
     await removeCustomerUseCase.execute({ customerId: customer.id })
 
-    expect(inMemoryCustomersRepository.customers).not.contains(customer)
+    expect(inMemoryCustomersRepository.customers).not.contains(
+      expect.objectContaining({
+        id: customer.id,
+      }),
+    )
   })
 
   it('should not be able to remove a customer that not exists', async () => {

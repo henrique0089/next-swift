@@ -3,7 +3,6 @@ import { Employee } from '@app/entities/employee'
 export type PaginateParams = {
   employee?: string
   email?: string
-  document?: string
   startDate?: Date
   endDate?: Date
   page?: number
