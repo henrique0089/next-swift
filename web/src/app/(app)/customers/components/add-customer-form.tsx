@@ -29,17 +29,14 @@ type AddCustomerFormValues = z.infer<typeof addCustomerFormSchema>
 export function AddCustomerForm() {
   const { getToken } = useAuth()
 
-  const form = useForm<AddCustomerFormValues>({
-    resolver: zodResolver(addCustomerFormSchema),
-    mode: 'onChange',
-  })
-
   const {
     handleSubmit,
     register,
     reset,
     formState: { isSubmitting },
-  } = form
+  } = useForm<AddCustomerFormValues>({
+    resolver: zodResolver(addCustomerFormSchema),
+  })
 
   async function handleAddCustomer(data: AddCustomerFormValues) {
     const {

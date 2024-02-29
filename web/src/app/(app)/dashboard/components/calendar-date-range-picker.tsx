@@ -24,6 +24,10 @@ export function CalendarDateRangePicker() {
   async function generateReport() {
     try {
       await api.get('/metrics/revenue/report', {
+        params: {
+          startDate: date?.from,
+          endDate: date?.to,
+        },
         headers: {
           Authorization: `Bearer ${await getToken()}`,
         },

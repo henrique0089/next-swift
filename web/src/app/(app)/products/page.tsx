@@ -3,6 +3,7 @@ import { api } from '@/lib/axios'
 import { auth } from '@clerk/nextjs'
 import { Plus, PlusCircle } from 'lucide-react'
 import Link from 'next/link'
+import { CategoryData } from '../categories/page'
 import { ProductsContent } from './components/products-content'
 import { ProductsDatePicker } from './components/products-date-picker'
 
@@ -17,12 +18,32 @@ export type ProductData = {
 
 export default async function Products() {
   const { getToken } = auth()
+  const token = await getToken()
 
-  const res = await api.get<{ products: ProductData[] }>('/products', {
-    headers: {
-      Authorization: `Bearer ${await getToken()}`,
-    },
-  })
+  async function getProducts() {
+    const res = await api.get<{ products: ProductData[] }>('/products', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return res.data.products
+  }
+
+  async function getCategories() {
+    const res = await api.get<{ categories: CategoryData[] }>('/categories', {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      },
+    })
+
+    return res.data.categories
+  }
+
+  const [products, categories] = await Promise.all([
+    getProducts(),
+    getCategories(),
+  ])
 
   return (
     <section className="relative min-h-screen space-y-8 p-6 max-w-6xl w-full mx-auto">
@@ -46,7 +67,7 @@ export default async function Products() {
         </div>
       </div>
 
-      <ProductsContent productsData={res.data.products} />
+      <ProductsContent productsData={products} categoriesData={categories} />
 
       <Button
         asChild

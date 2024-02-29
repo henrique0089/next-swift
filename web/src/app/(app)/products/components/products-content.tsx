@@ -8,8 +8,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { api } from '@/lib/axios'
 import { useProductsStore } from '@/store/products-store'
-import { useEffect } from 'react'
+import { useAuth } from '@clerk/nextjs'
+import { useEffect, useState } from 'react'
+import { CategoryData } from '../../categories/page'
 import { ProductData } from '../page'
 import { CategoryCheckbox } from './category-checkbox'
 import { ProductCard } from './product-card'
@@ -17,14 +20,39 @@ import { SearchProductsForm } from './search-products-form'
 
 interface ProductsContentProps {
   productsData: ProductData[]
+  categoriesData: CategoryData[]
 }
 
-export function ProductsContent({ productsData }: ProductsContentProps) {
+export function ProductsContent({
+  productsData,
+  categoriesData,
+}: ProductsContentProps) {
+  const { getToken } = useAuth()
   const { products, setProducts } = useProductsStore()
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
   useEffect(() => {
     setProducts(productsData)
   }, [productsData, setProducts])
+
+  useEffect(() => {
+    async function getProducts() {
+      const res = await api.get<{ products: ProductData[] }>('/products', {
+        params: {
+          categories: selectedCategories,
+        },
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+
+      setProducts(res.data.products)
+    }
+
+    if (selectedCategories.length > 0) {
+      getProducts()
+    }
+  }, [getToken, selectedCategories, setProducts])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
@@ -39,14 +67,20 @@ export function ProductsContent({ productsData }: ProductsContentProps) {
         <Separator />
 
         <div className="space-y-2">
-          <span className="block text-sm font-semibold">Categories (5)</span>
+          <span className="block text-sm font-semibold">
+            Categories ({categoriesData.length})
+          </span>
 
           <div className="grid grid-cols-4 justify-between gap-4 lg:grid-cols-1 lg:justify-normal lg:space-y-4 lg:gap-0">
-            <CategoryCheckbox id="t_shirts" label="T-shirts" />
-            <CategoryCheckbox id="shoes" label="Shoes" />
-            <CategoryCheckbox id="black_shoes" label="Black shoes" />
-            <CategoryCheckbox id="oculus" label="Oculus" />
-            <CategoryCheckbox id="blue_shirts" label="Blue-shirts" />
+            {categoriesData.map((category) => (
+              <CategoryCheckbox
+                key={category.id}
+                id={category.id}
+                label={category.name}
+                selected={selectedCategories}
+                onUpdate={setSelectedCategories}
+              />
+            ))}
           </div>
         </div>
 

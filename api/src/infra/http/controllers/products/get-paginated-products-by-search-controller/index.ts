@@ -8,7 +8,7 @@ const querySchema = z.object({
   startDate: z.date().optional(),
   endDate: z.date().optional(),
   search: z.string().optional(),
-  categories: z.string().optional(),
+  categories: z.string().array().optional(),
   page: z.number().optional(),
 })
 
@@ -26,7 +26,7 @@ export class GetPaginatedProductsBySearchController {
       startDate,
       endDate,
       search,
-      categories: categories?.split(','),
+      categories,
       page,
     })
 
