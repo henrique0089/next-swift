@@ -7,13 +7,12 @@ import { z } from 'zod'
 const bodySchema = z.object({
   name: z.string(),
   description: z.string(),
-  width: z.number(),
-  height: z.number(),
-  quantity: z.number(),
-  price: z.number(),
-  weight: z.number(),
-  categories: z.string().array(),
-  images: z.string().array(),
+  width: z.coerce.number(),
+  height: z.coerce.number(),
+  quantity: z.coerce.number(),
+  price: z.coerce.number(),
+  weight: z.coerce.number(),
+  categories: z.string(),
 })
 
 export class AddProductController {
@@ -27,8 +26,8 @@ export class AddProductController {
       price,
       quantity,
       categories,
-      images,
     } = bodySchema.parse(req.body)
+    const files = req.files as Express.Multer.File[]
 
     const productsRepo = new PGProductsRepository()
     const categoriesRepo = new PGCategoriesRepository()
@@ -36,6 +35,8 @@ export class AddProductController {
       productsRepo,
       categoriesRepo,
     )
+
+    const images = files.map((file) => file.filename)
 
     await addProductUseCase.execute({
       name,
@@ -45,7 +46,7 @@ export class AddProductController {
       weight,
       price,
       quantity,
-      categories,
+      categories: JSON.parse(categories),
       images,
     })
 

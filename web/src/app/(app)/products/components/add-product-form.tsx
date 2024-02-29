@@ -11,10 +11,15 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
 import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
+import { CategoryOption } from '../add/page'
 import { Dropzone } from './dropzone'
 
 const addProductFormSchema = z.object({
@@ -31,47 +36,71 @@ const addProductFormSchema = z.object({
 
 type AddProductFormValues = z.infer<typeof addProductFormSchema>
 
-const categories = [
-  {
-    value: 'j45hj4h5h',
-    label: 'shirts',
-  },
-  {
-    value: 'j344jj',
-    label: 'shoes',
-  },
-  {
-    value: 'dfdjfjdf89df8',
-    label: 'black-shoes',
-  },
-  {
-    value: 'bdnfnbdf8',
-    label: 'blue-pants',
-  },
-  {
-    value: 'bbdnfbdfnb33',
-    label: 'rayban oculus',
-  },
-]
+interface AddProductFormProps {
+  categories: CategoryOption[]
+}
 
-export function AddProductForm() {
+export function AddProductForm({ categories }: AddProductFormProps) {
+  const { getToken } = useAuth()
   const {
     handleSubmit,
     register,
     control,
     reset,
-    setValue,
     formState: { isSubmitting },
   } = useForm<AddProductFormValues>({
     resolver: zodResolver(addProductFormSchema),
-    mode: 'onChange',
   })
 
-  function handleAddProduct(data: AddProductFormValues) {
-    console.log({ data })
+  async function handleAddProduct(data: AddProductFormValues) {
+    const formData = new FormData()
 
-    reset()
-    setValue('category', '')
+    formData.append('name', data.name)
+    formData.append('width', String(data.width))
+    formData.append('height', String(data.height))
+    formData.append('quantity', String(data.quantity))
+    formData.append('price', String(data.price))
+    formData.append('weight', String(data.weight))
+    formData.append('categories', JSON.stringify([data.category]))
+
+    if (data.description) {
+      formData.append('description', data.description)
+    }
+
+    for (const img of data.images) {
+      formData.append('images', img)
+    }
+
+    try {
+      await api.post('/products', formData, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+
+      reset()
+      toast('Congratulations!', {
+        description: 'product added to your catalog succesfuly!',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
+    }
   }
 
   return (
