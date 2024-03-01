@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator'
 import { api } from '@/lib/axios'
 import { useProductsStore } from '@/store/products-store'
 import { useAuth } from '@clerk/nextjs'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { CategoryData } from '../../categories/page'
 import { ProductData } from '../page'
 import { CategoryCheckbox } from './category-checkbox'
@@ -28,8 +28,8 @@ export function ProductsContent({
   categoriesData,
 }: ProductsContentProps) {
   const { getToken } = useAuth()
-  const { products, setProducts } = useProductsStore()
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const { products, setProducts, dates, categories, setCategories } =
+    useProductsStore()
 
   useEffect(() => {
     setProducts(productsData)
@@ -39,7 +39,9 @@ export function ProductsContent({
     async function getProducts() {
       const res = await api.get<{ products: ProductData[] }>('/products', {
         params: {
-          categories: selectedCategories,
+          startDate: dates?.from,
+          endDate: dates?.to,
+          categories,
         },
         headers: {
           Authorization: `Bearer ${await getToken()}`,
@@ -49,10 +51,10 @@ export function ProductsContent({
       setProducts(res.data.products)
     }
 
-    if (selectedCategories.length > 0) {
+    if (categories.length > 0) {
       getProducts()
     }
-  }, [getToken, selectedCategories, setProducts])
+  }, [categories, dates?.from, dates?.to, getToken, setCategories, setProducts])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
@@ -77,8 +79,8 @@ export function ProductsContent({
                 key={category.id}
                 id={category.id}
                 label={category.name}
-                selected={selectedCategories}
-                onUpdate={setSelectedCategories}
+                selected={categories}
+                onUpdate={setCategories}
               />
             ))}
           </div>

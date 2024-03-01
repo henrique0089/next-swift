@@ -17,7 +17,7 @@ type SearchProductsFormValues = z.infer<typeof searchProductsFormSchema>
 
 export function SearchProductsForm() {
   const { getToken } = useAuth()
-  const { setProducts } = useProductsStore()
+  const { setProducts, categories, dates } = useProductsStore()
 
   const { handleSubmit, register, reset } = useForm<SearchProductsFormValues>({
     resolver: zodResolver(searchProductsFormSchema),
@@ -26,7 +26,10 @@ export function SearchProductsForm() {
   async function handleSearchProducts({ search }: SearchProductsFormValues) {
     const res = await api.get<{ products: ProductData[] }>('/products', {
       params: {
+        startDate: dates?.from,
+        endDate: dates?.to,
         search,
+        categories,
       },
       headers: {
         Authorization: `Bearer ${await getToken()}`,

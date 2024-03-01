@@ -5,11 +5,11 @@ import { Request, Response } from 'express'
 import { z } from 'zod'
 
 const querySchema = z.object({
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
   search: z.string().optional(),
   categories: z.string().array().optional(),
-  page: z.number().optional(),
+  page: z.coerce.number().optional(),
 })
 
 export class GetPaginatedProductsBySearchController {
