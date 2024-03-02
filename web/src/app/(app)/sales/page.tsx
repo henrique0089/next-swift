@@ -1,10 +1,30 @@
 import { Button } from '@/components/ui/button'
+import { api } from '@/lib/axios'
+import { auth } from '@clerk/nextjs'
 import { PlusCircle } from 'lucide-react'
 import Link from 'next/link'
 import { SalesContent } from './components/sales-content'
 import { SalesDatePicker } from './components/sales-date-picker'
 
-export default function Sales() {
+export type SaleData = {
+  id: string
+  total: number
+  product: string
+  quantiy: string
+  paymentMethod: string
+  status: string
+  customer: string
+}
+
+export default async function Sales() {
+  const { getToken } = auth()
+
+  const res = await api.get<{ sales: SaleData[] }>('/sales', {
+    headers: {
+      Authorization: `Bearer ${await getToken()}`,
+    },
+  })
+
   return (
     <section className="min-h-screen max-w-6xl w-full mx-auto space-y-8 p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -27,7 +47,7 @@ export default function Sales() {
         </div>
       </div>
 
-      <SalesContent />
+      <SalesContent salesData={res.data.sales} />
     </section>
   )
 }

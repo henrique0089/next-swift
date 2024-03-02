@@ -8,13 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import {
   Table,
@@ -30,76 +23,43 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useSalesStore } from '@/store/sales-store'
 import { formatPrice } from '@/utils/format-price'
 import { Download } from 'lucide-react'
-import { SearchProductsForm } from '../../products/components/search-products-form'
+import { useEffect } from 'react'
+import { SaleData } from '../page'
+import { PaymentMethodSelect } from './payment-method-select'
+import { PaymentStatusSelect } from './payment-status-select'
+import { QuantitySelect } from './quantity-select'
+import { SearchSalesForm } from './search-sales-form'
 
-export function SalesContent() {
+interface SalesContentProps {
+  salesData: SaleData[]
+}
+
+export function SalesContent({ salesData }: SalesContentProps) {
+  const { sales, setSales } = useSalesStore()
+
+  useEffect(() => {
+    setSales(salesData)
+  }, [salesData, setSales])
+
   return (
     <div className="grid grid-cols-[16rem_1fr] items-start gap-4">
       <nav className="space-y-6">
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Search by any product
-          </span>
-          <SearchProductsForm />
-        </div>
+        <SearchSalesForm />
 
         <Separator />
 
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Select a payment method
-          </span>
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Nothing selected" />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="MONEY">Money</SelectItem>
-              <SelectItem value="CREDIT">Credit card</SelectItem>
-              <SelectItem value="DEBIT">Debit card</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <PaymentMethodSelect />
 
         <Separator />
 
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Select a payment status
-          </span>
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Nothing selected" />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="PAID">Paid</SelectItem>
-              <SelectItem value="PENDING">Pending</SelectItem>
-              <SelectItem value="CANCELLED">Cancelled</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <PaymentStatusSelect />
 
         <Separator />
 
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">Select a quantity</span>
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Nothing selected" />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="15">15</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <QuantitySelect />
       </nav>
 
       <Table>
@@ -137,18 +97,18 @@ export function SalesContent() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 20 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell>Black t-shirt: {i + 1}</TableCell>
-              <TableCell>3</TableCell>
-              <TableCell>{formatPrice(200 * 100)}</TableCell>
-              <TableCell>Credit Card</TableCell>
+          {sales.map((sale) => (
+            <TableRow key={sale.id}>
+              <TableCell>{sale.product}</TableCell>
+              <TableCell>{sale.quantiy}</TableCell>
+              <TableCell>{formatPrice(sale.total)}</TableCell>
+              <TableCell>{sale.paymentMethod}</TableCell>
               <TableCell>
                 <Badge className="bg-emerald-500 hover:bg-emerald-500/80 rounded-full">
-                  PAID
+                  {sale.status}
                 </Badge>
               </TableCell>
-              <TableCell>Jhon Doe</TableCell>
+              <TableCell>{sale.customer}</TableCell>
             </TableRow>
           ))}
         </TableBody>

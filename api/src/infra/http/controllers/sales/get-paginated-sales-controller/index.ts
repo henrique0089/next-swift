@@ -9,7 +9,7 @@ const querySchema = z.object({
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   search: z.string().optional(),
-  paymentMethod: z.enum(['money', 'credit', 'debit']).optional(),
+  paymentMethod: z.enum(['MONEY', 'CREDIT', 'DEBIT']).optional(),
   status: z.enum(['PENDING', 'PAID', 'CANCELED']).optional(),
   limit: z.coerce.number().optional(),
   page: z.coerce.number().optional(),

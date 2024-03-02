@@ -89,7 +89,7 @@ export function ProductsContent({
         <Separator />
 
         <div className="space-y-2">
-          <span className="block text-sm font-semibold">Quantity</span>
+          <span className="block text-sm font-semibold">ProductsQuantity</span>
 
           <Select>
             <SelectTrigger className="w-full">
