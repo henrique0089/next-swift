@@ -30,7 +30,7 @@ export function NewCustomersAmountCard({
           >
             {isIncreasePositive
               ? `+${percentageIncrease}%`
-              : `-${percentageIncrease}%`}
+              : `${percentageIncrease}%`}
           </span>{' '}
           from last month
         </p>

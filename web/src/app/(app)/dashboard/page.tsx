@@ -34,7 +34,7 @@ export type Revenue = {
   revenue: number
 }
 
-interface RevenueMetricsResponse {
+export interface RevenueMetricsResponse {
   revenueMetrics: Revenue[]
 }
 
@@ -46,6 +46,7 @@ export type RecentSale = {
   paymentMethod: string
   status: string
   customer: string
+  customerEmail: string
 }
 
 interface RecentSaleResponse {
@@ -130,7 +131,7 @@ export default async function Dashboard() {
       </div>
 
       <div className="gap-4 grid grid-cols-1 lg:grid-cols-9">
-        <RevenueChart revenueMetrics={chartMetrics} />
+        <RevenueChart revenueMetricsData={chartMetrics} />
 
         <Card className="col-span-6 lg:col-span-3">
           <CardHeader>

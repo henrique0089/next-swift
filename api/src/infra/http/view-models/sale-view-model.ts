@@ -10,6 +10,7 @@ export class SaleViewModel {
       paymentMethod: sale.paymentMethod,
       status: sale.status,
       customer: sale.buyerName,
+      customerEmail: sale.buyerEmail,
     }
   }
 }

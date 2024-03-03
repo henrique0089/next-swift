@@ -17,32 +17,23 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useDashboardStore } from '@/store/dashboard-store'
 import { formatPrice } from '@/utils/format-price'
 import { useAuth } from '@clerk/nextjs'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Revenue } from '../page'
 
 interface RevenueChartProps {
-  revenueMetrics: Revenue[]
+  revenueMetricsData: Revenue[]
 }
 
-export function RevenueChart({ revenueMetrics }: RevenueChartProps) {
+export function RevenueChart({ revenueMetricsData }: RevenueChartProps) {
   const { getToken } = useAuth()
-  const [metrics, setMetrics] = useState<Revenue[]>(revenueMetrics)
+  const { revenueMetrics, setRevenueMetrics } = useDashboardStore()
 
-  // useEffect(() => {
-  //   async function getChartMetrics() {
-  //     const res = await api.get<RevenueMetricsResponse>('/metrics/revenue', {
-  //       headers: {
-  //         Authorization: `Bearer ${await getToken()}`,
-  //       },
-  //     })
-
-  //     setMetrics(res.data.revenueMetrics)
-  //   }
-
-  //   getChartMetrics()
-  // }, [getToken])
+  useEffect(() => {
+    setRevenueMetrics(revenueMetricsData)
+  }, [getToken, revenueMetricsData, setRevenueMetrics])
 
   return (
     <Card className="col-span-6">
@@ -55,9 +46,9 @@ export function RevenueChart({ revenueMetrics }: RevenueChartProps) {
         </div>
       </CardHeader>
       <CardContent>
-        {metrics.length > 1 ? (
+        {revenueMetrics.length > 0 ? (
           <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={metrics} style={{ fontSize: 12 }}>
+            <LineChart data={revenueMetrics} style={{ fontSize: 12 }}>
               <XAxis dataKey="date" axisLine={false} tickLine={false} dy={16} />
               <YAxis
                 stroke="#888"

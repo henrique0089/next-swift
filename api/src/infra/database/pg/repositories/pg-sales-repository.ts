@@ -19,6 +19,7 @@ interface SaleRecord {
   product_price: number
   buyer_id: string
   buyer_name: string
+  buyer_email: string
   created_at: Date
 }
 
@@ -77,7 +78,7 @@ export class PGSalesRepository implements SalesRepository {
         JOIN products p ON s.product_id = p.id
         JOIN customers c ON s.buyer_id = c.id
         WHERE s.created_at BETWEEN $1 AND $2
-        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+        GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name, c.email
         ORDER BY s.created_at DESC
         LIMIT $3 OFFSET $4
       `
@@ -172,6 +173,7 @@ export class PGSalesRepository implements SalesRepository {
           paymentMethod: data.payment_method,
           buyerId: data.buyer_id,
           buyerName: data.buyer_name,
+          buyerEmail: null,
           productId: data.product_id,
           productName: data.product_name,
           productQty: data.qty,
@@ -188,11 +190,11 @@ export class PGSalesRepository implements SalesRepository {
   }
 
   async getRecent(): Promise<Sale[]> {
-    const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+    const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name, c.email AS buyer_email
       FROM sales s
       JOIN products p ON s.product_id = p.id
       JOIN customers c ON s.buyer_id = c.id
-      GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name
+      GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name, c.email
       ORDER BY s.created_at DESC 
       LIMIT 5
     `
@@ -209,6 +211,7 @@ export class PGSalesRepository implements SalesRepository {
           paymentMethod: data.payment_method,
           buyerId: data.buyer_id,
           buyerName: data.buyer_name,
+          buyerEmail: data.buyer_email,
           productId: data.product_id,
           productName: data.product_name,
           productQty: data.qty,
@@ -290,10 +293,10 @@ export class PGSalesRepository implements SalesRepository {
   }: RevenueParams): Promise<RevenueMetrics[]> {
     const searchStartDate = startDate
       ? dayjs(startDate).startOf('day').toDate()
-      : dayjs().subtract(1, 'month').startOf('month').toDate()
+      : dayjs().subtract(1, 'month').startOf('day').toDate()
     const searchEndDate = endDate
       ? dayjs(endDate).endOf('day').toDate()
-      : dayjs().subtract(1, 'month').endOf('month').toDate()
+      : dayjs().endOf('day').toDate()
 
     const sql = `SELECT TO_CHAR(created_at, 'DD/MM') AS date,
       total / 100.0 AS revenue

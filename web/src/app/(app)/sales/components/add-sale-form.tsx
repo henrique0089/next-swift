@@ -72,6 +72,7 @@ export function AddSaleForm() {
         },
       })
     } catch (error) {
+      console.log(error)
       if (error instanceof AxiosError) {
         toast('Uh oh! Something went wrong.', {
           description: error.response?.data.message,
@@ -85,8 +86,6 @@ export function AddSaleForm() {
       }
     }
   }
-
-  console.log(errors)
 
   return (
     <form onSubmit={handleSubmit(handleAddSale)}>

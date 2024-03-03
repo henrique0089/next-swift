@@ -9,20 +9,44 @@ import {
 } from '@/components/ui/popover'
 import { api } from '@/lib/axios'
 import { cn } from '@/lib/utils'
+import { useDashboardStore } from '@/store/dashboard-store'
 import { useAuth } from '@clerk/nextjs'
 import { AxiosError } from 'axios'
 import { format } from 'date-fns'
-import { CalendarIcon, DownloadIcon } from 'lucide-react'
-import { useState } from 'react'
+import { CalendarIcon, DownloadIcon, Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { toast } from 'sonner'
+import { RevenueMetricsResponse } from '../page'
 
 export function CalendarDateRangePicker() {
   const { getToken } = useAuth()
+  const { setRevenueMetrics } = useDashboardStore()
   const [date, setDate] = useState<DateRange | undefined>()
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    async function getChartMetrics() {
+      const res = await api.get<RevenueMetricsResponse>('/metrics/revenue', {
+        params: {
+          startDate: date?.from,
+          endDate: date?.to,
+        },
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
+
+      setRevenueMetrics(res.data.revenueMetrics)
+    }
+
+    getChartMetrics()
+  }, [date?.from, date?.to, getToken, setRevenueMetrics])
 
   async function generateReport() {
     try {
+      setIsLoading(true)
+
       await api.get('/metrics/revenue/report', {
         params: {
           startDate: date?.from,
@@ -33,6 +57,7 @@ export function CalendarDateRangePicker() {
         },
       })
     } catch (error) {
+      console.log(error)
       if (error instanceof AxiosError) {
         toast('Uh oh! Something went wrong.', {
           description: error.response?.data.message,
@@ -44,6 +69,8 @@ export function CalendarDateRangePicker() {
           },
         })
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -89,8 +116,17 @@ export function CalendarDateRangePicker() {
         </PopoverContent>
       </Popover>
 
-      <Button onClick={generateReport} className="flex items-center gap-2">
-        <span>Download</span> <DownloadIcon className="h-5 w-5" />
+      <Button
+        disabled={isLoading}
+        onClick={generateReport}
+        className="flex items-center gap-2"
+      >
+        <span>Download</span>{' '}
+        {isLoading ? (
+          <Loader2 className="animate-spin size-5" />
+        ) : (
+          <DownloadIcon className="h-5 w-5" />
+        )}
       </Button>
     </div>
   )
