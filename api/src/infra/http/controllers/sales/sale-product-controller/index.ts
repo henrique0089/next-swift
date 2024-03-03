@@ -11,7 +11,7 @@ const bodySchema = z.object({
   productsQty: z.number(),
   productId: z.string().uuid(),
   buyerId: z.string().uuid(),
-  paymentMethod: z.enum(['money', 'credit', 'debit']),
+  paymentMethod: z.enum(['MONEY', 'CREDIT', 'DEBIT']),
 })
 
 export class SaleProductController {

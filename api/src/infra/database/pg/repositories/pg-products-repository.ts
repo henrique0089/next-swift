@@ -407,7 +407,7 @@ export class PGProductsRepository implements ProductsRepository {
           LEFT JOIN product_images pi ON p.id = pi.product_id
         WHERE (p.name ILIKE $1 OR p.description ILIKE $1) AND (p.removed_at IS NULL)
         GROUP BY p.id, p.name, p.description, p.width, p.height, p.weight, p.price, p.quantity, p.removed_at, p.created_at, p.updated_at
-        LIMIT 10 OFFSET $4
+        LIMIT 10 OFFSET $2
       `
 
       values.push(`%${search}%`)

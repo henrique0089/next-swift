@@ -56,6 +56,9 @@ export function DateRangePicker({ date, setDate }: DateRangePickerProps) {
           selected={date}
           onSelect={setDate}
           numberOfMonths={2}
+          disabled={(date) =>
+            date > new Date() || date < new Date('1970-01-01')
+          }
         />
       </PopoverContent>
     </Popover>
