@@ -1,10 +1,31 @@
 import { Button } from '@/components/ui/button'
+import { api } from '@/lib/axios'
+import { auth } from '@clerk/nextjs'
 import { PlusCircle } from 'lucide-react'
 import Link from 'next/link'
 import { SuppliersContent } from './components/suppliers-content'
 import { SuppliersDatePicker } from './components/suppliers-date-picker'
 
-export default function Suppliers() {
+export type SupplierData = {
+  id: string
+  name: string
+  email: string
+  cnpj: string
+  ddd: number
+  phone: number
+  createdAt: Date
+  updatedAt: Date | null
+}
+
+export default async function Suppliers() {
+  const { getToken } = auth()
+
+  const res = await api.get<{ suppliers: SupplierData[] }>('/suppliers', {
+    headers: {
+      Authorization: `Bearer ${await getToken()}`,
+    },
+  })
+
   return (
     <section className="min-h-screen max-w-6xl w-full mx-auto space-y-8 p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -27,7 +48,7 @@ export default function Suppliers() {
         </div>
       </div>
 
-      <SuppliersContent />
+      <SuppliersContent suppliersData={res.data.suppliers} />
     </section>
   )
 }

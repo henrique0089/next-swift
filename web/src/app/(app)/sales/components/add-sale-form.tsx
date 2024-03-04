@@ -59,8 +59,6 @@ export function AddSaleForm() {
         },
       )
 
-      console.log(res.data.billet)
-
       reset()
       toast('Congratulations!', {
         description: 'sale added succesfuly!',
@@ -104,6 +102,9 @@ export function AddSaleForm() {
               <p className="text-[0.8rem] text-muted-foreground">
                 Select a quantity.
               </p>
+              {errors.quantity?.type === 'required' && (
+                <span>{errors.quantity.message}</span>
+              )}
             </div>
           </div>
 

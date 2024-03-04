@@ -16,43 +16,71 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { api } from '@/lib/axios'
+import { useSuppliersStore } from '@/store/suppliers-store'
+import { formatDate } from '@/utils/format-date'
+import { useAuth } from '@clerk/nextjs'
 import { Pen, Trash } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { SupplierData } from '../page'
 import { DeleteSupplierButton } from './delete-suppliers-button'
-import { SuppliersForm } from './suppliers-form'
+import { SearchByCnpjForm } from './search-by-cnpj-form'
+import { SearchByEmailForm } from './search-by-email-form'
+import { SearchBySupplierForm } from './search-supplier-form'
 
-export function SuppliersContent() {
+interface SuppliersContentProps {
+  suppliersData: SupplierData[]
+}
+
+export function SuppliersContent({ suppliersData }: SuppliersContentProps) {
+  const { getToken } = useAuth()
+  const { suppliers, dates, setSuppliers } = useSuppliersStore()
+  const [quantityInString, setQuantityInString] = useState('')
+
+  useEffect(() => {
+    setSuppliers(suppliersData)
+  }, [suppliersData, setSuppliers])
+
+  useEffect(() => {
+    async function getSuppliersByQuantity() {
+      const res = await api.get<{ suppliers: SupplierData[] }>('/suppliers', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+        params: {
+          limit: quantityInString,
+          startDate: dates?.from,
+          endDate: dates?.to,
+        },
+      })
+
+      setSuppliers(res.data.suppliers)
+    }
+
+    if (quantityInString) {
+      getSuppliersByQuantity()
+    }
+  }, [dates?.from, dates?.to, getToken, quantityInString, setSuppliers])
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
       <nav className="space-y-6">
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Search by any supplier
-          </span>
-          <SuppliersForm placeholder="Jhon doe" />
-        </div>
+        <SearchBySupplierForm />
 
         <Separator />
 
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Search by any e-mail
-          </span>
-          <SuppliersForm placeholder="jhondoe@gmail.com" />
-        </div>
+        <SearchByEmailForm />
 
         <Separator />
 
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">Search by any cpf</span>
-          <SuppliersForm placeholder="000.000.000-00" />
-        </div>
+        <SearchByCnpjForm />
 
         <Separator />
 
         <div className="space-y-2">
           <span className="block text-sm font-semibold">Select a quantity</span>
-          <Select>
+          <Select onValueChange={setQuantityInString}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Nothing selected" />
             </SelectTrigger>
@@ -75,32 +103,36 @@ export function SuppliersContent() {
             <TableHead>CNPJ</TableHead>
             <TableHead>DDD</TableHead>
             <TableHead>Number</TableHead>
-            <TableHead>Registered in</TableHead>
+            <TableHead>Created at</TableHead>
             <TableHead>Updated at</TableHead>
             <TableHead></TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 10 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell>Jhon doe: {i + 1}</TableCell>
-              <TableCell>jhondoe@gmail.com</TableCell>
-              <TableCell>134.607.374-09</TableCell>
-              <TableCell>82</TableCell>
-              <TableCell>9 9944-0567</TableCell>
-              <TableCell>28/12/2023</TableCell>
-              <TableCell>29/12/2023</TableCell>
+          {suppliers.map((supplier) => (
+            <TableRow key={supplier.id}>
+              <TableCell>{supplier.name}</TableCell>
+              <TableCell>{supplier.email}</TableCell>
+              <TableCell>{supplier.cnpj}</TableCell>
+              <TableCell>{supplier.ddd}</TableCell>
+              <TableCell>{supplier.phone}</TableCell>
+              <TableCell>{formatDate(supplier.createdAt)}</TableCell>
+              <TableCell>
+                {supplier.updatedAt
+                  ? formatDate(supplier.updatedAt)
+                  : 'Not updated yet.'}
+              </TableCell>
               <TableCell>
                 <Link
-                  href={`/suppliers/123/edit`}
+                  href={`/suppliers/${supplier.id}/edit`}
                   className="flex items-center gap-2 cursor-pointer group"
                 >
                   <Pen className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />
                 </Link>
               </TableCell>
               <TableCell>
-                <DeleteSupplierButton supplierName={'Jhon doe'}>
+                <DeleteSupplierButton supplierName={supplier.name}>
                   <button className="flex items-center gap-2">
                     <Trash className="h-4 w-4 stroke-muted-foreground group-hover:stroke-zinc-900" />
                   </button>
