@@ -94,7 +94,8 @@ export class PGSuppliersRepository implements SuppliersRepository {
         ) AS addresses
         FROM suppliers s
         JOIN suppliers_addresses a ON a.supplier_id = s.id
-        WHERE s.email = $1 
+        WHERE s.email = $1
+        GROUP BY s.id, s.name, s.email, s.document, s.ddd, s.phone, s.created_at, s.updated_at
         LIMIT 1
       `
     const { rows } = await client.query<SupplierRecord>(query, [email])

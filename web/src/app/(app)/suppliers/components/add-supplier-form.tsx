@@ -6,8 +6,10 @@ import { Label } from '@/components/ui/label'
 import { api } from '@/lib/axios'
 import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
+import { AxiosError } from 'axios'
+import { Loader2, Plus } from 'lucide-react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 const addSupplierFormSchema = z.object({
@@ -16,12 +18,16 @@ const addSupplierFormSchema = z.object({
   document: z.string(),
   ddd: z.coerce.number().min(2, { message: 'DDD must have 2 numbers' }),
   phone: z.coerce.number().min(9, { message: 'Phone must have 9 numbers' }),
-  street: z.string(),
-  number: z.coerce.number(),
-  complement: z.string().optional(),
-  city: z.string(),
-  state: z.string(),
-  postalCode: z.string(),
+  addresses: z
+    .object({
+      street: z.string(),
+      number: z.coerce.number(),
+      complement: z.string().optional(),
+      city: z.string(),
+      state: z.string(),
+      postalCode: z.string(),
+    })
+    .array(),
 })
 
 type AddSupplierFormValues = z.infer<typeof addSupplierFormSchema>
@@ -33,42 +39,25 @@ export function AddSupplierForm() {
     handleSubmit,
     register,
     reset,
+    control,
     formState: { isSubmitting },
   } = useForm<AddSupplierFormValues>({
     resolver: zodResolver(addSupplierFormSchema),
   })
 
   async function handleAddSupplier(data: AddSupplierFormValues) {
-    const {
-      name,
-      email,
-      document,
-      ddd,
-      phone,
-      street,
-      number,
-      complement,
-      city,
-      state,
-      postalCode,
-    } = data
+    const { name, email, document, ddd, phone, addresses } = data
+
     try {
-      await api.post<{ password: string }>(
+      await api.post(
         '/suppliers',
         {
           name,
           email,
-          document,
+          cnpj: document,
           ddd,
           phone,
-          address: {
-            street,
-            number,
-            complement,
-            city,
-            state,
-            postalCode,
-          },
+          addresses,
         },
         {
           headers: {
@@ -78,9 +67,45 @@ export function AddSupplierForm() {
       )
 
       reset()
+
+      toast('Congratulations!', {
+        description: 'you added a new supplier!',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
     } catch (error) {
-      console.log(error)
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
     }
+  }
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'addresses',
+  })
+
+  function addAddress() {
+    append({
+      street: '',
+      city: '',
+      state: '',
+      number: 0,
+      postalCode: '',
+      complement: '',
+    })
   }
 
   return (
@@ -129,47 +154,91 @@ export function AddSupplierForm() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="street">Street</Label>
-            <Input
-              id="street"
-              placeholder="some street"
-              {...register('street')}
-            />
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold tracking-tight">Addresses</h2>
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={addAddress}
+              className="rounded-[50%] h-8 w-8 p-0"
+            >
+              <Plus className="size-4" />
+            </Button>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="city">City</Label>
-            <Input id="city" placeholder="são paulo" {...register('city')} />
-          </div>
+          <div className="space-y-8">
+            {fields.map((field, index) => {
+              return (
+                <div key={field.id} className="space-y-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="street">Street</Label>
+                      <Input
+                        id="street"
+                        placeholder="some street"
+                        {...register(`addresses.${index}.street`)}
+                      />
+                    </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="complement">Complement</Label>
-            <Input
-              id="complement"
-              placeholder="some complement"
-              {...register('complement')}
-            />
-          </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="city">City</Label>
+                      <Input
+                        id="city"
+                        placeholder="são paulo"
+                        {...register(`addresses.${index}.city`)}
+                      />
+                    </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="state">State</Label>
-            <Input id="state" placeholder="sp" {...register('state')} />
-          </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="complement">Complement</Label>
+                      <Input
+                        id="complement"
+                        placeholder="some complement"
+                        {...register(`addresses.${index}.complement`)}
+                      />
+                    </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="cep">Cep</Label>
-            <Input
-              id="cep"
-              placeholder="000.000-00"
-              {...register('postalCode')}
-            />
-          </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="state">State</Label>
+                      <Input
+                        id="state"
+                        placeholder="sp"
+                        {...register(`addresses.${index}.state`)}
+                      />
+                    </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="number">Number</Label>
-            <Input id="number" placeholder="23" {...register('number')} />
+                    <div className="space-y-2">
+                      <Label htmlFor="cep">Cep</Label>
+                      <Input
+                        id="cep"
+                        placeholder="000.000-00"
+                        {...register(`addresses.${index}.postalCode`)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="number">Number</Label>
+                      <Input
+                        id="number"
+                        type="number"
+                        placeholder="23"
+                        {...register(`addresses.${index}.number`)}
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    variant="secondary"
+                    onClick={() => remove(index)}
+                    className="rounded-full"
+                  >
+                    Remove
+                  </Button>
+                </div>
+              )
+            })}
           </div>
         </div>
 
