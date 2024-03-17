@@ -1,4 +1,4 @@
-import { PaymentMethod } from '@app/entities/sale'
+import { PaymentMethod, PaymentStatus } from '@app/entities/sale'
 import { SaleProductUseCase } from '@app/usecases/sales/sale-product-usecase'
 import { PGCustomersRepository } from '@infra/database/pg/repositories/pg-customers-repository'
 import { PGProductsRepository } from '@infra/database/pg/repositories/pg-products-repository'
@@ -12,13 +12,13 @@ const bodySchema = z.object({
   productId: z.string().uuid(),
   buyerId: z.string().uuid(),
   paymentMethod: z.enum(['MONEY', 'CREDIT', 'DEBIT']),
+  paymentStatus: z.enum(['PENDING', 'PAID']).optional().default('PENDING'),
 })
 
 export class SaleProductController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { productsQty, productId, buyerId, paymentMethod } = bodySchema.parse(
-      req.body,
-    )
+    const { productsQty, productId, buyerId, paymentMethod, paymentStatus } =
+      bodySchema.parse(req.body)
 
     const salesRepo = new PGSalesRepository()
     const productsRepo = new PGProductsRepository()
@@ -36,6 +36,7 @@ export class SaleProductController {
       productId,
       buyerId,
       paymentMethod: paymentMethod as PaymentMethod,
+      paymentStatus: paymentStatus as PaymentStatus,
     })
 
     return res.status(201).json({ billet: nfe })

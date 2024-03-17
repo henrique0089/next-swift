@@ -112,8 +112,16 @@ export function SuppliersContent({ suppliersData }: SuppliersContentProps) {
         <TableBody>
           {suppliers.map((supplier) => (
             <TableRow key={supplier.id}>
-              <TableCell>{supplier.name}</TableCell>
-              <TableCell>{supplier.email}</TableCell>
+              <TableCell>
+                <span title={supplier.name} className="block w-28 truncate">
+                  {supplier.name}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span title={supplier.email} className="block w-32 truncate">
+                  {supplier.email}
+                </span>
+              </TableCell>
               <TableCell>{supplier.cnpj}</TableCell>
               <TableCell>{supplier.ddd}</TableCell>
               <TableCell>{supplier.phone}</TableCell>

@@ -10,6 +10,7 @@ interface Request {
   productId: string
   buyerId: string
   paymentMethod: PaymentMethod
+  paymentStatus: PaymentStatus
 }
 
 interface Response {
@@ -29,6 +30,7 @@ export class SaleProductUseCase {
     productId,
     buyerId,
     paymentMethod,
+    paymentStatus,
   }: Request): Promise<Response> {
     const product = await this.productsRepo.findById(productId)
 
@@ -56,7 +58,8 @@ export class SaleProductUseCase {
       productName: product.name,
       productPrice: product.price,
       productQty: productsQty,
-      status: PaymentStatus.PAID,
+      status: paymentStatus,
+      buyerEmail: null,
       buyerName: null,
     })
 

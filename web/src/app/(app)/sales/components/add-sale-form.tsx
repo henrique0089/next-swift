@@ -25,6 +25,7 @@ const addSaleFormSchema = z.object({
   productId: z.string(),
   quantity: z.coerce.number(),
   payment_method: z.enum(['MONEY', 'CREDIT', 'DEBIT']),
+  payment_status: z.enum(['PENDING', 'PAID']).optional().default('PENDING'),
 })
 
 type AddSaleFormValues = z.infer<typeof addSaleFormSchema>
@@ -51,6 +52,7 @@ export function AddSaleForm() {
           productId: data.productId,
           buyerId: data.customerId,
           paymentMethod: data.payment_method,
+          paymentStatus: data.payment_status,
         },
         {
           headers: {
@@ -130,6 +132,31 @@ export function AddSaleForm() {
               />
               <p className="text-[0.8rem] text-muted-foreground">
                 Select a payment method.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Payment Status (optional)</Label>
+            <div className="space-y-1">
+              <Controller
+                control={control}
+                name="payment_status"
+                render={({ field: { onChange } }) => (
+                  <Select onValueChange={onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Nothing selected" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItem value="PAID">Paid</SelectItem>
+                      <SelectItem value="PENDING">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <p className="text-[0.8rem] text-muted-foreground">
+                Select a payment status.
               </p>
             </div>
           </div>

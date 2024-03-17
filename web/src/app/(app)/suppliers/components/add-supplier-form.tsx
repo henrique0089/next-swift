@@ -1,5 +1,6 @@
 'use client'
 
+import { MaskedInput } from '@/components/masked-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -115,10 +116,11 @@ export function AddSupplierForm() {
     >
       <div className="space-y-4 lg:w-[16rem] order-1 lg:order-none">
         <div className="space-y-2">
-          <Label htmlFor="cpf">Cpf</Label>
-          <Input
-            id="cpf"
-            placeholder="000.000.000-00"
+          <Label htmlFor="cnpj">Cnpj</Label>
+          <MaskedInput
+            id="cnpj"
+            mask="cnpj"
+            placeholder="00.000.000/0000-00"
             {...register('document')}
           />
         </div>
@@ -154,7 +156,7 @@ export function AddSupplierForm() {
           />
         </div>
 
-        <div className="space-y-4">
+        <div>
           <div className="flex items-center gap-2">
             <h2 className="text-2xl font-bold tracking-tight">Addresses</h2>
 
@@ -211,9 +213,10 @@ export function AddSupplierForm() {
 
                     <div className="space-y-2">
                       <Label htmlFor="cep">Cep</Label>
-                      <Input
+                      <MaskedInput
                         id="cep"
-                        placeholder="000.000-00"
+                        mask="cep"
+                        placeholder="00000-000"
                         {...register(`addresses.${index}.postalCode`)}
                       />
                     </div>
