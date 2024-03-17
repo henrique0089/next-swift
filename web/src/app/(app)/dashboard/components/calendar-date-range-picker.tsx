@@ -10,6 +10,7 @@ import {
 import { api } from '@/lib/axios'
 import { cn } from '@/lib/utils'
 import { useDashboardStore } from '@/store/dashboard-store'
+import { DownloadFile } from '@/utils/download-file'
 import { useAuth } from '@clerk/nextjs'
 import { AxiosError } from 'axios'
 import { format } from 'date-fns'
@@ -47,15 +48,20 @@ export function CalendarDateRangePicker() {
     try {
       setIsLoading(true)
 
-      await api.get('/metrics/revenue/report', {
+      const res = await api.get('/metrics/revenue/report', {
         params: {
           startDate: date?.from,
           endDate: date?.to,
         },
+        responseType: 'blob',
         headers: {
           Authorization: `Bearer ${await getToken()}`,
         },
       })
+
+      const fileName = res.headers['x-filename']
+
+      DownloadFile(res.data, fileName)
     } catch (error) {
       console.log(error)
       if (error instanceof AxiosError) {

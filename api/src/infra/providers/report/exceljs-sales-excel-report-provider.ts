@@ -6,7 +6,6 @@ import {
 } from '@app/providers/excel-sales-report-provider'
 import { Workbook } from 'exceljs'
 import { randomBytes } from 'node:crypto'
-import { resolve } from 'node:path'
 
 export class ExceljsSalesReportProvider implements ExcelSalesReportProvider {
   async generate(sales: Sale[]): Promise<SalesReportData> {
@@ -31,11 +30,11 @@ export class ExceljsSalesReportProvider implements ExcelSalesReportProvider {
       })
     }
 
-    const { filename, fullFilePath } = await this.generateFile(workbook)
+    const { filename, buff } = await this.generateFile(workbook)
 
     return {
       filename,
-      fullFilePath,
+      buff,
     }
   }
 
@@ -55,25 +54,25 @@ export class ExceljsSalesReportProvider implements ExcelSalesReportProvider {
       })
     }
 
-    const { filename, fullFilePath } = await this.generateFile(workbook)
+    const { filename, buff } = await this.generateFile(workbook)
 
     return {
       filename,
-      fullFilePath,
+      buff: buff as Buffer,
     }
   }
 
   private async generateFile(workbook: Workbook) {
     const hash = randomBytes(6).toString('hex')
-    const dir = resolve(__dirname, '..', '..', 'uploads', 'report')
     const filename = `${hash}.xlsx`
-    const fullFilePath = `${dir}/${filename}`
 
-    await workbook.xlsx.writeFile(fullFilePath, { filename })
+    const buff = await workbook.xlsx.writeBuffer({
+      filename,
+    })
 
     return {
       filename,
-      fullFilePath,
+      buff: buff as Buffer,
     }
   }
 }

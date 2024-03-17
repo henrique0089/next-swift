@@ -7,13 +7,18 @@ interface Request {
   endDate?: Date
 }
 
+interface Response {
+  filename: string
+  buff: Buffer
+}
+
 export class GenerateRevenueReportUseCase {
   constructor(
     private salesRepo: SalesRepository,
     private excelSalesReportProvider: ExcelSalesReportProvider,
   ) {}
 
-  async execute({ startDate, endDate }: Request) {
+  async execute({ startDate, endDate }: Request): Promise<Response> {
     const sales = await this.salesRepo.getRevenueMetrics({
       startDate,
       endDate,
@@ -23,11 +28,9 @@ export class GenerateRevenueReportUseCase {
       throw new AppError('report generation is not possible. not enough sales!')
     }
 
-    console.log(sales)
-
-    const { filename, fullFilePath } =
+    const { filename, buff } =
       await this.excelSalesReportProvider.generateRevenue(sales)
 
-    return { filename, fullFilePath }
+    return { filename, buff }
   }
 }

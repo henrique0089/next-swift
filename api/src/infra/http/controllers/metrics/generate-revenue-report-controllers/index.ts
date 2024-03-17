@@ -1,5 +1,3 @@
-import fs from 'node:fs'
-
 import { GenerateRevenueReportUseCase } from '@app/usecases/metrics/generate-revenue-report-usecase'
 import { PGSalesRepository } from '@infra/database/pg/repositories/pg-sales-repository'
 import { ExceljsSalesReportProvider } from '@infra/providers/report/exceljs-sales-excel-report-provider'
@@ -22,23 +20,20 @@ export class GenerateRevenueReportController {
       salesReportProvider,
     )
 
-    const { filename, fullFilePath } = await generateExcelReportUseCase.execute(
-      {
-        startDate,
-        endDate,
-      },
-    )
+    const { filename, buff } = await generateExcelReportUseCase.execute({
+      startDate,
+      endDate,
+    })
 
-    res.header(
+    res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
-    res.header('Content-Disposition', `${filename}`)
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
 
-    res.download(fullFilePath)
+    res.setHeader('Access-Control-Expose-Headers', 'x-filename')
+    res.setHeader('x-filename', filename)
 
-    await fs.promises.unlink(fullFilePath)
-
-    return res.send()
+    return res.send(buff)
   }
 }
