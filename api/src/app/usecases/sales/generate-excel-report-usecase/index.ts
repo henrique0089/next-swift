@@ -11,7 +11,7 @@ interface Request {
 
 interface Response {
   filename: string
-  fullFilePath: string
+  buff: Buffer
 }
 
 export class GenerateExcelReportUseCase {
@@ -37,9 +37,9 @@ export class GenerateExcelReportUseCase {
       throw new AppError('report generation is not possible. not enough sales!')
     }
 
-    const { filename, fullFilePath } =
+    const { filename, buff } =
       await this.excelSalesReportProvider.generate(sales)
 
-    return { filename, fullFilePath }
+    return { filename, buff }
   }
 }

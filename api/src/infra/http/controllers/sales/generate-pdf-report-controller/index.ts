@@ -42,7 +42,10 @@ export class GeneratePDFReportController {
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
-    res.header('Content-Disposition', `${filename}`)
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
+
+    res.setHeader('Access-Control-Expose-Headers', 'x-filename')
+    res.setHeader('x-filename', filename)
 
     return res.send(report)
   }

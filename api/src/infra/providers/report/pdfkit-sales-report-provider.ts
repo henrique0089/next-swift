@@ -2,6 +2,7 @@ import PDFDocument from 'pdfkit'
 
 import { Sale } from '@app/entities/sale'
 import { PDFSalesReportProvider } from '@app/providers/pdf-sales-report-provider'
+import { formatPrice } from '@infra/utils/format-price'
 
 export class PDFKitSalesReportProvider implements PDFSalesReportProvider {
   async generate(sales: Sale[]): Promise<Buffer> {
@@ -14,7 +15,7 @@ export class PDFKitSalesReportProvider implements PDFSalesReportProvider {
       for (const sale of sales) {
         doc.fontSize(14).text(`Produto: ${sale.productName}`)
         doc.fontSize(12).text(`Quantidade: ${sale.productQty}`)
-        doc.fontSize(12).text(`Preço: ${sale.productPrice}`)
+        doc.fontSize(12).text(`Preço: ${formatPrice(sale.productPrice)}`)
         doc.moveDown()
       }
 
