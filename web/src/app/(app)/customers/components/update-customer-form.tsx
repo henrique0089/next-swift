@@ -1,5 +1,6 @@
 'use client'
 
+import { MaskedInput } from '@/components/masked-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -89,7 +90,7 @@ export function UpdateCustomerForm({
             <Label htmlFor="cpf">Cpf</Label>
             <Input
               id="cpf"
-              placeholder="000.000.000-00"
+              placeholder="00000-00"
               disabled
               {...register('cpf')}
             />
@@ -102,7 +103,12 @@ export function UpdateCustomerForm({
 
           <div className="space-y-2">
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" placeholder="999999999" {...register('phone')} />
+            <MaskedInput
+              id="phone"
+              mask="phone"
+              placeholder="999999999"
+              {...register('phone')}
+            />
           </div>
 
           <Button disabled={isSubmitting} className="lg:hidden">

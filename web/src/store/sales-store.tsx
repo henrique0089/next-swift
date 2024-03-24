@@ -10,6 +10,7 @@ export type BasicInfos = {
 interface SalesStore {
   sales: SaleData[]
   setSales: (sales: SaleData[]) => void
+  setSaleStatus: (saleId: string, status: string) => void
   products: BasicInfos[]
   setProducts: (products: BasicInfos[]) => void
   customers: BasicInfos[]
@@ -26,10 +27,21 @@ interface SalesStore {
   setDates: (dates: DatesInfo) => void
 }
 
-export const useSalesStore = create<SalesStore>((set) => ({
+export const useSalesStore = create<SalesStore>((set, get) => ({
   sales: [],
   setSales: (sales: SaleData[]) => {
     set(() => ({ sales }))
+  },
+  setSaleStatus: (saleId, status) => {
+    const { sales } = get()
+
+    const saleIndex = sales.findIndex((sale) => sale.id === saleId)
+
+    if (saleIndex > -1) {
+      sales[saleIndex].status = status
+
+      set(() => ({ sales }))
+    }
   },
   products: [],
   setProducts: (products: BasicInfos[]) => {

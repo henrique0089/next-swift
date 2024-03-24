@@ -29,6 +29,7 @@ export interface RevenueMetrics {
 }
 
 export interface SalesRepository {
+  findById(id: string): Promise<Sale | null>
   create(sale: Sale): Promise<void>
   paginate(params: PaginateParams): Promise<Sale[]>
   getRecent(): Promise<Sale[]>
@@ -39,4 +40,5 @@ export interface SalesRepository {
   getCanceledSalesTotalCount(): Promise<number>
   getLastMonthCanceledSalesTotalCount(): Promise<number>
   getRevenueMetrics(params: RevenueParams): Promise<RevenueMetrics[]>
+  update(sale: Sale): Promise<void>
 }

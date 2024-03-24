@@ -3,11 +3,11 @@
 import { InputHTMLAttributes, forwardRef, useCallback } from 'react'
 
 import { cn } from '@/lib/utils'
-import { cep, cnpj, cpf } from './masks'
+import { cep, cnpj, cpf, phone } from './masks'
 
 export interface MaskedInputProps
   extends InputHTMLAttributes<HTMLInputElement> {
-  mask: 'cep' | 'cpf' | 'cnpj'
+  mask: 'cep' | 'cpf' | 'cnpj' | 'phone'
 }
 
 const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
@@ -24,6 +24,10 @@ const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
 
         if (mask === 'cnpj') {
           cnpj(e)
+        }
+
+        if (mask === 'phone') {
+          phone(e)
         }
       },
       [mask],

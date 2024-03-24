@@ -28,6 +28,42 @@ interface TotalRecord {
 }
 
 export class PGSalesRepository implements SalesRepository {
+  async findById(id: string): Promise<Sale | null> {
+    const query = `SELECT s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name AS product_name, p.price AS product_price, c.name AS buyer_name
+      FROM sales s
+      JOIN products p ON s.product_id = p.id
+      JOIN customers c ON s.buyer_id = c.id
+      WHERE s.id = $1
+      GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name, c.email
+      LIMIT 1
+    `
+
+    const { rows } = await client.query<SaleRecord>(query, [id])
+
+    if (rows.length < 1) return null
+
+    const data = rows[0]
+
+    const sale = new Sale(
+      {
+        total: data.total,
+        status: data.status,
+        paymentMethod: data.payment_method,
+        buyerId: data.buyer_id,
+        buyerName: data.buyer_name,
+        buyerEmail: null,
+        productId: data.product_id,
+        productName: data.product_name,
+        productQty: data.qty,
+        productPrice: data.product_price,
+        createdAt: data.created_at,
+      },
+      data.id,
+    )
+
+    return sale
+  }
+
   async create(sale: Sale): Promise<void> {
     const {
       id,
@@ -320,5 +356,11 @@ export class PGSalesRepository implements SalesRepository {
     })
 
     return metrics
+  }
+
+  async update(sale: Sale): Promise<void> {
+    const query = `UPDATE sales SET status = $1 WHERE id = $2`
+
+    await client.query(query, [sale.status, sale.id])
   }
 }

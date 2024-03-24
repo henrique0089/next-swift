@@ -43,3 +43,19 @@ export function cnpj(e: FormEvent<HTMLInputElement>) {
 
   return e
 }
+
+export function phone(e: FormEvent<HTMLInputElement>) {
+  e.currentTarget.maxLength = 11
+  e.currentTarget.placeholder = '9 12345678' // Placeholder adicionado
+
+  let value = e.currentTarget.value
+
+  if (!value.match(/^(\d{1})\s?(\d{8})$/)) {
+    value = value.replace(/\D/g, '')
+    value = value.replace(/^(\d{1})(\d{8})$/, '$1 $2')
+    value = value.replace(/^(\d{1})(\d{4})(\d{4})$/, '$1 $2 $3')
+    e.currentTarget.value = value
+  }
+
+  return e
+}
