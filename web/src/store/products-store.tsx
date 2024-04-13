@@ -1,3 +1,4 @@
+import { CategoryOption } from '@/app/(app)/products/add/page'
 import { ProductData } from '@/app/(app)/products/page'
 import { create } from 'zustand'
 import { DatesInfo } from './customers-store'
@@ -6,8 +7,8 @@ interface ProductsStore {
   products: ProductData[]
   setProducts: (products: ProductData[]) => void
   addProduct: (product: ProductData) => void
-  categories: string[]
-  setCategories: (categories: string[]) => void
+  categories: CategoryOption[]
+  setCategories: (categories: CategoryOption[]) => void
   dates: DatesInfo | null
   setDates: (dates: DatesInfo) => void
 }
@@ -21,7 +22,7 @@ export const useProductsStore = create<ProductsStore>((set) => ({
     set((state) => ({ products: [product, ...state.products] }))
   },
   categories: [],
-  setCategories: (categories: string[]) => {
+  setCategories: (categories: CategoryOption[]) => {
     set(() => ({ categories }))
   },
   dates: null,

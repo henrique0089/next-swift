@@ -1,8 +1,8 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { api } from '@/lib/axios'
-import { useProductsStore } from '@/store/products-store'
 import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -15,9 +15,12 @@ const searchProductsFormSchema = z.object({
 
 type SearchProductsFormValues = z.infer<typeof searchProductsFormSchema>
 
-export function SearchProductsForm() {
+interface SearchProductsFormProps {
+  onSearch: (products: ProductData[]) => void
+}
+
+export function SearchProductsForm({ onSearch }: SearchProductsFormProps) {
   const { getToken } = useAuth()
-  const { setProducts, categories, dates } = useProductsStore()
 
   const { handleSubmit, register, reset } = useForm<SearchProductsFormValues>({
     resolver: zodResolver(searchProductsFormSchema),
@@ -26,10 +29,7 @@ export function SearchProductsForm() {
   async function handleSearchProducts({ search }: SearchProductsFormValues) {
     const res = await api.get<{ products: ProductData[] }>('/products', {
       params: {
-        startDate: dates?.from,
-        endDate: dates?.to,
         search,
-        categories,
       },
       headers: {
         Authorization: `Bearer ${await getToken()}`,
@@ -38,13 +38,14 @@ export function SearchProductsForm() {
 
     reset()
 
-    setProducts(res.data.products)
+    onSearch(res.data.products)
   }
 
   return (
-    <form onSubmit={handleSubmit(handleSearchProducts)} className="w-full">
+    <form onSubmit={handleSubmit(handleSearchProducts)} className="space-y-2">
+      <Label htmlFor="search-products">Search by any product</Label>
       <Input
-        type="search"
+        id="search-products"
         placeholder="white t-shirt..."
         {...register('search')}
       />

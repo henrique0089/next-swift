@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/input'
+import { MaskedInput } from '@/components/masked-input'
 import { Label } from '@/components/ui/label'
 import { api } from '@/lib/axios'
 import { useSuppliersStore } from '@/store/suppliers-store'
@@ -45,9 +45,10 @@ export function SearchByCnpjForm({ disabled = false }: SearchByCnpjFormProps) {
   return (
     <form onSubmit={handleSubmit(handleSearch)} className="w-full space-y-2">
       <Label htmlFor="cnpj">Search by any cnpj</Label>
-      <Input
+      <MaskedInput
         id="cnpj"
-        placeholder="000.000.000-00"
+        mask="cnpj"
+        placeholder="00.000.000/0000-00"
         disabled={disabled}
         {...register('cnpj')}
       />

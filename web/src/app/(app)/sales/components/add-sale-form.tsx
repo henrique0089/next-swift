@@ -45,7 +45,7 @@ export function AddSaleForm() {
 
   async function handleAddSale(data: AddSaleFormValues) {
     try {
-      const res = await api.post<{ billet: Buffer }>(
+      await api.post<{ billet: Buffer }>(
         '/sales',
         {
           productsQty: data.quantity,

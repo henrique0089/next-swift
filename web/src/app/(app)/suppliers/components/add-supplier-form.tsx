@@ -132,7 +132,12 @@ export function AddSupplierForm() {
 
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
-          <Input id="phone" placeholder="000000000" {...register('phone')} />
+          <Input
+            id="phone"
+            maxLength={9}
+            placeholder="000000000"
+            {...register('phone')}
+          />
         </div>
 
         <Button disabled={isSubmitting} className="lg:hidden">

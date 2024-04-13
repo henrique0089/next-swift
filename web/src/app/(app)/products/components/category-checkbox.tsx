@@ -1,10 +1,11 @@
 import { Checkbox } from '@/components/ui/checkbox'
+import { CategoryOption } from '../add/page'
 
 interface CategoryCheckboxProps {
   id: string
   label: string
-  selected: string[]
-  onUpdate: (value: string[]) => void
+  selected: CategoryOption[]
+  onUpdate: (value: CategoryOption[]) => void
 }
 
 export function CategoryCheckbox({
@@ -17,11 +18,17 @@ export function CategoryCheckbox({
     <div className="flex items-center gap-2">
       <Checkbox
         id={id}
-        checked={selected.includes(id)}
+        checked={selected.some((category) => category.value === id)}
         onCheckedChange={(checked) => {
           return checked
-            ? onUpdate([...selected, id])
-            : onUpdate(selected.filter((categoryId) => categoryId !== id))
+            ? onUpdate([
+                ...selected,
+                {
+                  label,
+                  value: id,
+                },
+              ])
+            : onUpdate(selected.filter((category) => category.value !== id))
         }}
       />
       <label

@@ -41,7 +41,7 @@ export function ProductsContent({
         params: {
           startDate: dates?.from,
           endDate: dates?.to,
-          categories,
+          categories: categories.map((category) => category.value),
         },
         headers: {
           Authorization: `Bearer ${await getToken()}`,

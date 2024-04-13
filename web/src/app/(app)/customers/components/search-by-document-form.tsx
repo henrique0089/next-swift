@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/input'
+import { MaskedInput } from '@/components/masked-input'
 import { Label } from '@/components/ui/label'
 import { api } from '@/lib/axios'
 import { useCustomersStore } from '@/store/customers-store'
@@ -49,8 +49,9 @@ export function SearchByDocumentForm({
   return (
     <form onSubmit={handleSubmit(handleSearch)} className="w-full space-y-2">
       <Label htmlFor="document">Search by any document</Label>
-      <Input
+      <MaskedInput
         id="document"
+        mask="cpf"
         placeholder="000.000.000-00"
         disabled={disabled}
         {...register('document')}

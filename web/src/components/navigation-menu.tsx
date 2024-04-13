@@ -25,7 +25,7 @@ export function ProductsNavigationMenu() {
                 <NavigationMenuLink asChild>
                   <NavLink
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/products/categories"
+                    href="/products/categories/add"
                   >
                     <div className="text-sm font-medium leading-none">
                       Add Categories
