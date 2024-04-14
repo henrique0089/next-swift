@@ -3,23 +3,20 @@
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { api } from '@/lib/axios'
 import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CaretSortIcon } from '@radix-ui/react-icons'
-import { Loader2 } from 'lucide-react'
+import { AxiosError } from 'axios'
+import { Loader2, Tags } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { CategoryOption } from '../add/page'
 import { ProductData } from '../page'
@@ -27,13 +24,6 @@ import { CategoryCheckbox } from './category-checkbox'
 
 const addCategoriesToProductFormSchema = z.object({
   productId: z.string(),
-  categoriesIds: z
-    .object({
-      label: z.string(),
-      value: z.string(),
-    })
-    .array()
-    .min(1, { message: 'select at least 1 category.' }),
 })
 
 type AddCategoriesToProductFormValues = z.infer<
@@ -50,58 +40,56 @@ export function AddCategoriesToProductForm({
   categories,
 }: AddCategoriesToProductFormProps) {
   const { getToken } = useAuth()
-  const [isOpen, setIsOpen] = useState(false)
+  const [selectedCategories, setSelectedCategories] = useState<
+    CategoryOption[]
+  >([])
   const {
     handleSubmit,
     control,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
   } = useForm<AddCategoriesToProductFormValues>({
     resolver: zodResolver(addCategoriesToProductFormSchema),
   })
 
-  async function handleAddCategories(data: AddCategoriesToProductFormValues) {
-    // try {
-    //   await api.post<{ billet: Buffer }>(
-    //     '/sales',
-    //     {
-    //       productsQty: data.quantity,
-    //       productId: data.productId,
-    //       buyerId: data.customerId,
-    //       paymentMethod: data.payment_method,
-    //       paymentStatus: data.payment_status,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${await getToken()}`,
-    //       },
-    //     },
-    //   )
+  async function handleAddCategories({
+    productId,
+  }: AddCategoriesToProductFormValues) {
+    try {
+      await api.post(
+        `/products/${productId}/categories/add`,
+        {
+          categoriesIds: selectedCategories.map((category) => category.value),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        },
+      )
 
-    //   reset()
-    //   toast('Congratulations!', {
-    //     description: 'sale added succesfuly!',
-    //     position: 'bottom-right',
-    //     dismissible: true,
-    //     duration: 2000,
-    //     cancel: {
-    //       label: 'dismiss',
-    //     },
-    //   })
-    // } catch (error) {
-    //   console.log(error)
-    //   if (error instanceof AxiosError) {
-    //     toast('Uh oh! Something went wrong.', {
-    //       description: error.response?.data.message,
-    //       position: 'bottom-right',
-    //       dismissible: true,
-    //       duration: 2000,
-    //       cancel: {
-    //         label: 'dismiss',
-    //       },
-    //     })
-    //   }
-    // }
-    console.log(data)
+      toast('Congratulations!', {
+        description: 'categories added succesfuly!',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
+    }
   }
 
   return (
@@ -139,51 +127,37 @@ export function AddCategoriesToProductForm({
         </div>
 
         {categories.length < 1 ? (
-          <h2>No categories</h2>
-        ) : (
-          <div className="space-y-2 flex-1">
-            <Label>Categories</Label>
-            <div className="grid grid-cols-4 justify-between gap-4 lg:grid-cols-1 lg:justify-normal lg:space-y-4 lg:gap-0">
-              <Controller
-                control={control}
-                name="categoriesIds"
-                render={({ field: { onChange, value } }) => (
-                  <Popover open={isOpen} onOpenChange={setIsOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-between"
-                      >
-                        Select category...
-                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-
-                    <PopoverContent className="p-2 space-y-2">
-                      {categories.map((category) => (
-                        <CategoryCheckbox
-                          key={category.value}
-                          id={category.value}
-                          label={category.label}
-                          selected={categories}
-                          onUpdate={onChange}
-                        />
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                )}
-              />
-              <p className="text-[0.8rem] text-muted-foreground">
-                Search by any product to select.
-              </p>
-            </div>
+          <div className="flex flex-col items-center gap-1">
+            <Tags className="h-8 w-8 stroke-muted-foreground" />
+            <p className="text-[0.8rem] text-muted-foreground">
+              Search by any categories to select.
+            </p>
           </div>
-        )}
+        ) : (
+          <>
+            <div className="space-y-2 flex-1">
+              <Label>Categories</Label>
+              <div className="grid grid-cols-4 justify-between gap-4 lg:grid-cols-1 lg:justify-normal lg:space-y-4 lg:gap-0">
+                {categories.map((category) => (
+                  <CategoryCheckbox
+                    key={category.value}
+                    id={category.value}
+                    label={category.label}
+                    selected={selectedCategories}
+                    onUpdate={setSelectedCategories}
+                  />
+                ))}
+              </div>
+            </div>
 
-        <Button disabled={isSubmitting} className="hidden lg:inline-flex">
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Add categories
-        </Button>
+            <Button disabled={isSubmitting} className="hidden lg:inline-flex">
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Add categories
+            </Button>
+          </>
+        )}
       </div>
     </form>
   )

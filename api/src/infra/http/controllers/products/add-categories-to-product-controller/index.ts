@@ -9,7 +9,11 @@ const paramsSchema = z.object({
 })
 
 const bodySchema = z.object({
-  categoriesIds: z.string().uuid().array(),
+  categoriesIds: z
+    .string()
+    .uuid()
+    .array()
+    .min(1, { message: 'Select at least 1 category.' }),
 })
 
 export class AddCategoriesToProductController {

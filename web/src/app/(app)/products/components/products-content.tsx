@@ -59,12 +59,7 @@ export function ProductsContent({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[16rem_1fr] lg:items-start space-y-8 lg:space-y-0 lg:space-x-4">
       <nav className="space-y-6">
-        <div className="space-y-2">
-          <span className="block text-sm font-semibold">
-            Search by any products
-          </span>
-          <SearchProductsForm />
-        </div>
+        <SearchProductsForm onSearch={setProducts} />
 
         <Separator />
 

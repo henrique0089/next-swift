@@ -18,7 +18,7 @@ export function CategoryCheckbox({
     <div className="flex items-center gap-2">
       <Checkbox
         id={id}
-        checked={selected.some((category) => category.value === id)}
+        checked={selected?.some((category) => category.value === id)}
         onCheckedChange={(checked) => {
           return checked
             ? onUpdate([
