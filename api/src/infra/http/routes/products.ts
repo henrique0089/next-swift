@@ -28,22 +28,26 @@ productsRouter.get(
   ClerkExpressRequireAuth(),
   getPaginatedProductsBySearchController.handle,
 )
+
 productsRouter.post(
   '/',
   ClerkExpressRequireAuth(),
   upload.array('images'),
   addProductController.handle,
 )
+
 productsRouter.post(
   '/:productId/categories/add',
   ClerkExpressRequireAuth(),
   addCategoriesToProductController.handle,
 )
+
 productsRouter.put(
   '/:productId/update',
   ClerkExpressRequireAuth(),
   updateProductDetailsController.handle,
 )
+
 productsRouter.delete(
   '/:productId/remove',
   ClerkExpressRequireAuth(),
@@ -54,9 +58,11 @@ productsRouter.patch(
   ClerkExpressRequireAuth(),
   removeProductImagesController.handle,
 )
+
 productsRouter.post(
   '/:productId/images/upload',
   ClerkExpressRequireAuth(),
+  upload.array('images'),
   uploadProductImagesController.handle,
 )
 

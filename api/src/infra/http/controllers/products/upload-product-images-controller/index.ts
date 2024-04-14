@@ -11,6 +11,7 @@ const paramsSchema = z.object({
 export class UploadProductImagesController {
   async handle(req: Request, res: Response): Promise<Response> {
     const { productId } = paramsSchema.parse(req.params)
+    const files = req.files as Express.Multer.File[]
 
     const productsRepo = new PGProductsRepository()
     const productImagesRepo = new PGProductImagesRepository()
@@ -21,7 +22,7 @@ export class UploadProductImagesController {
 
     await uploadProductImagesUseCase.execute({
       productId,
-      images: [],
+      images: files.map((file) => file.filename),
     })
 
     return res.status(201).send()
