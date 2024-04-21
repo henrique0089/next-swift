@@ -10,10 +10,36 @@ interface ProductImageRecord {
   created_at: Date
 }
 
+interface NamedProductImageRecord {
+  img_id: string
+  url: string
+  product_id: string
+  img_created_at: Date
+}
+
 export class PGProductImagesRepository implements ProductImagesRepository {
+  async findByProductName(productName: string): Promise<Image[]> {
+    const sql = "SELECT pi.id AS img_id, url, product_id, pi.created_at AS img_created_at FROM product_images pi JOIN products p ON pi.product_id = p.id WHERE p.name = $1"
+    const { rows } = await client.query<NamedProductImageRecord>(sql, [productName])
+
+    const images: Image[] = []
+
+    for (const data of rows) {
+      const image = new Image({
+        url: data.url,
+        productId: data.product_id,
+        createdAt: data.img_created_at,
+      }, data.img_id)
+
+      images.push(image)
+    }
+
+    return images
+  }
+
   async findManyByIds(imageIds: string[]): Promise<Image[]> {
-    const query = "SELECT * FROM product_images WHERE id = ANY($1)"
-    const { rows } = await client.query<ProductImageRecord>(query, [imageIds])
+    const sql = "SELECT * FROM product_images WHERE id = ANY($1)"
+    const { rows } = await client.query<ProductImageRecord>(sql, [imageIds])
 
     const images: Image[] = []
 
