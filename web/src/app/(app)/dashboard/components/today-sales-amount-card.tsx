@@ -11,7 +11,8 @@ export function TodaySalesAmountCard({
   count,
   percentageIncrease,
 }: TodaySalesAmountCardProps) {
-  const isIncreasePositive = percentageIncrease >= 0
+  const isIncreasePositive = percentageIncrease > 0
+  const isIncreaseNegative = percentageIncrease < 0
 
   return (
     <Card>
@@ -23,12 +24,13 @@ export function TodaySalesAmountCard({
         <span className="text-2xl font-bold tracking-tight">{count}</span>
         <p className="text-xs text-muted-foreground">
           <span
-            data-positive={isIncreasePositive}
-            className="data-[positive=true]:text-emerald-500 data-[positive=true]:dark:text-emerald-400 data-[positive=false]:text-red-500 data-[positive=false]:dark:text-red-500"
+            data-increase-positive={isIncreasePositive}
+            data-increase-negative={isIncreaseNegative}
+            className="data-[increase-positive=true]:text-emerald-500 data-[increase-positive=true]:dark:text-emerald-400 data-[increase-negative=true]:text-red-500 data-[increase-negative=true]:dark:text-red-500"
           >
             {isIncreasePositive
               ? `+${percentageIncrease}%`
-              : `-${percentageIncrease}%`}
+              : `${percentageIncrease}%`}
           </span>{' '}
           Compared to yesterday
         </p>

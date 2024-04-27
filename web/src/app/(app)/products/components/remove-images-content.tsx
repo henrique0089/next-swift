@@ -1,5 +1,7 @@
 'use client'
 
+import { Images } from 'lucide-react'
+
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -77,37 +79,50 @@ export function RemoveImagesContent() {
         </form>
       </nav>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Image</TableHead>
-            <TableHead>Product ID</TableHead>
-            <TableHead>Created at</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {images.map((img) => (
-            <TableRow key={img.id}>
-              <TableCell>{img.id}</TableCell>
-              <TableCell>
-                <Image src={img.url} alt={img.url} width={30} height={30} />
-              </TableCell>
-              <TableCell>{img.productId}</TableCell>
-              <TableCell>{formatDate(img.createdAt)}</TableCell>
-              <TableCell>
-                <DeleteImageButton
-                  images={images}
-                  setImages={setImages}
-                  productId={img.productId}
-                  imageId={img.id}
-                />
-              </TableCell>
+      {images.length >= 1 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Image</TableHead>
+              <TableHead>Product ID</TableHead>
+              <TableHead>Created at</TableHead>
+              <TableHead></TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {images.map((img) => (
+              <TableRow key={img.id}>
+                <TableCell>{img.id}</TableCell>
+                <TableCell>
+                  <Image src={img.url} alt={img.url} width={30} height={30} />
+                </TableCell>
+                <TableCell>{img.productId}</TableCell>
+                <TableCell>{formatDate(img.createdAt)}</TableCell>
+                <TableCell>
+                  <DeleteImageButton
+                    images={images}
+                    setImages={setImages}
+                    productId={img.productId}
+                    imageId={img.id}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <div className="flex flex-col gap-4 items-center justify-center">
+          <Images className="h-10 w-10" />
+
+          <div className="space-y-2 text-center">
+            <strong className="block">No Images</strong>
+            <span className="text-muted-foreground">
+              Search by any product to view images.
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
