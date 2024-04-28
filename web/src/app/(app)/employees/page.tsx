@@ -28,6 +28,8 @@ export default async function Employees() {
     },
   })
 
+  await new Promise((resolve) => setTimeout(resolve, 1000 * 15))
+
   return (
     <section className="min-h-screen max-w-6xl w-full mx-auto space-y-8 p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
