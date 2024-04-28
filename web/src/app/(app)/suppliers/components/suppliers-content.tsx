@@ -102,7 +102,7 @@ export function SuppliersContent({ suppliersData }: SuppliersContentProps) {
             <TableHead>E-mail</TableHead>
             <TableHead>CNPJ</TableHead>
             <TableHead>DDD</TableHead>
-            <TableHead>Number</TableHead>
+            <TableHead>Phone</TableHead>
             <TableHead>Created at</TableHead>
             <TableHead>Updated at</TableHead>
             <TableHead></TableHead>
