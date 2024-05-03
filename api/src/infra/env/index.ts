@@ -15,6 +15,9 @@ const envSchema = z.object({
     .default(
       'https://3333-henrique0089-nextswift-l7jc5jg033c.ws-us110.gitpod.io/images',
     ),
+  CLOUDFLARE_ACCESS_KEY_ID: z.string(),
+  CLOUDFLARE_SECRET_ACCESS_KEY: z.string(),
+  CLOUDFLARE_ENDPOINT: z.string(),
   // AWS_BUCKET: z.string(),
   // FORGOT_MAIL_URL: z.string().default('http://localhost:3000/password?reset='),
   // APP_BASE_URL: z.string().default('http://localhost:3000'),

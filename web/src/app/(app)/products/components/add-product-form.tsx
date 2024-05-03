@@ -1,5 +1,6 @@
 'use client'
 
+import { FormError } from '@/components/form-error'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -25,13 +26,13 @@ import { Dropzone } from './dropzone'
 const addProductFormSchema = z.object({
   name: z.string().min(5, { message: 'Name must have at least 5 words' }),
   description: z.string().optional(),
-  width: z.coerce.number(),
-  height: z.coerce.number(),
-  weight: z.coerce.number(),
-  price: z.coerce.number(),
-  quantity: z.coerce.number(),
-  images: z.instanceof(File).array(),
-  category: z.string({ required_error: 'Select one category' }),
+  width: z.coerce.number().min(1, { message: 'Provide a valid width' }),
+  height: z.coerce.number().min(1, { message: 'Provide a valid height' }),
+  weight: z.coerce.number().min(1, { message: 'Provide a valid weight' }),
+  price: z.coerce.number().min(1, { message: 'Provide a valid price' }),
+  quantity: z.coerce.number().min(1, { message: 'Provide a valid quantity' }),
+  images: z.instanceof(File).array().min(1),
+  category: z.string({ required_error: 'Select 1 category' }),
 })
 
 type AddProductFormValues = z.infer<typeof addProductFormSchema>
@@ -47,7 +48,7 @@ export function AddProductForm({ categories }: AddProductFormProps) {
     register,
     control,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<AddProductFormValues>({
     resolver: zodResolver(addProductFormSchema),
   })
@@ -103,6 +104,15 @@ export function AddProductForm({ categories }: AddProductFormProps) {
     }
   }
 
+  const nameErr = errors.name?.message
+  const widthErr = errors.width?.message
+  const heightErr = errors.height?.message
+  const weightErr = errors.weight?.message
+  const priceErr = errors.price?.message
+  const quantityErr = errors.quantity?.message
+  const imagesErr = errors.images?.message
+  const categoryErr = errors.category?.message
+
   return (
     <form onSubmit={handleSubmit(handleAddProduct)} className="space-y-4">
       <div className="grid grid-cols-1 space-y-6 lg:grid-cols-[16rem_1fr] lg:space-x-4">
@@ -110,26 +120,31 @@ export function AddProductForm({ categories }: AddProductFormProps) {
           <div className="space-y-2">
             <Label htmlFor="width">Width (cm)</Label>
             <Input id="width" placeholder="180" {...register('width')} />
+            {widthErr && <FormError>{widthErr}</FormError>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="height">Height (cm)</Label>
             <Input id="height" placeholder="362" {...register('height')} />
+            {heightErr && <FormError>{heightErr}</FormError>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="weight">Weight (cm)</Label>
             <Input id="weight" placeholder="55" {...register('weight')} />
+            {weightErr && <FormError>{weightErr}</FormError>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="price">Price (US$)</Label>
             <Input id="price" placeholder="72.90" {...register('price')} />
+            {priceErr && <FormError>{priceErr}</FormError>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="quantity">Quantity</Label>
             <Input id="quantity" placeholder="63" {...register('quantity')} />
+            {quantityErr && <FormError>{quantityErr}</FormError>}
           </div>
 
           <div className="space-y-2">
@@ -152,6 +167,7 @@ export function AddProductForm({ categories }: AddProductFormProps) {
                 </Select>
               )}
             />
+            {categoryErr && <FormError>{categoryErr}</FormError>}
           </div>
         </div>
 
@@ -163,6 +179,7 @@ export function AddProductForm({ categories }: AddProductFormProps) {
               placeholder="White t-shirt..."
               {...register('name')}
             />
+            {nameErr && <FormError>{nameErr}</FormError>}
           </div>
 
           <div className="space-y-2">
@@ -188,6 +205,7 @@ export function AddProductForm({ categories }: AddProductFormProps) {
                 </>
               )}
             />
+            {imagesErr && <FormError>Select at least 1 image</FormError>}
           </div>
 
           <Button disabled={isSubmitting}>
