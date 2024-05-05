@@ -7,6 +7,7 @@ import { UpdateProductDetailsController } from '@infra/http/controllers/products
 import { Router } from 'express'
 import multer from 'multer'
 import { GetPaginatedProductsBySearchController } from '../controllers/products/get-paginated-products-by-search-controller'
+import { GetProductDetailsController } from '../controllers/products/get-product-details-controller'
 import { GetProductImagesController } from '../controllers/products/get-product-images-controller'
 import { UploadProductImagesController } from '../controllers/products/upload-product-images-controller'
 import { ClerkExpressRequireAuth } from '../middlewares/clerk-require-auth'
@@ -20,6 +21,7 @@ const uploadProductImagesController = new UploadProductImagesController()
 const getPaginatedProductsBySearchController =
   new GetPaginatedProductsBySearchController()
 const getProductImagesController = new GetProductImagesController()
+const getProductDetailsController = new GetProductDetailsController()
 
 const upload = multer(UploaderConfig.execute('products'))
 
@@ -35,6 +37,12 @@ productsRouter.get(
   '/images',
   ClerkExpressRequireAuth(),
   getProductImagesController.handle,
+)
+
+productsRouter.get(
+  '/:productId/details',
+  ClerkExpressRequireAuth(),
+  getProductDetailsController.handle,
 )
 
 productsRouter.post(

@@ -230,6 +230,7 @@ export class PGSalesRepository implements SalesRepository {
       FROM sales s
       JOIN products p ON s.product_id = p.id
       JOIN customers c ON s.buyer_id = c.id
+      WHERE EXTRACT(MONTH FROM s.created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
       GROUP BY s.id, s.total, s.status, s.qty, s.payment_method, s.product_id, s.buyer_id, s.created_at, p.name, p.price, p.quantity, c.name, c.email
       ORDER BY s.created_at DESC 
       LIMIT 5
@@ -284,7 +285,7 @@ export class PGSalesRepository implements SalesRepository {
   }
 
   async getTodayTotalCount(): Promise<number> {
-    const query = `SELECT COUNT(total) FROM sales WHERE EXTRACT(DAY FROM created_at) = EXTRACT(DAY FROM CURRENT_DATE)`
+    const query = `SELECT COUNT(total) FROM sales WHERE DATE_TRUNC('day', created_at) = CURRENT_DATE`
 
     const { rows } = await client.query<{ count: number }>(query)
 

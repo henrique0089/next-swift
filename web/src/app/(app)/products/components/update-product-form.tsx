@@ -10,19 +10,16 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { api } from '@/lib/axios'
+import { useAuth } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
-import { Dropzone } from './dropzone'
+import { ProductResponseData } from '../[id]/edit/page'
 
 const updateProductFormSchema = z.object({
   name: z.string().min(5, { message: 'Name must have at least 5 words' }),
@@ -32,61 +29,65 @@ const updateProductFormSchema = z.object({
   weight: z.coerce.number(),
   price: z.coerce.number(),
   quantity: z.coerce.number(),
-  images: z.instanceof(File).array(),
-  category: z.string({ required_error: 'Select one category' }),
 })
 
 type UpdateProductFormValues = z.infer<typeof updateProductFormSchema>
 
-const categories = [
-  {
-    value: 'j45hj4h5h',
-    label: 'shirts',
-  },
-  {
-    value: 'j344jj',
-    label: 'shoes',
-  },
-  {
-    value: 'dfdjfjdf89df8',
-    label: 'black-shoes',
-  },
-  {
-    value: 'bdnfnbdf8',
-    label: 'blue-pants',
-  },
-  {
-    value: 'bbdnfbdfnb33',
-    label: 'rayban oculus',
-  },
-]
+interface UpdateProductFormProps {
+  product: ProductResponseData
+}
 
-export function UpdateProductForm() {
+export function UpdateProductForm({ product }: UpdateProductFormProps) {
+  const { getToken } = useAuth()
   const form = useForm<UpdateProductFormValues>({
     resolver: zodResolver(updateProductFormSchema),
     mode: 'onChange',
     defaultValues: {
-      name: 'Black T-shirt',
-      description: 'black t-shirt description',
-      width: 176,
-      height: 245,
-      weight: 55,
-      price: 79.9,
-      quantity: 26,
-      category: 'j45hj4h5h',
+      name: product.name,
+      description: product.description,
+      width: product.width,
+      height: product.height,
+      weight: product.weight,
+      price: product.price,
+      quantity: product.quantity,
     },
   })
 
   const {
     handleSubmit,
-    setValue,
     formState: { isSubmitting },
   } = form
 
-  function handleUpdateProduct(data: UpdateProductFormValues) {
-    console.log({ data })
+  async function handleUpdateProduct(data: UpdateProductFormValues) {
+    try {
+      await api.put(`/products/${product.id}/update`, data, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      })
 
-    setValue('name', '')
+      toast('Congratulations!', {
+        description: 'Product details updated succesfuly!',
+        position: 'bottom-right',
+        dismissible: true,
+        duration: 2000,
+        cancel: {
+          label: 'dismiss',
+        },
+      })
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast('Uh oh! Something went wrong.', {
+          description: error.response?.data.message,
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
+    }
   }
 
   return (
@@ -163,34 +164,6 @@ export function UpdateProductForm() {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem
-                            key={category.value}
-                            value={category.value}
-                          >
-                            {category.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
           <div className="space-y-4">
@@ -224,22 +197,6 @@ export function UpdateProductForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Images ({field.value?.length ?? '0'})</FormLabel>
-                    <FormControl>
-                      <Dropzone onChange={field.onChange} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )
-              }}
             />
 
             <Button disabled={isSubmitting}>

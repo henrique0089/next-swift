@@ -1,6 +1,38 @@
+import { api } from '@/lib/axios'
+import { auth } from '@clerk/nextjs'
 import { UpdateProductForm } from '../../components/update-product-form'
 
-export default function UpdateProduct() {
+interface UpdateProductProps {
+  params: {
+    id: string
+  }
+}
+
+export type ProductResponseData = {
+  id: string
+  name: string
+  description: string
+  width: number
+  height: number
+  weight: number
+  price: number
+  quantity: number
+}
+
+export default async function UpdateProduct({
+  params: { id },
+}: UpdateProductProps) {
+  const { getToken } = auth()
+
+  const res = await api.get<{ product: ProductResponseData }>(
+    `/products/${id}/details`,
+    {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      },
+    },
+  )
+
   return (
     <section className="min-h-screen max-w-6xl w-full mx-auto space-y-8 p-6">
       <div className="space-y-1">
@@ -10,7 +42,7 @@ export default function UpdateProduct() {
         </span>
       </div>
 
-      <UpdateProductForm />
+      <UpdateProductForm product={res.data.product} />
     </section>
   )
 }

@@ -5,14 +5,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
+import { FormError } from './form-error'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 
 const employeeAuthFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  email: z.string().email({ message: 'Provide a valid e-mail' }),
+  password: z
+    .string()
+    .min(6, { message: 'Password must contain at least 6 characters' }),
 })
 
 type EmployeeAuthFormValues = z.infer<typeof employeeAuthFormSchema>
@@ -42,8 +46,18 @@ export function EmployeeAuthForm() {
 
         window.location.href = '/dashboard'
       }
-    } catch (err) {
-      console.log(err)
+    } catch (err: any) {
+      if (err.errors[0].code === 'form_password_incorrect') {
+        toast('Uh oh! Something went wrong.', {
+          description: 'E-mail or password is incorrect!',
+          position: 'bottom-right',
+          dismissible: true,
+          duration: 2000,
+          cancel: {
+            label: 'dismiss',
+          },
+        })
+      }
     }
   }
 
@@ -61,7 +75,7 @@ export function EmployeeAuthForm() {
           disabled={isSubmitting}
           {...register('email')}
         />
-        {emailErr && <span>{emailErr}</span>}
+        {emailErr && <FormError>{emailErr}</FormError>}
       </div>
 
       <div>
@@ -74,7 +88,7 @@ export function EmployeeAuthForm() {
             disabled={isSubmitting}
             {...register('password')}
           />
-          {passErr && <span>{passErr}</span>}
+          {passErr && <FormError>{passErr}</FormError>}
         </div>
 
         <Link

@@ -5,16 +5,10 @@ import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { FormError } from '@/components/form-error'
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const recoveryPasswordFormSchema = z.object({
   email: z.string().email('Provide an valid e-mail'),
@@ -30,41 +24,40 @@ export function RecoveryPasswordForm() {
 
   const {
     handleSubmit,
-    setValue,
-    formState: { isSubmitting },
+    register,
+    reset,
+    formState: { isSubmitting, errors },
   } = form
 
   async function handleSendResetPassEmail(data: RecoveryPasswordFormValues) {
     console.log(data)
 
-    setValue('email', '')
+    reset()
   }
 
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={handleSubmit(handleSendResetPassEmail)}
-        className="space-y-3 w-full"
-      >
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="name@example.com" type="email" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+  const emailErr = errors.email?.message
 
-        <Button disabled={isSubmitting} className="w-full">
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Send
-        </Button>
-      </form>
-    </Form>
+  return (
+    <form
+      onSubmit={handleSubmit(handleSendResetPassEmail)}
+      className="space-y-3 w-full"
+    >
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="jhondoe@gmail.com"
+          disabled={isSubmitting}
+          {...register('email')}
+        />
+        {emailErr && <FormError>{emailErr}</FormError>}
+      </div>
+
+      <Button disabled={isSubmitting} className="w-full">
+        {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        Send
+      </Button>
+    </form>
   )
 }
